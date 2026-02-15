@@ -1,0 +1,168 @@
+import { Goal, Expense, Receipt } from '@/src/types'
+
+export const mockGoals: Goal[] = [
+  {
+    id: '1',
+    name: 'Viagem para Europa',
+    totalValue: 15000,
+    currentValue: 8500,
+    deadlineDate: '2026-06-30',
+    category: 'viagem',
+    icon: '✈️',
+    active: true,
+    createdAt: '2025-01-15',
+  },
+  {
+    id: '2',
+    name: 'Comprar Apartamento',
+    totalValue: 200000,
+    currentValue: 45000,
+    deadlineDate: '2027-12-31',
+    category: 'casa',
+    icon: '🏠',
+    active: true,
+    createdAt: '2024-06-01',
+  },
+  {
+    id: '3',
+    name: 'MBA em Gestão',
+    totalValue: 25000,
+    currentValue: 18000,
+    deadlineDate: '2026-03-01',
+    category: 'educacao',
+    icon: '🎓',
+    active: true,
+    createdAt: '2024-09-10',
+  },
+  {
+    id: '4',
+    name: 'Reserva de Emergência',
+    totalValue: 30000,
+    currentValue: 12000,
+    deadlineDate: '2026-12-31',
+    category: 'investimento',
+    icon: '💰',
+    active: true,
+    createdAt: '2025-01-01',
+  },
+  {
+    id: '5',
+    name: 'Carro Novo',
+    totalValue: 80000,
+    currentValue: 15000,
+    deadlineDate: '2027-06-30',
+    category: 'outros',
+    icon: '🚗',
+    active: true,
+    createdAt: '2024-11-20',
+  },
+]
+
+export const mockExpenses: Expense[] = [
+  {
+    id: '1',
+    value: 1200,
+    category: 'moradia',
+    type: 'fixo',
+    date: '2026-02-01',
+    description: 'Aluguel',
+  },
+  {
+    id: '2',
+    value: 450,
+    category: 'alimentacao',
+    type: 'variavel',
+    date: '2026-02-05',
+    description: 'Supermercado',
+  },
+  {
+    id: '3',
+    value: 180,
+    category: 'transporte',
+    type: 'fixo',
+    date: '2026-02-01',
+    description: 'Combustível',
+  },
+  {
+    id: '4',
+    value: 300,
+    category: 'saude',
+    type: 'fixo',
+    date: '2026-02-01',
+    description: 'Plano de Saúde',
+  },
+  {
+    id: '5',
+    value: 150,
+    category: 'lazer',
+    type: 'variavel',
+    date: '2026-02-10',
+    description: 'Cinema e restaurante',
+  },
+  {
+    id: '6',
+    value: 200,
+    category: 'educacao',
+    type: 'fixo',
+    date: '2026-02-01',
+    description: 'Curso online',
+  },
+  {
+    id: '7',
+    value: 80,
+    category: 'outros',
+    type: 'variavel',
+    date: '2026-02-12',
+    description: 'Presentes',
+  },
+  {
+    id: '8',
+    value: 350,
+    category: 'alimentacao',
+    type: 'variavel',
+    date: '2026-02-14',
+    description: 'Restaurantes',
+  },
+]
+
+export const mockReceipts: Receipt[] = [
+  {
+    id: '1',
+    value: 5500,
+    origin: 'Salário',
+    date: '2026-02-05',
+    recurrence: 'mensal',
+  },
+  {
+    id: '2',
+    value: 1200,
+    origin: 'Freelance',
+    date: '2026-02-10',
+    recurrence: 'unico',
+  },
+  {
+    id: '3',
+    value: 800,
+    origin: 'Aluguel de imóvel',
+    date: '2026-02-15',
+    recurrence: 'mensal',
+  },
+]
+
+export const CATEGORY_LABELS: Record<string, string> = {
+  alimentacao: 'Alimentação',
+  transporte: 'Transporte',
+  moradia: 'Moradia',
+  saude: 'Saúde',
+  educacao: 'Educação',
+  lazer: 'Lazer',
+  outros: 'Outros',
+}
+
+export const GOAL_CATEGORY_LABELS: Record<string, string> = {
+  casa: 'Casa',
+  viagem: 'Viagem',
+  educacao: 'Educação',
+  investimento: 'Investimento',
+  outros: 'Outros',
+}
