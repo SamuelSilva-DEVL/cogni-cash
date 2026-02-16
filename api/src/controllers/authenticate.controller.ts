@@ -1,28 +1,49 @@
-import { Body, ConflictException, Controller, HttpCode, Post, UsePipes } from '@nestjs/common';
+import { Body, ConflictException, Controller, HttpCode, Post, UnauthorizedException, UsePipes } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { hash } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { ZodValidationPipe } from 'src/pipes/zod-validation-pipe';
 import { PrismaService } from 'src/prisma/prisma.service';
 import z from 'zod';
 
-// const createUserSchema = z.object({
-//     name: z.string().min(1, 'O nome é obrigatório'),
-//     email: z.email('O email deve ser válido'),
-//     password: z.string().min(6, 'A senha deve conter no mínimo 6 caracteres'),
-// })
+const authenticateBodySchema = z.object({
+    email: z.email('O email deve ser válido'),
+    password: z.string(),
+})
 
-// type CreateUserSchema = z.infer<typeof createUserSchema>
+type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>
 
 @Controller('/sessions')
 export class AuthenticateController {
     constructor(
-        private jwt: JwtService
+        private jwt: JwtService,
+        private prisma: PrismaService
     ) {}
 
     @Post()
-    async handle(){
-        const token = this.jwt.sign({ userId: 1 })
+    @UsePipes(new ZodValidationPipe(authenticateBodySchema))
+    async handle(@Body() body: AuthenticateBodySchema) {
+        const { email, password } = body
 
-        return token
+        const user = await this.prisma.user.findUnique({
+            where: {
+                email,
+            },
+        })
+
+        if (!user) {
+            throw new UnauthorizedException('Email ou senha inválidos')
+        }
+
+        const isPasswordValid = await compare(password, user.password)
+
+        if (!isPasswordValid) {
+            throw new UnauthorizedException('Email ou senha inválidos')
+        }
+
+        const accessToken = this.jwt.sign({ userId: user.id })
+
+        return {
+            access_token: accessToken
+        }
     }
 }
