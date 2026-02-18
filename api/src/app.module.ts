@@ -6,6 +6,7 @@ import { envSchema } from "./env"
 import { AuthModule } from "./auth/auth.module"
 import { AuthenticateController } from "./controllers/authenticate.controller"
 import { CreateGoalController } from "./controllers/create-goal.controller"
+import { FetchListGoalsController } from './controllers/fetch-list-goals.controller'
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CreateGoalController } from "./controllers/create-goal.controller"
     CreateUserController,
     AuthenticateController,
     CreateGoalController,
+    FetchListGoalsController
   ],
   providers: [PrismaService],
 })
