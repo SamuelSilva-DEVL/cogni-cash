@@ -44,6 +44,7 @@ export type GoalMinAggregateOutputType = {
   deadline: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  slug: string | null
   userId: string | null
 }
 
@@ -55,6 +56,7 @@ export type GoalMaxAggregateOutputType = {
   deadline: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  slug: string | null
   userId: string | null
 }
 
@@ -66,6 +68,7 @@ export type GoalCountAggregateOutputType = {
   deadline: number
   createdAt: number
   updatedAt: number
+  slug: number
   userId: number
   _all: number
 }
@@ -89,6 +92,7 @@ export type GoalMinAggregateInputType = {
   deadline?: true
   createdAt?: true
   updatedAt?: true
+  slug?: true
   userId?: true
 }
 
@@ -100,6 +104,7 @@ export type GoalMaxAggregateInputType = {
   deadline?: true
   createdAt?: true
   updatedAt?: true
+  slug?: true
   userId?: true
 }
 
@@ -111,6 +116,7 @@ export type GoalCountAggregateInputType = {
   deadline?: true
   createdAt?: true
   updatedAt?: true
+  slug?: true
   userId?: true
   _all?: true
 }
@@ -209,6 +215,7 @@ export type GoalGroupByOutputType = {
   deadline: Date | null
   createdAt: Date
   updatedAt: Date
+  slug: string
   userId: string
   _count: GoalCountAggregateOutputType | null
   _avg: GoalAvgAggregateOutputType | null
@@ -243,6 +250,7 @@ export type GoalWhereInput = {
   deadline?: Prisma.DateTimeNullableFilter<"Goal"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Goal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Goal"> | Date | string
+  slug?: Prisma.StringFilter<"Goal"> | string
   userId?: Prisma.StringFilter<"Goal"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -255,12 +263,14 @@ export type GoalOrderByWithRelationInput = {
   deadline?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type GoalWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  slug?: string
   AND?: Prisma.GoalWhereInput | Prisma.GoalWhereInput[]
   OR?: Prisma.GoalWhereInput[]
   NOT?: Prisma.GoalWhereInput | Prisma.GoalWhereInput[]
@@ -272,7 +282,7 @@ export type GoalWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Goal"> | Date | string
   userId?: Prisma.StringFilter<"Goal"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "slug">
 
 export type GoalOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -282,6 +292,7 @@ export type GoalOrderByWithAggregationInput = {
   deadline?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   _count?: Prisma.GoalCountOrderByAggregateInput
   _avg?: Prisma.GoalAvgOrderByAggregateInput
@@ -301,6 +312,7 @@ export type GoalScalarWhereWithAggregatesInput = {
   deadline?: Prisma.DateTimeNullableWithAggregatesFilter<"Goal"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Goal"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Goal"> | Date | string
+  slug?: Prisma.StringWithAggregatesFilter<"Goal"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Goal"> | string
 }
 
@@ -312,6 +324,7 @@ export type GoalCreateInput = {
   deadline?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  slug: string
   user: Prisma.UserCreateNestedOneWithoutGoalsInput
 }
 
@@ -323,6 +336,7 @@ export type GoalUncheckedCreateInput = {
   deadline?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  slug: string
   userId: string
 }
 
@@ -334,6 +348,7 @@ export type GoalUpdateInput = {
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   user?: Prisma.UserUpdateOneRequiredWithoutGoalsNestedInput
 }
 
@@ -345,6 +360,7 @@ export type GoalUncheckedUpdateInput = {
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -356,6 +372,7 @@ export type GoalCreateManyInput = {
   deadline?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  slug: string
   userId: string
 }
 
@@ -367,6 +384,7 @@ export type GoalUpdateManyMutationInput = {
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type GoalUncheckedUpdateManyInput = {
@@ -377,6 +395,7 @@ export type GoalUncheckedUpdateManyInput = {
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -398,6 +417,7 @@ export type GoalCountOrderByAggregateInput = {
   deadline?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   userId?: Prisma.SortOrder
 }
 
@@ -414,6 +434,7 @@ export type GoalMaxOrderByAggregateInput = {
   deadline?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   userId?: Prisma.SortOrder
 }
 
@@ -425,6 +446,7 @@ export type GoalMinOrderByAggregateInput = {
   deadline?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   userId?: Prisma.SortOrder
 }
 
@@ -487,6 +509,7 @@ export type GoalCreateWithoutUserInput = {
   deadline?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  slug: string
 }
 
 export type GoalUncheckedCreateWithoutUserInput = {
@@ -497,6 +520,7 @@ export type GoalUncheckedCreateWithoutUserInput = {
   deadline?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  slug: string
 }
 
 export type GoalCreateOrConnectWithoutUserInput = {
@@ -536,6 +560,7 @@ export type GoalScalarWhereInput = {
   deadline?: Prisma.DateTimeNullableFilter<"Goal"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Goal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Goal"> | Date | string
+  slug?: Prisma.StringFilter<"Goal"> | string
   userId?: Prisma.StringFilter<"Goal"> | string
 }
 
@@ -547,6 +572,7 @@ export type GoalCreateManyUserInput = {
   deadline?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  slug: string
 }
 
 export type GoalUpdateWithoutUserInput = {
@@ -557,6 +583,7 @@ export type GoalUpdateWithoutUserInput = {
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type GoalUncheckedUpdateWithoutUserInput = {
@@ -567,6 +594,7 @@ export type GoalUncheckedUpdateWithoutUserInput = {
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type GoalUncheckedUpdateManyWithoutUserInput = {
@@ -577,6 +605,7 @@ export type GoalUncheckedUpdateManyWithoutUserInput = {
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -589,6 +618,7 @@ export type GoalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   deadline?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  slug?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["goal"]>
@@ -601,6 +631,7 @@ export type GoalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   deadline?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  slug?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["goal"]>
@@ -613,6 +644,7 @@ export type GoalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   deadline?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  slug?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["goal"]>
@@ -625,10 +657,11 @@ export type GoalSelectScalar = {
   deadline?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  slug?: boolean
   userId?: boolean
 }
 
-export type GoalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "targetAmount" | "currentAmount" | "deadline" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["goal"]>
+export type GoalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "targetAmount" | "currentAmount" | "deadline" | "createdAt" | "updatedAt" | "slug" | "userId", ExtArgs["result"]["goal"]>
 export type GoalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -652,6 +685,7 @@ export type $GoalPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     deadline: Date | null
     createdAt: Date
     updatedAt: Date
+    slug: string
     userId: string
   }, ExtArgs["result"]["goal"]>
   composites: {}
@@ -1084,6 +1118,7 @@ export interface GoalFieldRefs {
   readonly deadline: Prisma.FieldRef<"Goal", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Goal", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Goal", 'DateTime'>
+  readonly slug: Prisma.FieldRef<"Goal", 'String'>
   readonly userId: Prisma.FieldRef<"Goal", 'String'>
 }
     

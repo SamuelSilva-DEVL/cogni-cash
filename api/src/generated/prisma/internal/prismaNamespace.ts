@@ -791,6 +791,7 @@ export const GoalScalarFieldEnum = {
   deadline: 'deadline',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  slug: 'slug',
   userId: 'userId'
 } as const
 

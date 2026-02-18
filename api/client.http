@@ -7,7 +7,7 @@ Content-Type: application/json
 
 {
     "name": "Samuel Silva",
-    "email": "teste@gmail.com",
+    "email": "samuel2@gmail.com",
     "password": "123456"
 }
 
@@ -18,7 +18,7 @@ POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
-    "email": "samuel@gmail.com",
+    "email": "samuel2@gmail.com",
     "password": "123456"
 }
 
@@ -28,3 +28,10 @@ Content-Type: application/json
 POST {{baseUrl}}/goals
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+{
+    "title": "Meta de Teste 2",
+    "targetAmount": 1000.00,
+    "currentAmount": 0.00,
+    "deadline": "2024-12-31T23:59:59Z"
+}
