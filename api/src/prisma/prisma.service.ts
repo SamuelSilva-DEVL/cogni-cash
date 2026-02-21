@@ -9,9 +9,12 @@ export class PrismaService
 {
   constructor() {
     const connectionString = process.env.DATABASE_URL
-    const adapter = new PrismaPg({
-      connectionString: connectionString,
-    })
+    const url = new URL(connectionString!)
+    const schema = url.searchParams.get("schema") || undefined
+    const adapter = new PrismaPg(
+      { connectionString: connectionString },
+      { schema },
+    )
     super({ adapter, log: ["error", "warn"] })
   }
 
