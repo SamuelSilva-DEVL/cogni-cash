@@ -42,6 +42,18 @@ describe("CreateUserController (e2e)", () => {
     })
 
     expect(userOnDatabase).toBeTruthy()
+
+    const membership = await prisma.accountMember.findFirst({
+      where: {
+        userId: userOnDatabase?.id,
+      },
+      include: {
+        account: true,
+      },
+    })
+
+    expect(membership).toBeTruthy()
+    expect(membership?.account).toBeTruthy()
   })
 
   afterAll(async () => {

@@ -42,10 +42,10 @@ export type GoalMinAggregateOutputType = {
   targetAmount: runtime.Decimal | null
   currentAmount: runtime.Decimal | null
   deadline: Date | null
+  slug: string | null
+  accountId: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  slug: string | null
-  userId: string | null
 }
 
 export type GoalMaxAggregateOutputType = {
@@ -54,10 +54,10 @@ export type GoalMaxAggregateOutputType = {
   targetAmount: runtime.Decimal | null
   currentAmount: runtime.Decimal | null
   deadline: Date | null
+  slug: string | null
+  accountId: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  slug: string | null
-  userId: string | null
 }
 
 export type GoalCountAggregateOutputType = {
@@ -66,10 +66,10 @@ export type GoalCountAggregateOutputType = {
   targetAmount: number
   currentAmount: number
   deadline: number
+  slug: number
+  accountId: number
   createdAt: number
   updatedAt: number
-  slug: number
-  userId: number
   _all: number
 }
 
@@ -90,10 +90,10 @@ export type GoalMinAggregateInputType = {
   targetAmount?: true
   currentAmount?: true
   deadline?: true
+  slug?: true
+  accountId?: true
   createdAt?: true
   updatedAt?: true
-  slug?: true
-  userId?: true
 }
 
 export type GoalMaxAggregateInputType = {
@@ -102,10 +102,10 @@ export type GoalMaxAggregateInputType = {
   targetAmount?: true
   currentAmount?: true
   deadline?: true
+  slug?: true
+  accountId?: true
   createdAt?: true
   updatedAt?: true
-  slug?: true
-  userId?: true
 }
 
 export type GoalCountAggregateInputType = {
@@ -114,10 +114,10 @@ export type GoalCountAggregateInputType = {
   targetAmount?: true
   currentAmount?: true
   deadline?: true
+  slug?: true
+  accountId?: true
   createdAt?: true
   updatedAt?: true
-  slug?: true
-  userId?: true
   _all?: true
 }
 
@@ -213,10 +213,10 @@ export type GoalGroupByOutputType = {
   targetAmount: runtime.Decimal
   currentAmount: runtime.Decimal
   deadline: Date | null
+  slug: string
+  accountId: string
   createdAt: Date
   updatedAt: Date
-  slug: string
-  userId: string
   _count: GoalCountAggregateOutputType | null
   _avg: GoalAvgAggregateOutputType | null
   _sum: GoalSumAggregateOutputType | null
@@ -248,11 +248,11 @@ export type GoalWhereInput = {
   targetAmount?: Prisma.DecimalFilter<"Goal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: Prisma.DecimalFilter<"Goal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Prisma.DateTimeNullableFilter<"Goal"> | Date | string | null
+  slug?: Prisma.StringFilter<"Goal"> | string
+  accountId?: Prisma.StringFilter<"Goal"> | string
   createdAt?: Prisma.DateTimeFilter<"Goal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Goal"> | Date | string
-  slug?: Prisma.StringFilter<"Goal"> | string
-  userId?: Prisma.StringFilter<"Goal"> | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  account?: Prisma.XOR<Prisma.AccountScalarRelationFilter, Prisma.AccountWhereInput>
 }
 
 export type GoalOrderByWithRelationInput = {
@@ -261,11 +261,11 @@ export type GoalOrderByWithRelationInput = {
   targetAmount?: Prisma.SortOrder
   currentAmount?: Prisma.SortOrder
   deadline?: Prisma.SortOrderInput | Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  accountId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
+  account?: Prisma.AccountOrderByWithRelationInput
 }
 
 export type GoalWhereUniqueInput = Prisma.AtLeast<{
@@ -278,10 +278,10 @@ export type GoalWhereUniqueInput = Prisma.AtLeast<{
   targetAmount?: Prisma.DecimalFilter<"Goal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: Prisma.DecimalFilter<"Goal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Prisma.DateTimeNullableFilter<"Goal"> | Date | string | null
+  accountId?: Prisma.StringFilter<"Goal"> | string
   createdAt?: Prisma.DateTimeFilter<"Goal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Goal"> | Date | string
-  userId?: Prisma.StringFilter<"Goal"> | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  account?: Prisma.XOR<Prisma.AccountScalarRelationFilter, Prisma.AccountWhereInput>
 }, "id" | "slug">
 
 export type GoalOrderByWithAggregationInput = {
@@ -290,10 +290,10 @@ export type GoalOrderByWithAggregationInput = {
   targetAmount?: Prisma.SortOrder
   currentAmount?: Prisma.SortOrder
   deadline?: Prisma.SortOrderInput | Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  accountId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
   _count?: Prisma.GoalCountOrderByAggregateInput
   _avg?: Prisma.GoalAvgOrderByAggregateInput
   _max?: Prisma.GoalMaxOrderByAggregateInput
@@ -310,10 +310,10 @@ export type GoalScalarWhereWithAggregatesInput = {
   targetAmount?: Prisma.DecimalWithAggregatesFilter<"Goal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: Prisma.DecimalWithAggregatesFilter<"Goal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Prisma.DateTimeNullableWithAggregatesFilter<"Goal"> | Date | string | null
+  slug?: Prisma.StringWithAggregatesFilter<"Goal"> | string
+  accountId?: Prisma.StringWithAggregatesFilter<"Goal"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Goal"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Goal"> | Date | string
-  slug?: Prisma.StringWithAggregatesFilter<"Goal"> | string
-  userId?: Prisma.StringWithAggregatesFilter<"Goal"> | string
 }
 
 export type GoalCreateInput = {
@@ -322,10 +322,10 @@ export type GoalCreateInput = {
   targetAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Date | string | null
+  slug: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug: string
-  user: Prisma.UserCreateNestedOneWithoutGoalsInput
+  account: Prisma.AccountCreateNestedOneWithoutGoalsInput
 }
 
 export type GoalUncheckedCreateInput = {
@@ -334,10 +334,10 @@ export type GoalUncheckedCreateInput = {
   targetAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Date | string | null
+  slug: string
+  accountId: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug: string
-  userId: string
 }
 
 export type GoalUpdateInput = {
@@ -346,10 +346,10 @@ export type GoalUpdateInput = {
   targetAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  user?: Prisma.UserUpdateOneRequiredWithoutGoalsNestedInput
+  account?: Prisma.AccountUpdateOneRequiredWithoutGoalsNestedInput
 }
 
 export type GoalUncheckedUpdateInput = {
@@ -358,10 +358,10 @@ export type GoalUncheckedUpdateInput = {
   targetAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type GoalCreateManyInput = {
@@ -370,10 +370,10 @@ export type GoalCreateManyInput = {
   targetAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Date | string | null
+  slug: string
+  accountId: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug: string
-  userId: string
 }
 
 export type GoalUpdateManyMutationInput = {
@@ -382,9 +382,9 @@ export type GoalUpdateManyMutationInput = {
   targetAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type GoalUncheckedUpdateManyInput = {
@@ -393,10 +393,10 @@ export type GoalUncheckedUpdateManyInput = {
   targetAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type GoalListRelationFilter = {
@@ -415,10 +415,10 @@ export type GoalCountOrderByAggregateInput = {
   targetAmount?: Prisma.SortOrder
   currentAmount?: Prisma.SortOrder
   deadline?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  accountId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
 }
 
 export type GoalAvgOrderByAggregateInput = {
@@ -432,10 +432,10 @@ export type GoalMaxOrderByAggregateInput = {
   targetAmount?: Prisma.SortOrder
   currentAmount?: Prisma.SortOrder
   deadline?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  accountId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
 }
 
 export type GoalMinOrderByAggregateInput = {
@@ -444,10 +444,10 @@ export type GoalMinOrderByAggregateInput = {
   targetAmount?: Prisma.SortOrder
   currentAmount?: Prisma.SortOrder
   deadline?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  accountId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
 }
 
 export type GoalSumOrderByAggregateInput = {
@@ -455,45 +455,45 @@ export type GoalSumOrderByAggregateInput = {
   currentAmount?: Prisma.SortOrder
 }
 
-export type GoalCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.GoalCreateWithoutUserInput, Prisma.GoalUncheckedCreateWithoutUserInput> | Prisma.GoalCreateWithoutUserInput[] | Prisma.GoalUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.GoalCreateOrConnectWithoutUserInput | Prisma.GoalCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.GoalCreateManyUserInputEnvelope
+export type GoalCreateNestedManyWithoutAccountInput = {
+  create?: Prisma.XOR<Prisma.GoalCreateWithoutAccountInput, Prisma.GoalUncheckedCreateWithoutAccountInput> | Prisma.GoalCreateWithoutAccountInput[] | Prisma.GoalUncheckedCreateWithoutAccountInput[]
+  connectOrCreate?: Prisma.GoalCreateOrConnectWithoutAccountInput | Prisma.GoalCreateOrConnectWithoutAccountInput[]
+  createMany?: Prisma.GoalCreateManyAccountInputEnvelope
   connect?: Prisma.GoalWhereUniqueInput | Prisma.GoalWhereUniqueInput[]
 }
 
-export type GoalUncheckedCreateNestedManyWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.GoalCreateWithoutUserInput, Prisma.GoalUncheckedCreateWithoutUserInput> | Prisma.GoalCreateWithoutUserInput[] | Prisma.GoalUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.GoalCreateOrConnectWithoutUserInput | Prisma.GoalCreateOrConnectWithoutUserInput[]
-  createMany?: Prisma.GoalCreateManyUserInputEnvelope
+export type GoalUncheckedCreateNestedManyWithoutAccountInput = {
+  create?: Prisma.XOR<Prisma.GoalCreateWithoutAccountInput, Prisma.GoalUncheckedCreateWithoutAccountInput> | Prisma.GoalCreateWithoutAccountInput[] | Prisma.GoalUncheckedCreateWithoutAccountInput[]
+  connectOrCreate?: Prisma.GoalCreateOrConnectWithoutAccountInput | Prisma.GoalCreateOrConnectWithoutAccountInput[]
+  createMany?: Prisma.GoalCreateManyAccountInputEnvelope
   connect?: Prisma.GoalWhereUniqueInput | Prisma.GoalWhereUniqueInput[]
 }
 
-export type GoalUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.GoalCreateWithoutUserInput, Prisma.GoalUncheckedCreateWithoutUserInput> | Prisma.GoalCreateWithoutUserInput[] | Prisma.GoalUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.GoalCreateOrConnectWithoutUserInput | Prisma.GoalCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.GoalUpsertWithWhereUniqueWithoutUserInput | Prisma.GoalUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.GoalCreateManyUserInputEnvelope
+export type GoalUpdateManyWithoutAccountNestedInput = {
+  create?: Prisma.XOR<Prisma.GoalCreateWithoutAccountInput, Prisma.GoalUncheckedCreateWithoutAccountInput> | Prisma.GoalCreateWithoutAccountInput[] | Prisma.GoalUncheckedCreateWithoutAccountInput[]
+  connectOrCreate?: Prisma.GoalCreateOrConnectWithoutAccountInput | Prisma.GoalCreateOrConnectWithoutAccountInput[]
+  upsert?: Prisma.GoalUpsertWithWhereUniqueWithoutAccountInput | Prisma.GoalUpsertWithWhereUniqueWithoutAccountInput[]
+  createMany?: Prisma.GoalCreateManyAccountInputEnvelope
   set?: Prisma.GoalWhereUniqueInput | Prisma.GoalWhereUniqueInput[]
   disconnect?: Prisma.GoalWhereUniqueInput | Prisma.GoalWhereUniqueInput[]
   delete?: Prisma.GoalWhereUniqueInput | Prisma.GoalWhereUniqueInput[]
   connect?: Prisma.GoalWhereUniqueInput | Prisma.GoalWhereUniqueInput[]
-  update?: Prisma.GoalUpdateWithWhereUniqueWithoutUserInput | Prisma.GoalUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.GoalUpdateManyWithWhereWithoutUserInput | Prisma.GoalUpdateManyWithWhereWithoutUserInput[]
+  update?: Prisma.GoalUpdateWithWhereUniqueWithoutAccountInput | Prisma.GoalUpdateWithWhereUniqueWithoutAccountInput[]
+  updateMany?: Prisma.GoalUpdateManyWithWhereWithoutAccountInput | Prisma.GoalUpdateManyWithWhereWithoutAccountInput[]
   deleteMany?: Prisma.GoalScalarWhereInput | Prisma.GoalScalarWhereInput[]
 }
 
-export type GoalUncheckedUpdateManyWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.GoalCreateWithoutUserInput, Prisma.GoalUncheckedCreateWithoutUserInput> | Prisma.GoalCreateWithoutUserInput[] | Prisma.GoalUncheckedCreateWithoutUserInput[]
-  connectOrCreate?: Prisma.GoalCreateOrConnectWithoutUserInput | Prisma.GoalCreateOrConnectWithoutUserInput[]
-  upsert?: Prisma.GoalUpsertWithWhereUniqueWithoutUserInput | Prisma.GoalUpsertWithWhereUniqueWithoutUserInput[]
-  createMany?: Prisma.GoalCreateManyUserInputEnvelope
+export type GoalUncheckedUpdateManyWithoutAccountNestedInput = {
+  create?: Prisma.XOR<Prisma.GoalCreateWithoutAccountInput, Prisma.GoalUncheckedCreateWithoutAccountInput> | Prisma.GoalCreateWithoutAccountInput[] | Prisma.GoalUncheckedCreateWithoutAccountInput[]
+  connectOrCreate?: Prisma.GoalCreateOrConnectWithoutAccountInput | Prisma.GoalCreateOrConnectWithoutAccountInput[]
+  upsert?: Prisma.GoalUpsertWithWhereUniqueWithoutAccountInput | Prisma.GoalUpsertWithWhereUniqueWithoutAccountInput[]
+  createMany?: Prisma.GoalCreateManyAccountInputEnvelope
   set?: Prisma.GoalWhereUniqueInput | Prisma.GoalWhereUniqueInput[]
   disconnect?: Prisma.GoalWhereUniqueInput | Prisma.GoalWhereUniqueInput[]
   delete?: Prisma.GoalWhereUniqueInput | Prisma.GoalWhereUniqueInput[]
   connect?: Prisma.GoalWhereUniqueInput | Prisma.GoalWhereUniqueInput[]
-  update?: Prisma.GoalUpdateWithWhereUniqueWithoutUserInput | Prisma.GoalUpdateWithWhereUniqueWithoutUserInput[]
-  updateMany?: Prisma.GoalUpdateManyWithWhereWithoutUserInput | Prisma.GoalUpdateManyWithWhereWithoutUserInput[]
+  update?: Prisma.GoalUpdateWithWhereUniqueWithoutAccountInput | Prisma.GoalUpdateWithWhereUniqueWithoutAccountInput[]
+  updateMany?: Prisma.GoalUpdateManyWithWhereWithoutAccountInput | Prisma.GoalUpdateManyWithWhereWithoutAccountInput[]
   deleteMany?: Prisma.GoalScalarWhereInput | Prisma.GoalScalarWhereInput[]
 }
 
@@ -501,52 +501,52 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
-export type GoalCreateWithoutUserInput = {
+export type GoalCreateWithoutAccountInput = {
   id?: string
   title: string
   targetAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Date | string | null
+  slug: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug: string
 }
 
-export type GoalUncheckedCreateWithoutUserInput = {
+export type GoalUncheckedCreateWithoutAccountInput = {
   id?: string
   title: string
   targetAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Date | string | null
+  slug: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug: string
 }
 
-export type GoalCreateOrConnectWithoutUserInput = {
+export type GoalCreateOrConnectWithoutAccountInput = {
   where: Prisma.GoalWhereUniqueInput
-  create: Prisma.XOR<Prisma.GoalCreateWithoutUserInput, Prisma.GoalUncheckedCreateWithoutUserInput>
+  create: Prisma.XOR<Prisma.GoalCreateWithoutAccountInput, Prisma.GoalUncheckedCreateWithoutAccountInput>
 }
 
-export type GoalCreateManyUserInputEnvelope = {
-  data: Prisma.GoalCreateManyUserInput | Prisma.GoalCreateManyUserInput[]
+export type GoalCreateManyAccountInputEnvelope = {
+  data: Prisma.GoalCreateManyAccountInput | Prisma.GoalCreateManyAccountInput[]
   skipDuplicates?: boolean
 }
 
-export type GoalUpsertWithWhereUniqueWithoutUserInput = {
+export type GoalUpsertWithWhereUniqueWithoutAccountInput = {
   where: Prisma.GoalWhereUniqueInput
-  update: Prisma.XOR<Prisma.GoalUpdateWithoutUserInput, Prisma.GoalUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.GoalCreateWithoutUserInput, Prisma.GoalUncheckedCreateWithoutUserInput>
+  update: Prisma.XOR<Prisma.GoalUpdateWithoutAccountInput, Prisma.GoalUncheckedUpdateWithoutAccountInput>
+  create: Prisma.XOR<Prisma.GoalCreateWithoutAccountInput, Prisma.GoalUncheckedCreateWithoutAccountInput>
 }
 
-export type GoalUpdateWithWhereUniqueWithoutUserInput = {
+export type GoalUpdateWithWhereUniqueWithoutAccountInput = {
   where: Prisma.GoalWhereUniqueInput
-  data: Prisma.XOR<Prisma.GoalUpdateWithoutUserInput, Prisma.GoalUncheckedUpdateWithoutUserInput>
+  data: Prisma.XOR<Prisma.GoalUpdateWithoutAccountInput, Prisma.GoalUncheckedUpdateWithoutAccountInput>
 }
 
-export type GoalUpdateManyWithWhereWithoutUserInput = {
+export type GoalUpdateManyWithWhereWithoutAccountInput = {
   where: Prisma.GoalScalarWhereInput
-  data: Prisma.XOR<Prisma.GoalUpdateManyMutationInput, Prisma.GoalUncheckedUpdateManyWithoutUserInput>
+  data: Prisma.XOR<Prisma.GoalUpdateManyMutationInput, Prisma.GoalUncheckedUpdateManyWithoutAccountInput>
 }
 
 export type GoalScalarWhereInput = {
@@ -558,54 +558,54 @@ export type GoalScalarWhereInput = {
   targetAmount?: Prisma.DecimalFilter<"Goal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: Prisma.DecimalFilter<"Goal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Prisma.DateTimeNullableFilter<"Goal"> | Date | string | null
+  slug?: Prisma.StringFilter<"Goal"> | string
+  accountId?: Prisma.StringFilter<"Goal"> | string
   createdAt?: Prisma.DateTimeFilter<"Goal"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Goal"> | Date | string
-  slug?: Prisma.StringFilter<"Goal"> | string
-  userId?: Prisma.StringFilter<"Goal"> | string
 }
 
-export type GoalCreateManyUserInput = {
+export type GoalCreateManyAccountInput = {
   id?: string
   title: string
   targetAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Date | string | null
+  slug: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug: string
 }
 
-export type GoalUpdateWithoutUserInput = {
+export type GoalUpdateWithoutAccountInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   targetAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type GoalUncheckedUpdateWithoutUserInput = {
+export type GoalUncheckedUpdateWithoutAccountInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   targetAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type GoalUncheckedUpdateManyWithoutUserInput = {
+export type GoalUncheckedUpdateManyWithoutAccountInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   targetAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currentAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -616,11 +616,11 @@ export type GoalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   targetAmount?: boolean
   currentAmount?: boolean
   deadline?: boolean
+  slug?: boolean
+  accountId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  slug?: boolean
-  userId?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["goal"]>
 
 export type GoalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -629,11 +629,11 @@ export type GoalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   targetAmount?: boolean
   currentAmount?: boolean
   deadline?: boolean
+  slug?: boolean
+  accountId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  slug?: boolean
-  userId?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["goal"]>
 
 export type GoalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -642,11 +642,11 @@ export type GoalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   targetAmount?: boolean
   currentAmount?: boolean
   deadline?: boolean
+  slug?: boolean
+  accountId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  slug?: boolean
-  userId?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["goal"]>
 
 export type GoalSelectScalar = {
@@ -655,27 +655,27 @@ export type GoalSelectScalar = {
   targetAmount?: boolean
   currentAmount?: boolean
   deadline?: boolean
+  slug?: boolean
+  accountId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  slug?: boolean
-  userId?: boolean
 }
 
-export type GoalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "targetAmount" | "currentAmount" | "deadline" | "createdAt" | "updatedAt" | "slug" | "userId", ExtArgs["result"]["goal"]>
+export type GoalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "targetAmount" | "currentAmount" | "deadline" | "slug" | "accountId" | "createdAt" | "updatedAt", ExtArgs["result"]["goal"]>
 export type GoalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
 }
 export type GoalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
 }
 export type GoalIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
 }
 
 export type $GoalPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Goal"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
+    account: Prisma.$AccountPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -683,10 +683,10 @@ export type $GoalPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     targetAmount: runtime.Decimal
     currentAmount: runtime.Decimal
     deadline: Date | null
+    slug: string
+    accountId: string
     createdAt: Date
     updatedAt: Date
-    slug: string
-    userId: string
   }, ExtArgs["result"]["goal"]>
   composites: {}
 }
@@ -1081,7 +1081,7 @@ readonly fields: GoalFieldRefs;
  */
 export interface Prisma__GoalClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  account<T extends Prisma.AccountDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AccountDefaultArgs<ExtArgs>>): Prisma.Prisma__AccountClient<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1116,10 +1116,10 @@ export interface GoalFieldRefs {
   readonly targetAmount: Prisma.FieldRef<"Goal", 'Decimal'>
   readonly currentAmount: Prisma.FieldRef<"Goal", 'Decimal'>
   readonly deadline: Prisma.FieldRef<"Goal", 'DateTime'>
+  readonly slug: Prisma.FieldRef<"Goal", 'String'>
+  readonly accountId: Prisma.FieldRef<"Goal", 'String'>
   readonly createdAt: Prisma.FieldRef<"Goal", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Goal", 'DateTime'>
-  readonly slug: Prisma.FieldRef<"Goal", 'String'>
-  readonly userId: Prisma.FieldRef<"Goal", 'String'>
 }
     
 

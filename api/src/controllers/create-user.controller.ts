@@ -23,8 +23,9 @@ export class CreateUserController {
     @UsePipes(new ZodValidationPipe(createUserSchema))
     async createUser(@Body() body: CreateUserSchema) {
         const { name, email, password } = body
+        const prisma = this.prisma as any
 
-        const hasExistingUserWithEmail = await this.prisma.user.findUnique({
+        const hasExistingUserWithEmail = await prisma.user.findUnique({
             where: {
                 email,
             }
@@ -36,12 +37,28 @@ export class CreateUserController {
 
         const hashedPassword = await hash(password, 8)
 
-        await this.prisma.user.create({
-            data: {
-                name,
-                email,
-                password: hashedPassword,
-            }
+        await prisma.$transaction(async (tx: any) => {
+            const user = await tx.user.create({
+                data: {
+                    name,
+                    email,
+                    password: hashedPassword,
+                }
+            })
+
+            const account = await tx.account.create({
+                data: {
+                    name: `Conta de ${name}`,
+                }
+            })
+
+            await tx.accountMember.create({
+                data: {
+                    userId: user.id,
+                    accountId: account.id,
+                    role: 'owner',
+                }
+            })
         })
     }
 }

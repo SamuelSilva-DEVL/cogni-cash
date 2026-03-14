@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '@/auth/current-user-decorator';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { type UserPayload } from '@/auth/jwt.strategy';
@@ -32,14 +32,31 @@ export class CreateGoalController {
         const {title, targetAmount, currentAmount, deadline} = body
         const {userId} = user
         const slug = this.convertSlug(title)
+        const prisma = this.prisma as any
+
+        const membership = await prisma.accountMember.findFirst({
+            where: {
+                userId,
+            },
+            orderBy: {
+                createdAt: 'asc',
+            },
+            select: {
+                accountId: true,
+            },
+        })
+
+        if (!membership) {
+            throw new UnauthorizedException('Usuário sem conta vinculada')
+        }
         
-        await this.prisma.goal.create({
+        await prisma.goal.create({
             data: {
                 title,
                 targetAmount,
                 currentAmount,
                 deadline: deadline ? new Date(deadline) : undefined,
-                userId,
+                accountId: membership.accountId,
                 slug: slug
             }
         })

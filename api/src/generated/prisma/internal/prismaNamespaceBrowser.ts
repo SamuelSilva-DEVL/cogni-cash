@@ -52,8 +52,11 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Expense: 'Expense',
-  Income: 'Income',
+  Account: 'Account',
+  AccountMember: 'AccountMember',
+  Category: 'Category',
+  Transaction: 'Transaction',
+  Budget: 'Budget',
   Goal: 'Goal'
 } as const
 
@@ -86,32 +89,68 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const ExpenseScalarFieldEnum = {
+export const AccountScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  plan: 'plan',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
+
+
+export const AccountMemberScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  role: 'role',
+  userId: 'userId',
+  accountId: 'accountId'
+} as const
+
+export type AccountMemberScalarFieldEnum = (typeof AccountMemberScalarFieldEnum)[keyof typeof AccountMemberScalarFieldEnum]
+
+
+export const CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  accountId: 'accountId'
+} as const
+
+export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
+
+
+export const TransactionScalarFieldEnum = {
   id: 'id',
   description: 'description',
   amount: 'amount',
   date: 'date',
-  category: 'category',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  userId: 'userId'
+  type: 'type',
+  source: 'source',
+  accountId: 'accountId',
+  categoryId: 'categoryId',
+  createdBy: 'createdBy'
 } as const
 
-export type ExpenseScalarFieldEnum = (typeof ExpenseScalarFieldEnum)[keyof typeof ExpenseScalarFieldEnum]
+export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
 
 
-export const IncomeScalarFieldEnum = {
+export const BudgetScalarFieldEnum = {
   id: 'id',
-  description: 'description',
-  amount: 'amount',
-  date: 'date',
-  category: 'category',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  userId: 'userId'
+  limit: 'limit',
+  month: 'month',
+  year: 'year',
+  accountId: 'accountId',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt'
 } as const
 
-export type IncomeScalarFieldEnum = (typeof IncomeScalarFieldEnum)[keyof typeof IncomeScalarFieldEnum]
+export type BudgetScalarFieldEnum = (typeof BudgetScalarFieldEnum)[keyof typeof BudgetScalarFieldEnum]
 
 
 export const GoalScalarFieldEnum = {
@@ -120,10 +159,10 @@ export const GoalScalarFieldEnum = {
   targetAmount: 'targetAmount',
   currentAmount: 'currentAmount',
   deadline: 'deadline',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
   slug: 'slug',
-  userId: 'userId'
+  accountId: 'accountId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type GoalScalarFieldEnum = (typeof GoalScalarFieldEnum)[keyof typeof GoalScalarFieldEnum]

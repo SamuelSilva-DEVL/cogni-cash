@@ -43,15 +43,30 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
- * Model Expense
+ * Model Account
  * 
  */
-export type Expense = Prisma.ExpenseModel
+export type Account = Prisma.AccountModel
 /**
- * Model Income
+ * Model AccountMember
  * 
  */
-export type Income = Prisma.IncomeModel
+export type AccountMember = Prisma.AccountMemberModel
+/**
+ * Model Category
+ * 
+ */
+export type Category = Prisma.CategoryModel
+/**
+ * Model Transaction
+ * 
+ */
+export type Transaction = Prisma.TransactionModel
+/**
+ * Model Budget
+ * 
+ */
+export type Budget = Prisma.BudgetModel
 /**
  * Model Goal
  * 

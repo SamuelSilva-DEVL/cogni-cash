@@ -35,6 +35,20 @@ describe("Create Goal (e2e)", () => {
         password: "123456",
       },
     })
+
+    const account = await prisma.account.create({
+      data: {
+        name: "Conta Principal",
+      },
+    })
+
+    await prisma.accountMember.create({
+      data: {
+        userId: user.id,
+        accountId: account.id,
+        role: "owner",
+      },
+    })
     
     const accessToken = jwT.sign({ userId: user.id })
 
@@ -46,8 +60,6 @@ describe("Create Goal (e2e)", () => {
         targetAmount: 1000.0,
         currentAmount: 0.0,
         deadline: "2024-12-31T23:59:59Z",
-        userId: user?.id,
-        slug: "new-goal",
       })
 
     expect(response.statusCode).toBe(201)
@@ -55,6 +67,7 @@ describe("Create Goal (e2e)", () => {
     const createdGoal = await prisma.goal.findFirst({
       where: {
         slug: "new-goal",
+        accountId: account.id,
       },
     })
 

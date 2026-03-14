@@ -198,9 +198,8 @@ export type UserWhereInput = {
   telephone?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  expenses?: Prisma.ExpenseListRelationFilter
-  incomes?: Prisma.IncomeListRelationFilter
-  goals?: Prisma.GoalListRelationFilter
+  memberships?: Prisma.AccountMemberListRelationFilter
+  createdTransactions?: Prisma.TransactionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -211,9 +210,8 @@ export type UserOrderByWithRelationInput = {
   telephone?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  expenses?: Prisma.ExpenseOrderByRelationAggregateInput
-  incomes?: Prisma.IncomeOrderByRelationAggregateInput
-  goals?: Prisma.GoalOrderByRelationAggregateInput
+  memberships?: Prisma.AccountMemberOrderByRelationAggregateInput
+  createdTransactions?: Prisma.TransactionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -227,9 +225,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  expenses?: Prisma.ExpenseListRelationFilter
-  incomes?: Prisma.IncomeListRelationFilter
-  goals?: Prisma.GoalListRelationFilter
+  memberships?: Prisma.AccountMemberListRelationFilter
+  createdTransactions?: Prisma.TransactionListRelationFilter
 }, "id" | "email" | "telephone">
 
 export type UserOrderByWithAggregationInput = {
@@ -266,9 +263,8 @@ export type UserCreateInput = {
   telephone?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
-  incomes?: Prisma.IncomeCreateNestedManyWithoutUserInput
-  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
+  memberships?: Prisma.AccountMemberCreateNestedManyWithoutUserInput
+  createdTransactions?: Prisma.TransactionCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -279,9 +275,8 @@ export type UserUncheckedCreateInput = {
   telephone?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
-  incomes?: Prisma.IncomeUncheckedCreateNestedManyWithoutUserInput
-  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
+  memberships?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTransactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUpdateInput = {
@@ -292,9 +287,8 @@ export type UserUpdateInput = {
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
-  incomes?: Prisma.IncomeUpdateManyWithoutUserNestedInput
-  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.AccountMemberUpdateManyWithoutUserNestedInput
+  createdTransactions?: Prisma.TransactionUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -305,9 +299,8 @@ export type UserUncheckedUpdateInput = {
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
-  incomes?: Prisma.IncomeUncheckedUpdateManyWithoutUserNestedInput
-  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.AccountMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTransactions?: Prisma.TransactionUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -387,49 +380,35 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
-export type UserCreateNestedOneWithoutExpensesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutExpensesInput, Prisma.UserUncheckedCreateWithoutExpensesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExpensesInput
+export type UserCreateNestedOneWithoutMembershipsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMembershipsInput, Prisma.UserUncheckedCreateWithoutMembershipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMembershipsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutExpensesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutExpensesInput, Prisma.UserUncheckedCreateWithoutExpensesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExpensesInput
-  upsert?: Prisma.UserUpsertWithoutExpensesInput
+export type UserUpdateOneRequiredWithoutMembershipsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMembershipsInput, Prisma.UserUncheckedCreateWithoutMembershipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMembershipsInput
+  upsert?: Prisma.UserUpsertWithoutMembershipsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExpensesInput, Prisma.UserUpdateWithoutExpensesInput>, Prisma.UserUncheckedUpdateWithoutExpensesInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMembershipsInput, Prisma.UserUpdateWithoutMembershipsInput>, Prisma.UserUncheckedUpdateWithoutMembershipsInput>
 }
 
-export type UserCreateNestedOneWithoutIncomesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutIncomesInput, Prisma.UserUncheckedCreateWithoutIncomesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutIncomesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutIncomesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutIncomesInput, Prisma.UserUncheckedCreateWithoutIncomesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutIncomesInput
-  upsert?: Prisma.UserUpsertWithoutIncomesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutIncomesInput, Prisma.UserUpdateWithoutIncomesInput>, Prisma.UserUncheckedUpdateWithoutIncomesInput>
-}
-
-export type UserCreateNestedOneWithoutGoalsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutGoalsInput, Prisma.UserUncheckedCreateWithoutGoalsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGoalsInput
+export type UserCreateNestedOneWithoutCreatedTransactionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedTransactionsInput, Prisma.UserUncheckedCreateWithoutCreatedTransactionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedTransactionsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutGoalsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutGoalsInput, Prisma.UserUncheckedCreateWithoutGoalsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGoalsInput
-  upsert?: Prisma.UserUpsertWithoutGoalsInput
+export type UserUpdateOneRequiredWithoutCreatedTransactionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedTransactionsInput, Prisma.UserUncheckedCreateWithoutCreatedTransactionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedTransactionsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedTransactionsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGoalsInput, Prisma.UserUpdateWithoutGoalsInput>, Prisma.UserUncheckedUpdateWithoutGoalsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedTransactionsInput, Prisma.UserUpdateWithoutCreatedTransactionsInput>, Prisma.UserUncheckedUpdateWithoutCreatedTransactionsInput>
 }
 
-export type UserCreateWithoutExpensesInput = {
+export type UserCreateWithoutMembershipsInput = {
   id?: string
   name: string
   email: string
@@ -437,11 +416,10 @@ export type UserCreateWithoutExpensesInput = {
   telephone?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  incomes?: Prisma.IncomeCreateNestedManyWithoutUserInput
-  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
+  createdTransactions?: Prisma.TransactionCreateNestedManyWithoutCreatorInput
 }
 
-export type UserUncheckedCreateWithoutExpensesInput = {
+export type UserUncheckedCreateWithoutMembershipsInput = {
   id?: string
   name: string
   email: string
@@ -449,27 +427,26 @@ export type UserUncheckedCreateWithoutExpensesInput = {
   telephone?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  incomes?: Prisma.IncomeUncheckedCreateNestedManyWithoutUserInput
-  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
+  createdTransactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutCreatorInput
 }
 
-export type UserCreateOrConnectWithoutExpensesInput = {
+export type UserCreateOrConnectWithoutMembershipsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutExpensesInput, Prisma.UserUncheckedCreateWithoutExpensesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMembershipsInput, Prisma.UserUncheckedCreateWithoutMembershipsInput>
 }
 
-export type UserUpsertWithoutExpensesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutExpensesInput, Prisma.UserUncheckedUpdateWithoutExpensesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutExpensesInput, Prisma.UserUncheckedCreateWithoutExpensesInput>
+export type UserUpsertWithoutMembershipsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMembershipsInput, Prisma.UserUncheckedUpdateWithoutMembershipsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMembershipsInput, Prisma.UserUncheckedCreateWithoutMembershipsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutExpensesInput = {
+export type UserUpdateToOneWithWhereWithoutMembershipsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutExpensesInput, Prisma.UserUncheckedUpdateWithoutExpensesInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMembershipsInput, Prisma.UserUncheckedUpdateWithoutMembershipsInput>
 }
 
-export type UserUpdateWithoutExpensesInput = {
+export type UserUpdateWithoutMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -477,11 +454,10 @@ export type UserUpdateWithoutExpensesInput = {
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  incomes?: Prisma.IncomeUpdateManyWithoutUserNestedInput
-  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
+  createdTransactions?: Prisma.TransactionUpdateManyWithoutCreatorNestedInput
 }
 
-export type UserUncheckedUpdateWithoutExpensesInput = {
+export type UserUncheckedUpdateWithoutMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -489,11 +465,10 @@ export type UserUncheckedUpdateWithoutExpensesInput = {
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  incomes?: Prisma.IncomeUncheckedUpdateManyWithoutUserNestedInput
-  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
+  createdTransactions?: Prisma.TransactionUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
-export type UserCreateWithoutIncomesInput = {
+export type UserCreateWithoutCreatedTransactionsInput = {
   id?: string
   name: string
   email: string
@@ -501,11 +476,10 @@ export type UserCreateWithoutIncomesInput = {
   telephone?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
-  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
+  memberships?: Prisma.AccountMemberCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutIncomesInput = {
+export type UserUncheckedCreateWithoutCreatedTransactionsInput = {
   id?: string
   name: string
   email: string
@@ -513,27 +487,26 @@ export type UserUncheckedCreateWithoutIncomesInput = {
   telephone?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
-  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
+  memberships?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutIncomesInput = {
+export type UserCreateOrConnectWithoutCreatedTransactionsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutIncomesInput, Prisma.UserUncheckedCreateWithoutIncomesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedTransactionsInput, Prisma.UserUncheckedCreateWithoutCreatedTransactionsInput>
 }
 
-export type UserUpsertWithoutIncomesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutIncomesInput, Prisma.UserUncheckedUpdateWithoutIncomesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutIncomesInput, Prisma.UserUncheckedCreateWithoutIncomesInput>
+export type UserUpsertWithoutCreatedTransactionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedTransactionsInput, Prisma.UserUncheckedUpdateWithoutCreatedTransactionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedTransactionsInput, Prisma.UserUncheckedCreateWithoutCreatedTransactionsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutIncomesInput = {
+export type UserUpdateToOneWithWhereWithoutCreatedTransactionsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutIncomesInput, Prisma.UserUncheckedUpdateWithoutIncomesInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedTransactionsInput, Prisma.UserUncheckedUpdateWithoutCreatedTransactionsInput>
 }
 
-export type UserUpdateWithoutIncomesInput = {
+export type UserUpdateWithoutCreatedTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -541,11 +514,10 @@ export type UserUpdateWithoutIncomesInput = {
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
-  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.AccountMemberUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutIncomesInput = {
+export type UserUncheckedUpdateWithoutCreatedTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -553,72 +525,7 @@ export type UserUncheckedUpdateWithoutIncomesInput = {
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
-  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
-}
-
-export type UserCreateWithoutGoalsInput = {
-  id?: string
-  name: string
-  email: string
-  password: string
-  telephone?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  expenses?: Prisma.ExpenseCreateNestedManyWithoutUserInput
-  incomes?: Prisma.IncomeCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutGoalsInput = {
-  id?: string
-  name: string
-  email: string
-  password: string
-  telephone?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutUserInput
-  incomes?: Prisma.IncomeUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutGoalsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutGoalsInput, Prisma.UserUncheckedCreateWithoutGoalsInput>
-}
-
-export type UserUpsertWithoutGoalsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutGoalsInput, Prisma.UserUncheckedUpdateWithoutGoalsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutGoalsInput, Prisma.UserUncheckedCreateWithoutGoalsInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutGoalsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutGoalsInput, Prisma.UserUncheckedUpdateWithoutGoalsInput>
-}
-
-export type UserUpdateWithoutGoalsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  expenses?: Prisma.ExpenseUpdateManyWithoutUserNestedInput
-  incomes?: Prisma.IncomeUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutGoalsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutUserNestedInput
-  incomes?: Prisma.IncomeUncheckedUpdateManyWithoutUserNestedInput
+  memberships?: Prisma.AccountMemberUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -627,15 +534,13 @@ export type UserUncheckedUpdateWithoutGoalsInput = {
  */
 
 export type UserCountOutputType = {
-  expenses: number
-  incomes: number
-  goals: number
+  memberships: number
+  createdTransactions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  expenses?: boolean | UserCountOutputTypeCountExpensesArgs
-  incomes?: boolean | UserCountOutputTypeCountIncomesArgs
-  goals?: boolean | UserCountOutputTypeCountGoalsArgs
+  memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
+  createdTransactions?: boolean | UserCountOutputTypeCountCreatedTransactionsArgs
 }
 
 /**
@@ -651,22 +556,15 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountExpensesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ExpenseWhereInput
+export type UserCountOutputTypeCountMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AccountMemberWhereInput
 }
 
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountIncomesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.IncomeWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountGoalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.GoalWhereInput
+export type UserCountOutputTypeCountCreatedTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TransactionWhereInput
 }
 
 
@@ -678,9 +576,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   telephone?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  expenses?: boolean | Prisma.User$expensesArgs<ExtArgs>
-  incomes?: boolean | Prisma.User$incomesArgs<ExtArgs>
-  goals?: boolean | Prisma.User$goalsArgs<ExtArgs>
+  memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
+  createdTransactions?: boolean | Prisma.User$createdTransactionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -716,9 +613,8 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "telephone" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  expenses?: boolean | Prisma.User$expensesArgs<ExtArgs>
-  incomes?: boolean | Prisma.User$incomesArgs<ExtArgs>
-  goals?: boolean | Prisma.User$goalsArgs<ExtArgs>
+  memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
+  createdTransactions?: boolean | Prisma.User$createdTransactionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -727,9 +623,8 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    expenses: Prisma.$ExpensePayload<ExtArgs>[]
-    incomes: Prisma.$IncomePayload<ExtArgs>[]
-    goals: Prisma.$GoalPayload<ExtArgs>[]
+    memberships: Prisma.$AccountMemberPayload<ExtArgs>[]
+    createdTransactions: Prisma.$TransactionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1133,9 +1028,8 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  expenses<T extends Prisma.User$expensesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  incomes<T extends Prisma.User$incomesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$incomesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IncomePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  goals<T extends Prisma.User$goalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$goalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GoalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  memberships<T extends Prisma.User$membershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdTransactions<T extends Prisma.User$createdTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1560,75 +1454,51 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.expenses
+ * User.memberships
  */
-export type User$expensesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$membershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Expense
+   * Select specific fields to fetch from the AccountMember
    */
-  select?: Prisma.ExpenseSelect<ExtArgs> | null
+  select?: Prisma.AccountMemberSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Expense
+   * Omit specific fields from the AccountMember
    */
-  omit?: Prisma.ExpenseOmit<ExtArgs> | null
+  omit?: Prisma.AccountMemberOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.ExpenseInclude<ExtArgs> | null
-  where?: Prisma.ExpenseWhereInput
-  orderBy?: Prisma.ExpenseOrderByWithRelationInput | Prisma.ExpenseOrderByWithRelationInput[]
-  cursor?: Prisma.ExpenseWhereUniqueInput
+  include?: Prisma.AccountMemberInclude<ExtArgs> | null
+  where?: Prisma.AccountMemberWhereInput
+  orderBy?: Prisma.AccountMemberOrderByWithRelationInput | Prisma.AccountMemberOrderByWithRelationInput[]
+  cursor?: Prisma.AccountMemberWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.ExpenseScalarFieldEnum | Prisma.ExpenseScalarFieldEnum[]
+  distinct?: Prisma.AccountMemberScalarFieldEnum | Prisma.AccountMemberScalarFieldEnum[]
 }
 
 /**
- * User.incomes
+ * User.createdTransactions
  */
-export type User$incomesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$createdTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Income
+   * Select specific fields to fetch from the Transaction
    */
-  select?: Prisma.IncomeSelect<ExtArgs> | null
+  select?: Prisma.TransactionSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Income
+   * Omit specific fields from the Transaction
    */
-  omit?: Prisma.IncomeOmit<ExtArgs> | null
+  omit?: Prisma.TransactionOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.IncomeInclude<ExtArgs> | null
-  where?: Prisma.IncomeWhereInput
-  orderBy?: Prisma.IncomeOrderByWithRelationInput | Prisma.IncomeOrderByWithRelationInput[]
-  cursor?: Prisma.IncomeWhereUniqueInput
+  include?: Prisma.TransactionInclude<ExtArgs> | null
+  where?: Prisma.TransactionWhereInput
+  orderBy?: Prisma.TransactionOrderByWithRelationInput | Prisma.TransactionOrderByWithRelationInput[]
+  cursor?: Prisma.TransactionWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.IncomeScalarFieldEnum | Prisma.IncomeScalarFieldEnum[]
-}
-
-/**
- * User.goals
- */
-export type User$goalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Goal
-   */
-  select?: Prisma.GoalSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Goal
-   */
-  omit?: Prisma.GoalOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.GoalInclude<ExtArgs> | null
-  where?: Prisma.GoalWhereInput
-  orderBy?: Prisma.GoalOrderByWithRelationInput | Prisma.GoalOrderByWithRelationInput[]
-  cursor?: Prisma.GoalWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.GoalScalarFieldEnum | Prisma.GoalScalarFieldEnum[]
+  distinct?: Prisma.TransactionScalarFieldEnum | Prisma.TransactionScalarFieldEnum[]
 }
 
 /**
