@@ -1,40 +1,51 @@
-import React, { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/src/components/ui/dialog'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { useFinance } from '@/src/contexts/FinanceContext'
-import { Goal } from '@/src/types'
+import React, { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/src/components/ui/dialog"
+import { Button } from "@/src/components/ui/button"
+import { Input } from "@/src/components/ui/input"
+import { Label } from "@/src/components/ui/label"
+import { useFinance } from "@/src/contexts/FinanceContext"
+import { Goal } from "@/src/types"
 
 interface GoalFormDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   goal?: Goal
-  mode: 'create' | 'edit'
+  mode: "create" | "edit"
 }
 
 const CATEGORY_OPTIONS = [
-  { value: 'casa', label: 'Casa', icon: '🏠' },
-  { value: 'viagem', label: 'Viagem', icon: '✈️' },
-  { value: 'educacao', label: 'Educação', icon: '🎓' },
-  { value: 'investimento', label: 'Investimento', icon: '💰' },
-  { value: 'outros', label: 'Outros', icon: '🎯' },
+  { value: "casa", label: "Casa", icon: "🏠" },
+  { value: "viagem", label: "Viagem", icon: "✈️" },
+  { value: "educacao", label: "Educação", icon: "🎓" },
+  { value: "investimento", label: "Investimento", icon: "💰" },
+  { value: "outros", label: "Outros", icon: "🎯" },
 ]
 
-export const GoalFormDialog = ({ open, onOpenChange, goal, mode }: GoalFormDialogProps) => {
+export const GoalFormDialog = ({
+  open,
+  onOpenChange,
+  goal,
+  mode,
+}: GoalFormDialogProps) => {
   const { addGoal, updateGoal } = useFinance()
   const [formData, setFormData] = useState({
-    name: goal?.name || '',
-    totalValue: goal?.totalValue || '',
-    currentValue: goal?.currentValue || '',
-    deadlineDate: goal?.deadlineDate || '',
-    category: goal?.category || 'outros',
-    icon: goal?.icon || '🎯',
+    name: goal?.name || "",
+    totalValue: goal?.totalValue || "",
+    currentValue: goal?.currentValue || "",
+    deadlineDate: goal?.deadlineDate || "",
+    category: goal?.category || "outros",
+    icon: goal?.icon || "🎯",
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     const goalData = {
       name: formData.name,
       totalValue: Number(formData.totalValue),
@@ -45,7 +56,7 @@ export const GoalFormDialog = ({ open, onOpenChange, goal, mode }: GoalFormDialo
       active: true,
     }
 
-    if (mode === 'create') {
+    if (mode === "create") {
       addGoal(goalData)
     } else if (goal) {
       updateGoal(goal.id, goalData)
@@ -53,21 +64,21 @@ export const GoalFormDialog = ({ open, onOpenChange, goal, mode }: GoalFormDialo
 
     onOpenChange(false)
     setFormData({
-      name: '',
-      totalValue: '',
-      currentValue: '',
-      deadlineDate: '',
-      category: 'outros',
-      icon: '🎯',
+      name: "",
+      totalValue: "",
+      currentValue: "",
+      deadlineDate: "",
+      category: "outros",
+      icon: "🎯",
     })
   }
 
   const handleCategoryChange = (category: string) => {
-    const selectedCategory = CATEGORY_OPTIONS.find(c => c.value === category)
+    const selectedCategory = CATEGORY_OPTIONS.find((c) => c.value === category)
     setFormData({
       ...formData,
       category,
-      icon: selectedCategory?.icon || '🎯',
+      icon: selectedCategory?.icon || "🎯",
     })
   }
 
@@ -76,7 +87,7 @@ export const GoalFormDialog = ({ open, onOpenChange, goal, mode }: GoalFormDialo
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            {mode === 'create' ? 'Criar Nova Meta' : 'Editar Meta'}
+            {mode === "create" ? "Criar Nova Meta" : "Editar Meta"}
           </DialogTitle>
         </DialogHeader>
 
@@ -86,7 +97,9 @@ export const GoalFormDialog = ({ open, onOpenChange, goal, mode }: GoalFormDialo
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               placeholder="Ex: Viagem para Europa"
               required
             />
@@ -100,7 +113,9 @@ export const GoalFormDialog = ({ open, onOpenChange, goal, mode }: GoalFormDialo
                 type="number"
                 step="0.01"
                 value={formData.totalValue}
-                onChange={(e) => setFormData({ ...formData, totalValue: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, totalValue: e.target.value })
+                }
                 placeholder="15000.00"
                 required
               />
@@ -113,7 +128,9 @@ export const GoalFormDialog = ({ open, onOpenChange, goal, mode }: GoalFormDialo
                 type="number"
                 step="0.01"
                 value={formData.currentValue}
-                onChange={(e) => setFormData({ ...formData, currentValue: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, currentValue: e.target.value })
+                }
                 placeholder="5000.00"
                 required
               />
@@ -126,7 +143,9 @@ export const GoalFormDialog = ({ open, onOpenChange, goal, mode }: GoalFormDialo
               id="deadlineDate"
               type="date"
               value={formData.deadlineDate}
-              onChange={(e) => setFormData({ ...formData, deadlineDate: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, deadlineDate: e.target.value })
+              }
               required
             />
           </div>
@@ -141,8 +160,8 @@ export const GoalFormDialog = ({ open, onOpenChange, goal, mode }: GoalFormDialo
                   onClick={() => handleCategoryChange(cat.value)}
                   className={`p-3 rounded-lg border-2 transition-all hover:border-primary ${
                     formData.category === cat.value
-                      ? 'border-primary bg-primary/5'
-                      : 'border-slate-200'
+                      ? "border-primary bg-primary/5"
+                      : "border-slate-200"
                   }`}
                 >
                   <div className="text-2xl mb-1">{cat.icon}</div>
@@ -153,11 +172,15 @@ export const GoalFormDialog = ({ open, onOpenChange, goal, mode }: GoalFormDialo
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancelar
             </Button>
             <Button type="submit">
-              {mode === 'create' ? 'Criar Meta' : 'Salvar Alterações'}
+              {mode === "create" ? "Criar Meta" : "Salvar Alterações"}
             </Button>
           </DialogFooter>
         </form>

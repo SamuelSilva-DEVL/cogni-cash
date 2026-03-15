@@ -1,8 +1,8 @@
-import React from 'react'
-import Link from 'next/link'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Target, TrendingUp, PieChart, Sparkles } from 'lucide-react'
+import React from "react"
+import Link from "next/link"
+import { Button } from "@/src/components/ui/button"
+import { Card, CardContent } from "@/src/components/ui/card"
+import { Target, TrendingUp, PieChart, Sparkles } from "lucide-react"
 
 export const WelcomeBanner = () => {
   return (
@@ -10,7 +10,7 @@ export const WelcomeBanner = () => {
       {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-      
+
       <div className="relative z-10">
         <div className="flex items-center gap-3 mb-4">
           <Sparkles className="h-8 w-8" />
@@ -18,10 +18,10 @@ export const WelcomeBanner = () => {
             Bem-vindo ao Cogni Cash!
           </h2>
         </div>
-        
+
         <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl">
-          Sua jornada rumo à saúde financeira começa aqui. 
-          Organize suas finanças, alcance suas metas e construa o futuro que você deseja.
+          Sua jornada rumo à saúde financeira começa aqui. Organize suas
+          finanças, alcance suas metas e construa o futuro que você deseja.
         </p>
 
         <div className="grid gap-4 md:grid-cols-3 mb-8">
@@ -50,12 +50,19 @@ export const WelcomeBanner = () => {
 
         <div className="flex flex-wrap gap-4">
           <Link href="/goals">
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90">
+            <Button
+              size="lg"
+              className="bg-white text-primary hover:bg-white/90"
+            >
               Começar Agora
             </Button>
           </Link>
           <Link href="/dashboard">
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white text-white hover:bg-white/10"
+            >
               Explorar Dashboard
             </Button>
           </Link>

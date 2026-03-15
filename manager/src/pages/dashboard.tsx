@@ -1,10 +1,10 @@
-import React from 'react'
-import { Layout } from '@/src/components/Layout'
-import { FinancialHealthCard } from '@/src/components/dashboard/FinancialHealthCard'
-import { SummaryCards } from '@/src/components/dashboard/SummaryCards'
-import { GoalsGrid } from '@/src/components/dashboard/GoalsGrid'
-import { GoalsProgressChart } from '@/src/components/dashboard/GoalsProgressChart'
-import { ExpenseCategoriesTable } from '@/src/components/dashboard/ExpenseCategoriesTable'
+import React from "react"
+import { Layout } from "@/src/components/Layout"
+import { FinancialHealthCard } from "@/src/components/dashboard/FinancialHealthCard"
+import { SummaryCards } from "@/src/components/dashboard/SummaryCards"
+import { GoalsGrid } from "@/src/components/dashboard/GoalsGrid"
+import { GoalsProgressChart } from "@/src/components/dashboard/GoalsProgressChart"
+import { ExpenseCategoriesTable } from "@/src/components/dashboard/ExpenseCategoriesTable"
 
 export default function DashboardPage() {
   return (

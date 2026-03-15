@@ -1,42 +1,51 @@
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Wallet, Mail, Lock, Eye, EyeOff, User, CheckCircle, AlertCircle } from 'lucide-react'
+import React, { useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { Button } from "@/src/components/ui/button"
+import { Input } from "@/src/components/ui/input"
+import { Label } from "@/src/components/ui/label"
+import {
+  Wallet,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  User,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react"
 
 export default function RegisterPage() {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
     acceptTerms: false,
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    setError("")
 
     // Validações
     if (formData.password !== formData.confirmPassword) {
-      setError('As senhas não coincidem')
+      setError("As senhas não coincidem")
       return
     }
 
     if (formData.password.length < 6) {
-      setError('A senha deve ter no mínimo 6 caracteres')
+      setError("A senha deve ter no mínimo 6 caracteres")
       return
     }
 
     if (!formData.acceptTerms) {
-      setError('Você precisa aceitar os termos de uso')
+      setError("Você precisa aceitar os termos de uso")
       return
     }
 
@@ -45,13 +54,13 @@ export default function RegisterPage() {
     // Simulação de registro (remover em produção)
     setTimeout(() => {
       // Registro bem-sucedido
-      router.push('/dashboard')
+      router.push("/dashboard")
     }, 1500)
   }
 
   const passwordStrength = (password: string) => {
-    if (!password) return { strength: 0, label: '', color: '' }
-    
+    if (!password) return { strength: 0, label: "", color: "" }
+
     let strength = 0
     if (password.length >= 6) strength++
     if (password.length >= 10) strength++
@@ -60,11 +69,11 @@ export default function RegisterPage() {
     if (/[^a-zA-Z0-9]/.test(password)) strength++
 
     const levels = [
-      { strength: 1, label: 'Muito fraca', color: 'bg-red-500' },
-      { strength: 2, label: 'Fraca', color: 'bg-orange-500' },
-      { strength: 3, label: 'Média', color: 'bg-yellow-500' },
-      { strength: 4, label: 'Forte', color: 'bg-blue-500' },
-      { strength: 5, label: 'Muito forte', color: 'bg-emerald-500' },
+      { strength: 1, label: "Muito fraca", color: "bg-red-500" },
+      { strength: 2, label: "Fraca", color: "bg-orange-500" },
+      { strength: 3, label: "Média", color: "bg-yellow-500" },
+      { strength: 4, label: "Forte", color: "bg-blue-500" },
+      { strength: 5, label: "Muito forte", color: "bg-emerald-500" },
     ]
 
     return levels[strength - 1] || levels[0]
@@ -83,7 +92,10 @@ export default function RegisterPage() {
       <div className="w-full max-w-md relative z-10">
         {/* Logo & Brand */}
         <div className="text-center mb-8 animate-fade-in">
-          <Link href="/" className="inline-flex items-center justify-center space-x-3 group mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center space-x-3 group mb-4"
+          >
             <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-2xl group-hover:shadow-emerald-500/50 transition-all group-hover:scale-105">
               <Wallet className="h-8 w-8 text-white" />
             </div>
@@ -99,7 +111,9 @@ export default function RegisterPage() {
         {/* Register Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 animate-scale-in">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Criar conta</h2>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">
+              Criar conta
+            </h2>
             <p className="text-slate-600 text-sm">
               Preencha os dados para começar gratuitamente
             </p>
@@ -110,7 +124,9 @@ export default function RegisterPage() {
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 animate-fade-in">
               <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-red-900">Erro no cadastro</p>
+                <p className="text-sm font-medium text-red-900">
+                  Erro no cadastro
+                </p>
                 <p className="text-sm text-red-700 mt-1">{error}</p>
               </div>
             </div>
@@ -119,7 +135,10 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name Field */}
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm font-medium text-slate-700">
+              <Label
+                htmlFor="name"
+                className="text-sm font-medium text-slate-700"
+              >
                 Nome completo
               </Label>
               <div className="relative">
@@ -129,7 +148,9 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="João Silva"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   className="pl-10 h-12 border-slate-300 focus:border-primary focus:ring-primary"
                   required
                 />
@@ -138,7 +159,10 @@ export default function RegisterPage() {
 
             {/* Email Field */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-slate-700">
+              <Label
+                htmlFor="email"
+                className="text-sm font-medium text-slate-700"
+              >
                 E-mail
               </Label>
               <div className="relative">
@@ -148,7 +172,9 @@ export default function RegisterPage() {
                   type="email"
                   placeholder="seu@email.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="pl-10 h-12 border-slate-300 focus:border-primary focus:ring-primary"
                   required
                 />
@@ -157,17 +183,22 @@ export default function RegisterPage() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-slate-700">
+              <Label
+                htmlFor="password"
+                className="text-sm font-medium text-slate-700"
+              >
                 Senha
               </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   id="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   className="pl-10 pr-10 h-12 border-slate-300 focus:border-primary focus:ring-primary"
                   required
                 />
@@ -183,7 +214,7 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
-              
+
               {/* Password Strength Indicator */}
               {formData.password && (
                 <div className="space-y-2">
@@ -192,13 +223,16 @@ export default function RegisterPage() {
                       <div
                         key={level}
                         className={`h-1 flex-1 rounded-full transition-colors ${
-                          level <= strength.strength ? strength.color : 'bg-slate-200'
+                          level <= strength.strength
+                            ? strength.color
+                            : "bg-slate-200"
                         }`}
                       />
                     ))}
                   </div>
                   <p className="text-xs text-slate-600">
-                    Força da senha: <span className="font-medium">{strength.label}</span>
+                    Força da senha:{" "}
+                    <span className="font-medium">{strength.label}</span>
                   </p>
                 </div>
               )}
@@ -206,17 +240,25 @@ export default function RegisterPage() {
 
             {/* Confirm Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-700">
+              <Label
+                htmlFor="confirmPassword"
+                className="text-sm font-medium text-slate-700"
+              >
                 Confirmar senha
               </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   id="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                   className="pl-10 pr-10 h-12 border-slate-300 focus:border-primary focus:ring-primary"
                   required
                 />
@@ -240,16 +282,24 @@ export default function RegisterPage() {
                 <input
                   type="checkbox"
                   checked={formData.acceptTerms}
-                  onChange={(e) => setFormData({ ...formData, acceptTerms: e.target.checked })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, acceptTerms: e.target.checked })
+                  }
                   className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary focus:ring-offset-0 mt-0.5"
                 />
                 <span className="text-sm text-slate-600 leading-relaxed">
-                  Aceito os{' '}
-                  <Link href="/terms" className="text-primary hover:underline font-medium">
+                  Aceito os{" "}
+                  <Link
+                    href="/terms"
+                    className="text-primary hover:underline font-medium"
+                  >
                     Termos de Uso
-                  </Link>{' '}
-                  e{' '}
-                  <Link href="/privacy" className="text-primary hover:underline font-medium">
+                  </Link>{" "}
+                  e{" "}
+                  <Link
+                    href="/privacy"
+                    className="text-primary hover:underline font-medium"
+                  >
                     Política de Privacidade
                   </Link>
                 </span>
@@ -268,7 +318,7 @@ export default function RegisterPage() {
                   <span>Criando conta...</span>
                 </div>
               ) : (
-                'Criar conta gratuita'
+                "Criar conta gratuita"
               )}
             </Button>
           </form>
@@ -278,9 +328,12 @@ export default function RegisterPage() {
             <div className="flex items-start gap-3">
               <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-blue-900 mb-1">Modo Demonstração</p>
+                <p className="text-sm font-medium text-blue-900 mb-1">
+                  Modo Demonstração
+                </p>
                 <p className="text-xs text-blue-700">
-                  Preencha os campos para criar uma conta demo e explorar todas as funcionalidades
+                  Preencha os campos para criar uma conta demo e explorar todas
+                  as funcionalidades
                 </p>
               </div>
             </div>
@@ -292,7 +345,9 @@ export default function RegisterPage() {
               <div className="w-full border-t border-slate-200"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-slate-500">Ou cadastre-se com</span>
+              <span className="bg-white px-2 text-slate-500">
+                Ou cadastre-se com
+              </span>
             </div>
           </div>
 
@@ -338,7 +393,7 @@ export default function RegisterPage() {
         {/* Sign In Link */}
         <div className="text-center mt-6 animate-fade-in animate-delay-200">
           <p className="text-sm text-slate-600">
-            Já tem uma conta?{' '}
+            Já tem uma conta?{" "}
             <Link
               href="/login"
               className="text-primary hover:text-primary/80 font-semibold transition-colors"

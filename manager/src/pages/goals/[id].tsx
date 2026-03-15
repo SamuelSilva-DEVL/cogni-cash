@@ -1,15 +1,35 @@
-import React from 'react'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { Layout } from '@/src/components/Layout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Progress } from '@/src/components/ui/progress'
-import { Button } from '@/src/components/ui/button'
-import { useFinance } from '@/src/contexts/FinanceContext'
-import { formatCurrency, calculatePercentage, getDaysRemaining, formatDate } from '@/src/lib/utils'
-import { ArrowLeft, Calendar, Clock, TrendingUp, AlertCircle, Target } from 'lucide-react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { cn } from '@/src/lib/utils'
+import React from "react"
+import { useRouter } from "next/router"
+import Link from "next/link"
+import { Layout } from "@/src/components/Layout"
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
+import { Progress } from "@/src/components/ui/progress"
+import { Button } from "@/src/components/ui/button"
+import { useFinance } from "@/src/contexts/FinanceContext"
+import {
+  formatCurrency,
+  calculatePercentage,
+  getDaysRemaining,
+  formatDate,
+} from "@/src/lib/utils"
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  TrendingUp,
+  AlertCircle,
+  Target,
+} from "lucide-react"
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts"
+import { cn } from "@/src/lib/utils"
 
 export default function GoalDetailPage() {
   const router = useRouter()
@@ -39,11 +59,11 @@ export default function GoalDetailPage() {
 
   // Simulating progress history
   const progressHistory = [
-    { month: 'Jan', value: goal.currentValue * 0.2 },
-    { month: 'Fev', value: goal.currentValue * 0.4 },
-    { month: 'Mar', value: goal.currentValue * 0.6 },
-    { month: 'Abr', value: goal.currentValue * 0.8 },
-    { month: 'Mai', value: goal.currentValue },
+    { month: "Jan", value: goal.currentValue * 0.2 },
+    { month: "Fev", value: goal.currentValue * 0.4 },
+    { month: "Mar", value: goal.currentValue * 0.6 },
+    { month: "Abr", value: goal.currentValue * 0.8 },
+    { month: "Mai", value: goal.currentValue },
   ]
 
   return (
@@ -71,10 +91,10 @@ export default function GoalDetailPage() {
         {(isAtRisk || isCompleted) && (
           <div
             className={cn(
-              'p-4 rounded-lg border-2 flex items-center gap-3',
+              "p-4 rounded-lg border-2 flex items-center gap-3",
               isCompleted
-                ? 'bg-emerald-50 border-emerald-200'
-                : 'bg-amber-50 border-amber-200'
+                ? "bg-emerald-50 border-emerald-200"
+                : "bg-amber-50 border-amber-200",
             )}
           >
             {isCompleted ? (
@@ -112,7 +132,9 @@ export default function GoalDetailPage() {
                 <Target className="h-5 w-5 text-primary" />
                 <p className="text-sm text-slate-600">Valor Total</p>
               </div>
-              <p className="text-3xl font-bold">{formatCurrency(goal.totalValue)}</p>
+              <p className="text-3xl font-bold">
+                {formatCurrency(goal.totalValue)}
+              </p>
             </CardContent>
           </Card>
 
@@ -148,7 +170,9 @@ export default function GoalDetailPage() {
           <CardContent className="space-y-6">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-5xl font-bold text-primary">{progress}%</span>
+                <span className="text-5xl font-bold text-primary">
+                  {progress}%
+                </span>
                 <div className="text-right">
                   <p className="text-sm text-slate-600">Faltam</p>
                   <p className="text-xl font-semibold text-slate-900">
@@ -190,9 +214,9 @@ export default function GoalDetailPage() {
                 <YAxis stroke="#64748b" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'white',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '8px',
+                    backgroundColor: "white",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "8px",
                   }}
                   formatter={(value: number) => formatCurrency(value)}
                 />
@@ -201,7 +225,7 @@ export default function GoalDetailPage() {
                   dataKey="value"
                   stroke="#14b8a6"
                   strokeWidth={3}
-                  dot={{ fill: '#14b8a6', r: 6 }}
+                  dot={{ fill: "#14b8a6", r: 6 }}
                 />
               </LineChart>
             </ResponsiveContainer>

@@ -1,33 +1,41 @@
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Wallet, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react'
+import React, { useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { Button } from "@/src/components/ui/button"
+import { Input } from "@/src/components/ui/input"
+import { Label } from "@/src/components/ui/label"
+import {
+  Wallet,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    setError("")
     setIsLoading(true)
 
     // Simulação de login (remover em produção)
     setTimeout(() => {
       if (formData.email && formData.password) {
         // Login bem-sucedido
-        router.push('/dashboard')
+        router.push("/dashboard")
       } else {
-        setError('Por favor, preencha todos os campos')
+        setError("Por favor, preencha todos os campos")
         setIsLoading(false)
       }
     }, 1000)
@@ -44,7 +52,10 @@ export default function LoginPage() {
       <div className="w-full max-w-md relative z-10">
         {/* Logo & Brand */}
         <div className="text-center mb-8 animate-fade-in">
-          <Link href="/" className="inline-flex items-center justify-center space-x-3 group mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center space-x-3 group mb-4"
+          >
             <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-2xl group-hover:shadow-emerald-500/50 transition-all group-hover:scale-105">
               <Wallet className="h-8 w-8 text-white" />
             </div>
@@ -60,7 +71,9 @@ export default function LoginPage() {
         {/* Login Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 animate-scale-in">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Bem-vindo de volta</h2>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">
+              Bem-vindo de volta
+            </h2>
             <p className="text-slate-600 text-sm">
               Entre com suas credenciais para continuar
             </p>
@@ -71,7 +84,9 @@ export default function LoginPage() {
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 animate-fade-in">
               <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-red-900">Erro ao fazer login</p>
+                <p className="text-sm font-medium text-red-900">
+                  Erro ao fazer login
+                </p>
                 <p className="text-sm text-red-700 mt-1">{error}</p>
               </div>
             </div>
@@ -80,7 +95,10 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Field */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-slate-700">
+              <Label
+                htmlFor="email"
+                className="text-sm font-medium text-slate-700"
+              >
                 E-mail
               </Label>
               <div className="relative">
@@ -90,7 +108,9 @@ export default function LoginPage() {
                   type="email"
                   placeholder="seu@email.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="pl-10 h-12 border-slate-300 focus:border-primary focus:ring-primary"
                   required
                 />
@@ -99,17 +119,22 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-slate-700">
+              <Label
+                htmlFor="password"
+                className="text-sm font-medium text-slate-700"
+              >
                 Senha
               </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   id="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   className="pl-10 pr-10 h-12 border-slate-300 focus:border-primary focus:ring-primary"
                   required
                 />
@@ -156,7 +181,7 @@ export default function LoginPage() {
                   <span>Entrando...</span>
                 </div>
               ) : (
-                'Entrar'
+                "Entrar"
               )}
             </Button>
           </form>
@@ -166,9 +191,12 @@ export default function LoginPage() {
             <div className="flex items-start gap-3">
               <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-blue-900 mb-1">Acesso Demo</p>
+                <p className="text-sm font-medium text-blue-900 mb-1">
+                  Acesso Demo
+                </p>
                 <p className="text-xs text-blue-700">
-                  Use qualquer e-mail e senha para acessar o sistema em modo demonstração
+                  Use qualquer e-mail e senha para acessar o sistema em modo
+                  demonstração
                 </p>
               </div>
             </div>
@@ -180,7 +208,9 @@ export default function LoginPage() {
               <div className="w-full border-t border-slate-200"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-slate-500">Ou continue com</span>
+              <span className="bg-white px-2 text-slate-500">
+                Ou continue com
+              </span>
             </div>
           </div>
 
@@ -226,7 +256,7 @@ export default function LoginPage() {
         {/* Sign Up Link */}
         <div className="text-center mt-6 animate-fade-in animate-delay-200">
           <p className="text-sm text-slate-600">
-            Não tem uma conta?{' '}
+            Não tem uma conta?{" "}
             <Link
               href="/register"
               className="text-primary hover:text-primary/80 font-semibold transition-colors"
@@ -239,11 +269,11 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="text-center mt-8 text-xs text-slate-500 animate-fade-in animate-delay-300">
           <p>
-            Ao continuar, você concorda com nossos{' '}
+            Ao continuar, você concorda com nossos{" "}
             <Link href="/terms" className="underline hover:text-slate-700">
               Termos de Uso
-            </Link>{' '}
-            e{' '}
+            </Link>{" "}
+            e{" "}
             <Link href="/privacy" className="underline hover:text-slate-700">
               Política de Privacidade
             </Link>

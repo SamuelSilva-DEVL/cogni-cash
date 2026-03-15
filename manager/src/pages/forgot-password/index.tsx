@@ -1,19 +1,19 @@
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Wallet, Mail, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react'
+import React, { useState } from "react"
+import Link from "next/link"
+import { Button } from "@/src/components/ui/button"
+import { Input } from "@/src/components/ui/input"
+import { Label } from "@/src/components/ui/label"
+import { Wallet, Mail, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react"
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    setError("")
     setIsLoading(true)
 
     // Simulação de envio de e-mail (remover em produção)
@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
       if (email) {
         setIsSuccess(true)
       } else {
-        setError('Por favor, insira um e-mail válido')
+        setError("Por favor, insira um e-mail válido")
       }
       setIsLoading(false)
     }, 1500)
@@ -38,7 +38,10 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md relative z-10">
         {/* Logo & Brand */}
         <div className="text-center mb-8 animate-fade-in">
-          <Link href="/" className="inline-flex items-center justify-center space-x-3 group mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center space-x-3 group mb-4"
+          >
             <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-2xl group-hover:shadow-emerald-500/50 transition-all group-hover:scale-105">
               <Wallet className="h-8 w-8 text-white" />
             </div>
@@ -56,9 +59,12 @@ export default function ForgotPasswordPage() {
           {!isSuccess ? (
             <>
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Esqueceu sua senha?</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">
+                  Esqueceu sua senha?
+                </h2>
                 <p className="text-slate-600 text-sm">
-                  Digite seu e-mail e enviaremos instruções para redefinir sua senha
+                  Digite seu e-mail e enviaremos instruções para redefinir sua
+                  senha
                 </p>
               </div>
 
@@ -76,7 +82,10 @@ export default function ForgotPasswordPage() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Email Field */}
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-slate-700">
+                  <Label
+                    htmlFor="email"
+                    className="text-sm font-medium text-slate-700"
+                  >
                     E-mail
                   </Label>
                   <div className="relative">
@@ -105,7 +114,7 @@ export default function ForgotPasswordPage() {
                       <span>Enviando...</span>
                     </div>
                   ) : (
-                    'Enviar instruções'
+                    "Enviar instruções"
                   )}
                 </Button>
               </form>
@@ -115,10 +124,12 @@ export default function ForgotPasswordPage() {
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="h-8 w-8 text-emerald-600" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">E-mail enviado!</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">
+                E-mail enviado!
+              </h3>
               <p className="text-slate-600 text-sm mb-6">
-                Enviamos instruções para redefinir sua senha para <strong>{email}</strong>. 
-                Verifique sua caixa de entrada e spam.
+                Enviamos instruções para redefinir sua senha para{" "}
+                <strong>{email}</strong>. Verifique sua caixa de entrada e spam.
               </p>
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-left">
                 <p className="text-sm text-blue-900 mb-2">
@@ -148,7 +159,7 @@ export default function ForgotPasswordPage() {
         {!isSuccess && (
           <div className="text-center mt-6 animate-fade-in animate-delay-200">
             <p className="text-sm text-slate-600">
-              Lembrou sua senha?{' '}
+              Lembrou sua senha?{" "}
               <Link
                 href="/login"
                 className="text-primary hover:text-primary/80 font-semibold transition-colors"

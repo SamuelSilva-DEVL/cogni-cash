@@ -1,14 +1,25 @@
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { Layout } from '@/src/components/Layout'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Progress } from '@/src/components/ui/progress'
-import { GoalFormDialog } from '@/src/components/goals/GoalFormDialog'
-import { useFinance } from '@/src/contexts/FinanceContext'
-import { formatCurrency, calculatePercentage, getDaysRemaining } from '@/src/lib/utils'
-import { Plus, Clock, TrendingUp, AlertCircle, Edit, Trash2 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import React, { useState } from "react"
+import Link from "next/link"
+import { Layout } from "@/src/components/Layout"
+import { Button } from "@/src/components/ui/button"
+import { Card, CardContent } from "@/src/components/ui/card"
+import { Progress } from "@/src/components/ui/progress"
+import { GoalFormDialog } from "@/src/components/goals/GoalFormDialog"
+import { useFinance } from "@/src/contexts/FinanceContext"
+import {
+  formatCurrency,
+  calculatePercentage,
+  getDaysRemaining,
+} from "@/src/lib/utils"
+import {
+  Plus,
+  Clock,
+  TrendingUp,
+  AlertCircle,
+  Edit,
+  Trash2,
+} from "lucide-react"
+import { cn } from "@/src/lib/utils"
 import {
   Dialog,
   DialogContent,
@@ -16,8 +27,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/src/components/ui/dialog'
-import { Goal } from '@/src/types'
+} from "@/src/components/ui/dialog"
+import { Goal } from "@/src/types"
 
 export default function GoalsPage() {
   const { goals, deleteGoal } = useFinance()
@@ -49,9 +60,13 @@ export default function GoalsPage() {
     setEditingGoal(undefined)
   }
 
-  const activeGoals = goals.filter(g => g.active)
-  const completedGoals = activeGoals.filter(g => calculatePercentage(g.currentValue, g.totalValue) >= 100)
-  const inProgressGoals = activeGoals.filter(g => calculatePercentage(g.currentValue, g.totalValue) < 100)
+  const activeGoals = goals.filter((g) => g.active)
+  const completedGoals = activeGoals.filter(
+    (g) => calculatePercentage(g.currentValue, g.totalValue) >= 100,
+  )
+  const inProgressGoals = activeGoals.filter(
+    (g) => calculatePercentage(g.currentValue, g.totalValue) < 100,
+  )
 
   return (
     <Layout>
@@ -74,7 +89,9 @@ export default function GoalsPage() {
             <CardContent className="p-6">
               <div className="text-center">
                 <p className="text-sm text-slate-600 mb-2">Total de Metas</p>
-                <p className="text-4xl font-bold text-primary">{activeGoals.length}</p>
+                <p className="text-4xl font-bold text-primary">
+                  {activeGoals.length}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -82,7 +99,9 @@ export default function GoalsPage() {
             <CardContent className="p-6">
               <div className="text-center">
                 <p className="text-sm text-slate-600 mb-2">Em Progresso</p>
-                <p className="text-4xl font-bold text-blue-600">{inProgressGoals.length}</p>
+                <p className="text-4xl font-bold text-blue-600">
+                  {inProgressGoals.length}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -90,7 +109,9 @@ export default function GoalsPage() {
             <CardContent className="p-6">
               <div className="text-center">
                 <p className="text-sm text-slate-600 mb-2">Concluídas</p>
-                <p className="text-4xl font-bold text-emerald-600">{completedGoals.length}</p>
+                <p className="text-4xl font-bold text-emerald-600">
+                  {completedGoals.length}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -98,7 +119,10 @@ export default function GoalsPage() {
 
         <div className="space-y-4">
           {activeGoals.map((goal, index) => {
-            const progress = calculatePercentage(goal.currentValue, goal.totalValue)
+            const progress = calculatePercentage(
+              goal.currentValue,
+              goal.totalValue,
+            )
             const daysRemaining = getDaysRemaining(goal.deadlineDate)
             const isAtRisk = daysRemaining < 60 && progress < 70
             const isCompleted = progress >= 100
@@ -107,9 +131,9 @@ export default function GoalsPage() {
               <Card
                 key={goal.id}
                 className={cn(
-                  'animate-fade-in border-2 transition-all hover:shadow-lg',
-                  isAtRisk && 'border-amber-200 bg-amber-50/20',
-                  isCompleted && 'border-emerald-200 bg-emerald-50/20'
+                  "animate-fade-in border-2 transition-all hover:shadow-lg",
+                  isAtRisk && "border-amber-200 bg-amber-50/20",
+                  isCompleted && "border-emerald-200 bg-emerald-50/20",
                 )}
                 style={{ animationDelay: `${index * 50}ms` }}
               >
@@ -125,7 +149,8 @@ export default function GoalsPage() {
                             {goal.name}
                           </h3>
                           <p className="text-sm text-slate-600">
-                            {formatCurrency(goal.currentValue)} de {formatCurrency(goal.totalValue)}
+                            {formatCurrency(goal.currentValue)} de{" "}
+                            {formatCurrency(goal.totalValue)}
                           </p>
                         </div>
                       </div>
@@ -154,10 +179,14 @@ export default function GoalsPage() {
                   <div className="space-y-3">
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-3xl font-bold text-primary">{progress}%</span>
+                        <span className="text-3xl font-bold text-primary">
+                          {progress}%
+                        </span>
                         <span className="text-sm text-slate-600 flex items-center gap-1">
                           <Clock className="h-4 w-4" />
-                          {daysRemaining > 0 ? `${daysRemaining} dias restantes` : 'Prazo vencido'}
+                          {daysRemaining > 0
+                            ? `${daysRemaining} dias restantes`
+                            : "Prazo vencido"}
                         </span>
                       </div>
                       <Progress value={progress} className="h-3" />
@@ -177,7 +206,9 @@ export default function GoalsPage() {
                         </div>
                       )}
                       <p className="text-xs text-slate-500">
-                        Faltam {formatCurrency(goal.totalValue - goal.currentValue)} para concluir
+                        Faltam{" "}
+                        {formatCurrency(goal.totalValue - goal.currentValue)}{" "}
+                        para concluir
                       </p>
                     </div>
                   </div>
@@ -190,7 +221,9 @@ export default function GoalsPage() {
             <Card className="border-2 border-dashed">
               <CardContent className="p-12 text-center">
                 <div className="text-6xl mb-4">🎯</div>
-                <h3 className="text-xl font-semibold mb-2">Nenhuma meta cadastrada</h3>
+                <h3 className="text-xl font-semibold mb-2">
+                  Nenhuma meta cadastrada
+                </h3>
                 <p className="text-slate-600 mb-4">
                   Comece criando sua primeira meta financeira!
                 </p>
@@ -208,7 +241,7 @@ export default function GoalsPage() {
         open={isFormOpen}
         onOpenChange={handleCloseForm}
         goal={editingGoal}
-        mode={editingGoal ? 'edit' : 'create'}
+        mode={editingGoal ? "edit" : "create"}
       />
 
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -216,11 +249,15 @@ export default function GoalsPage() {
           <DialogHeader>
             <DialogTitle>Confirmar Exclusão</DialogTitle>
             <DialogDescription>
-              Tem certeza que deseja excluir esta meta? Esta ação não pode ser desfeita.
+              Tem certeza que deseja excluir esta meta? Esta ação não pode ser
+              desfeita.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+            >
               Cancelar
             </Button>
             <Button variant="destructive" onClick={confirmDelete}>
