@@ -9,6 +9,8 @@ import { CreateGoalController } from "./controllers/goals/create-goal.controller
 import { FetchListGoalsController } from "./controllers/goals/fetch-list-goals.controller"
 import { CreateTransactionController } from "./controllers/transaction/create-transaction.controller"
 import { FetchTransactionsByTypeController } from "./controllers/transaction/fetch-transactions-by-type.controller"
+import { CreateCategoryController } from "./controllers/categories/create-category.controller"
+import { ListCategoriesController } from "./controllers/categories/list-categories.controller"
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { FetchTransactionsByTypeController } from "./controllers/transaction/fet
     FetchListGoalsController,
     CreateTransactionController,
     FetchTransactionsByTypeController,
+    CreateCategoryController,
+    ListCategoriesController,
   ],
   providers: [PrismaService],
 })

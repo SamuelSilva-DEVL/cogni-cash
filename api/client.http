@@ -75,7 +75,18 @@ Authorization: Bearer {{authToken}}
 
 ###
 
-# @name get_categories
+# @name create_category
+POST {{baseUrl}}/categories
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "name": "Alimentação"
+}
+
+###
+
+# @name list_categories
 GET {{baseUrl}}/categories
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
