@@ -13,32 +13,46 @@ import {
   AlertCircle,
   CheckCircle,
 } from "lucide-react"
+import z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useAuth } from "@/src/contexts/authContext"
+
+const loginSchema = z.object({
+  email: z.email("O email deve ser válido").min(1, "Campo obrigatório"),
+  password: z.string().min(1, "Campo obrigatório"),
+})
+
+type LoginSchema = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
   const router = useRouter()
+  const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setIsLoading(true)
-
-    // Simulação de login (remover em produção)
-    setTimeout(() => {
-      if (formData.email && formData.password) {
-        // Login bem-sucedido
-        router.push("/dashboard")
-      } else {
-        setError("Por favor, preencha todos os campos")
-        setIsLoading(false)
-      }
-    }, 1000)
+  const doLogin = async (data: LoginSchema) => {
+    try {
+      setIsLoading(true)
+      await login(data.email, data.password)
+      router.push("/dashboard")
+    } catch (error) {
+      // toast.error("Email ou senha inválidos", {
+      //   description:
+      //     error.response?.data?.message ?? "Email ou senha inválidos",
+      // })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -79,20 +93,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 animate-fade-in">
-              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm font-medium text-red-900">
-                  Erro ao fazer login
-                </p>
-                <p className="text-sm text-red-700 mt-1">{error}</p>
-              </div>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit(doLogin)} className="space-y-5">
             {/* Email Field */}
             <div className="space-y-2">
               <Label
@@ -107,14 +108,15 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   placeholder="seu@email.com"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
                   className="pl-10 h-12 border-slate-300 focus:border-primary focus:ring-primary"
-                  required
+                  {...register("email")}
                 />
               </div>
+              {errors.email && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             {/* Password Field */}
@@ -131,12 +133,8 @@ export default function LoginPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
                   className="pl-10 pr-10 h-12 border-slate-300 focus:border-primary focus:ring-primary"
-                  required
+                  {...register("password")}
                 />
                 <button
                   type="button"
@@ -150,6 +148,11 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             {/* Remember & Forgot */}
