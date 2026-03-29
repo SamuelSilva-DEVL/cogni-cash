@@ -43,3 +43,39 @@ GET {{baseUrl}}/goals
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
+###
+
+# @name create_transaction
+POST {{baseUrl}}/transactions
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "description": "Salário do mês",
+    "amount": 5000.00,
+    "date": "2026-03-29T10:00:00Z",
+    "type": "INCOME",
+    "categoryName": "Salário",
+    "source": "Trabalho"
+}
+
+###
+
+# @name fetch_expenses
+GET {{baseUrl}}/transactions?type=EXPENSE&page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name fetch_income
+GET {{baseUrl}}/transactions?type=INCOME&page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name get_categories
+GET {{baseUrl}}/categories
+Content-Type: application/json
+Authorization: Bearer {{authToken}}

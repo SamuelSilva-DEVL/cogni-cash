@@ -7,6 +7,8 @@ import { AuthModule } from "./auth/auth.module"
 import { AuthenticateController } from "./controllers/auth/authenticate.controller"
 import { CreateGoalController } from "./controllers/goals/create-goal.controller"
 import { FetchListGoalsController } from "./controllers/goals/fetch-list-goals.controller"
+import { CreateTransactionController } from "./controllers/transaction/create-transaction.controller"
+import { FetchTransactionsByTypeController } from "./controllers/transaction/fetch-transactions-by-type.controller"
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { FetchListGoalsController } from "./controllers/goals/fetch-list-goals.c
     AuthenticateController,
     CreateGoalController,
     FetchListGoalsController,
+    CreateTransactionController,
+    FetchTransactionsByTypeController,
   ],
   providers: [PrismaService],
 })
