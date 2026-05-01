@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react"
+import api from "../api"
 
 interface IAuthContextProps {
   access_token: string | null
@@ -15,8 +16,7 @@ export function AuthContextProvider({
 }) {
   const access_token = null // Substituir pela lógica real de obtenção do token
   const login = async (email: string, password: string) => {
-    // Implementar lógica de login, como chamada à API para autenticação
-    // e armazenamento do token de acesso
+    const response = await api.post("/auth/login", { email, password })
   }
 
   const logout = () => {
