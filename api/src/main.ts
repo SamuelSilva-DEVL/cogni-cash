@@ -7,6 +7,8 @@ import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger"
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
+  app.enableCors()
+
   const configService = app.get<ConfigService<Env, true>>(ConfigService)
   const port = configService.get("PORT", { infer: true })
 

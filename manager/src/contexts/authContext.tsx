@@ -1,5 +1,7 @@
-import { createContext, useContext } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import api from "../api"
+
+const TOKEN_KEY = "COGNI_CASH_TOKEN"
 
 interface IAuthContextProps {
   access_token: string | null
@@ -14,14 +16,28 @@ export function AuthContextProvider({
 }: {
   children: React.ReactNode
 }) {
-  const access_token = null // Substituir pela lógica real de obtenção do token
+  const [access_token, setAccessToken] = useState<string | null>(null)
+
+  useEffect(() => {
+    setAccessToken(localStorage.getItem(TOKEN_KEY))
+  }, [])
+
   const login = async (email: string, password: string) => {
-    const response = await api.post("/auth/login", { email, password })
+    const response = await api.post<{ access_token: string }>("/sessions", {
+      email,
+      password,
+    })
+
+    const token = response.data.access_token
+    localStorage.setItem(TOKEN_KEY, token)
+    setAccessToken(token)
   }
 
   const logout = () => {
-    // Implementar lógica de logout, como remoção do token de acesso
+    localStorage.removeItem(TOKEN_KEY)
+    setAccessToken(null)
   }
+
   return (
     <AuthContext.Provider value={{ access_token, login, logout }}>
       {children}
