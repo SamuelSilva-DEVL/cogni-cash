@@ -5,7 +5,8 @@ import { Layout } from "@/src/components/Layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Progress } from "@/src/components/ui/progress"
 import { Button } from "@/src/components/ui/button"
-import { useFinance } from "@/src/contexts/FinanceContext"
+import { useGoalById } from "@/src/hooks/use-goals"
+import { Skeleton } from "@/src/components/ui/skeleton"
 import {
   formatCurrency,
   calculatePercentage,
@@ -31,20 +32,33 @@ import {
 } from "recharts"
 import { cn } from "@/src/lib/utils"
 
+const CHART_BORDER = "oklch(0.922 0 0)"
+const CHART_MUTED = "oklch(0.554 0.022 256)"
+const CHART_EMERALD = "oklch(0.596 0.145 163)"
+
 export default function GoalDetailPage() {
   const router = useRouter()
   const { id } = router.query
-  const { getGoalById } = useFinance()
+  const { goal, isLoading } = useGoalById(typeof id === "string" ? id : undefined)
 
-  const goal = getGoalById(id as string)
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="space-y-8">
+          <Skeleton className="h-10 w-32" />
+          <Skeleton className="h-48 w-full" />
+        </div>
+      </Layout>
+    )
+  }
 
   if (!goal) {
     return (
       <Layout>
-        <div className="text-center py-12">
-          <p className="text-slate-600 mb-4">Meta não encontrada</p>
+        <div className="text-center py-12 space-y-4">
+          <p className="text-slate-700">Meta não encontrada.</p>
           <Link href="/goals">
-            <Button>Voltar para Metas</Button>
+            <Button>Voltar para metas</Button>
           </Link>
         </div>
       </Layout>
@@ -57,7 +71,6 @@ export default function GoalDetailPage() {
   const isCompleted = progress >= 100
   const remaining = goal.totalValue - goal.currentValue
 
-  // Simulating progress history
   const progressHistory = [
     { month: "Jan", value: goal.currentValue * 0.2 },
     { month: "Fev", value: goal.currentValue * 0.4 },
@@ -78,11 +91,15 @@ export default function GoalDetailPage() {
           </Link>
 
           <div className="flex items-center gap-6">
-            <span className="text-7xl">{goal.icon}</span>
+            <span className="text-6xl shrink-0" aria-hidden="true">
+              {goal.icon}
+            </span>
             <div>
-              <h1 className="text-3xl font-bold mb-2">{goal.name}</h1>
-              <p className="text-slate-600">
-                Acompanhe o progresso detalhado da sua meta
+              <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
+                {goal.name}
+              </h1>
+              <p className="text-slate-700">
+                Acompanhe o progresso desta meta no seu ritmo.
               </p>
             </div>
           </div>
@@ -91,33 +108,34 @@ export default function GoalDetailPage() {
         {(isAtRisk || isCompleted) && (
           <div
             className={cn(
-              "p-4 rounded-lg border-2 flex items-center gap-3",
+              "p-4 rounded-lg border flex items-center gap-3",
               isCompleted
                 ? "bg-emerald-50 border-emerald-200"
                 : "bg-amber-50 border-amber-200",
             )}
+            role="status"
           >
             {isCompleted ? (
               <>
-                <TrendingUp className="h-5 w-5 text-emerald-600" />
+                <TrendingUp className="h-5 w-5 text-emerald-600 shrink-0" />
                 <div>
                   <p className="font-semibold text-emerald-900">
-                    Parabéns! Meta alcançada! 🎉
+                    Meta alcançada
                   </p>
-                  <p className="text-sm text-emerald-700">
-                    Você conseguiu atingir seu objetivo financeiro.
+                  <p className="text-sm text-emerald-800">
+                    Você chegou ao objetivo — parabéns pelo compromisso.
                   </p>
                 </div>
               </>
             ) : (
               <>
-                <AlertCircle className="h-5 w-5 text-amber-600" />
+                <AlertCircle className="h-5 w-5 text-amber-600 shrink-0" />
                 <div>
                   <p className="font-semibold text-amber-900">
-                    Atenção: Meta em risco
+                    Meta precisa de atenção
                   </p>
-                  <p className="text-sm text-amber-700">
-                    O prazo está próximo e o progresso está abaixo do esperado.
+                  <p className="text-sm text-amber-800">
+                    O prazo está próximo; vamos ajustar o plano juntos.
                   </p>
                 </div>
               </>
@@ -125,14 +143,14 @@ export default function GoalDetailPage() {
           </div>
         )}
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-2">
-                <Target className="h-5 w-5 text-primary" />
-                <p className="text-sm text-slate-600">Valor Total</p>
+                <Target className="h-5 w-5 text-slate-600" aria-hidden="true" />
+                <p className="text-sm text-slate-700">Valor total</p>
               </div>
-              <p className="text-3xl font-bold">
+              <p className="text-3xl font-bold tabular-nums font-mono">
                 {formatCurrency(goal.totalValue)}
               </p>
             </CardContent>
@@ -141,10 +159,10 @@ export default function GoalDetailPage() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-2">
-                <TrendingUp className="h-5 w-5 text-emerald-600" />
-                <p className="text-sm text-slate-600">Valor Atual</p>
+                <TrendingUp className="h-5 w-5 text-emerald-600" aria-hidden="true" />
+                <p className="text-sm text-slate-700">Valor atual</p>
               </div>
-              <p className="text-3xl font-bold text-emerald-600">
+              <p className="text-3xl font-bold tabular-nums font-mono text-emerald-700">
                 {formatCurrency(goal.currentValue)}
               </p>
             </CardContent>
@@ -153,10 +171,10 @@ export default function GoalDetailPage() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-2">
-                <Clock className="h-5 w-5 text-blue-600" />
-                <p className="text-sm text-slate-600">Dias Restantes</p>
+                <Clock className="h-5 w-5 text-blue-600" aria-hidden="true" />
+                <p className="text-sm text-slate-700">Dias restantes</p>
               </div>
-              <p className="text-3xl font-bold text-blue-600">
+              <p className="text-3xl font-bold tabular-nums font-mono text-blue-600">
                 {daysRemaining > 0 ? daysRemaining : 0}
               </p>
             </CardContent>
@@ -165,17 +183,17 @@ export default function GoalDetailPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Progresso da Meta</CardTitle>
+            <CardTitle>Progresso da meta</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-5xl font-bold text-primary">
+                <span className="text-5xl font-bold tabular-nums font-mono">
                   {progress}%
                 </span>
                 <div className="text-right">
-                  <p className="text-sm text-slate-600">Faltam</p>
-                  <p className="text-xl font-semibold text-slate-900">
+                  <p className="text-sm text-slate-700">Faltam</p>
+                  <p className="text-xl font-semibold tabular-nums font-mono text-foreground">
                     {formatCurrency(remaining)}
                   </p>
                 </div>
@@ -185,16 +203,16 @@ export default function GoalDetailPage() {
 
             <div className="grid grid-cols-2 gap-4 pt-4 border-t">
               <div>
-                <p className="text-sm text-slate-600 mb-1 flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Data de Início
+                <p className="text-sm text-slate-700 mb-1 flex items-center gap-2">
+                  <Calendar className="h-4 w-4" aria-hidden="true" />
+                  Data de início
                 </p>
                 <p className="font-semibold">{formatDate(goal.createdAt)}</p>
               </div>
               <div>
-                <p className="text-sm text-slate-600 mb-1 flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Data Limite
+                <p className="text-sm text-slate-700 mb-1 flex items-center gap-2">
+                  <Calendar className="h-4 w-4" aria-hidden="true" />
+                  Data limite
                 </p>
                 <p className="font-semibold">{formatDate(goal.deadlineDate)}</p>
               </div>
@@ -204,31 +222,53 @@ export default function GoalDetailPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Histórico de Progresso</CardTitle>
+            <CardTitle>Histórico de progresso</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={progressHistory}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="month" stroke="#64748b" />
-                <YAxis stroke="#64748b" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "white",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: "8px",
-                  }}
-                  formatter={(value: number) => formatCurrency(value)}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#14b8a6"
-                  strokeWidth={3}
-                  dot={{ fill: "#14b8a6", r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <div
+              role="img"
+              aria-label={`Gráfico de evolução da meta ${goal.name}`}
+            >
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={progressHistory}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_BORDER} />
+                  <XAxis dataKey="month" stroke={CHART_MUTED} />
+                  <YAxis stroke={CHART_MUTED} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: `1px solid ${CHART_BORDER}`,
+                      borderRadius: "0.625rem",
+                    }}
+                    formatter={(value: number) => formatCurrency(value)}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke={CHART_EMERALD}
+                    strokeWidth={3}
+                    dot={{ fill: CHART_EMERALD, r: 5 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <table className="sr-only">
+              <caption>Evolução mensal da meta</caption>
+              <thead>
+                <tr>
+                  <th>Mês</th>
+                  <th>Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {progressHistory.map((row) => (
+                  <tr key={row.month}>
+                    <td>{row.month}</td>
+                    <td>{formatCurrency(row.value)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </CardContent>
         </Card>
       </div>

@@ -3,20 +3,23 @@ import { Layout } from "@/src/components/Layout"
 import { FinancialHealthCard } from "@/src/components/dashboard/FinancialHealthCard"
 import { SummaryCards } from "@/src/components/dashboard/SummaryCards"
 import { GoalsGrid } from "@/src/components/dashboard/GoalsGrid"
-import { GoalsProgressChart } from "@/src/components/dashboard/GoalsProgressChart"
 import { ExpenseCategoriesTable } from "@/src/components/dashboard/ExpenseCategoriesTable"
+import { QuickActions } from "@/src/components/dashboard/QuickActions"
 
 export default function DashboardPage() {
   return (
     <Layout>
       <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-            Dashboard Financeiro
-          </h1>
-          <p className="text-slate-600">
-            Visão geral completa das suas finanças pessoais
-          </p>
+        <div className="space-y-4">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
+              Dashboard Financeiro
+            </h1>
+            <p className="text-slate-700">
+              Registre movimentações e acompanhe seu progresso com calma.
+            </p>
+          </div>
+          <QuickActions />
         </div>
 
         <SummaryCards />
@@ -25,8 +28,6 @@ export default function DashboardPage() {
           <FinancialHealthCard />
           <ExpenseCategoriesTable />
         </div>
-
-        <GoalsProgressChart />
 
         <GoalsGrid />
       </div>
