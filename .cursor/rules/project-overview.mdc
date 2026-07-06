@@ -1,0 +1,21 @@
+---
+description: Visão geral do monorepo Cogni Cash
+alwaysApply: true
+---
+
+# Cogni Cash — Monorepo
+
+Aplicação de finanças pessoais com duas pastas independentes:
+
+- `api/` — backend NestJS + Prisma + PostgreSQL
+- `manager/` — frontend Next.js 14 (Pages Router) + shadcn/ui
+
+## Regras gerais
+
+- Trabalhe na pasta correta: lógica de negócio e banco em `api/`; UI e chamadas HTTP em `manager/`
+- Comunicação via REST; frontend usa `NEXT_PUBLIC_API_URL`
+- Autenticação JWT RS256; token salvo como `COGNI_CASH_TOKEN` no localStorage
+- Login: `POST /sessions` → `{ access_token }`
+- Mensagens ao usuário em português; código em inglês
+- Não commitar `.env` nem arquivos gerados do Prisma
+- Prefira diffs pequenos e focados; siga convenções existentes antes de introduzir novos padrões

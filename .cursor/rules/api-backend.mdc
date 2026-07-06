@@ -1,0 +1,55 @@
+---
+description: Convenções do backend NestJS (api/)
+globs: api/**
+alwaysApply: false
+---
+
+# Backend — api/
+
+## Stack
+
+NestJS 11, Prisma 7 (PostgreSQL), Zod, Passport JWT (RS256), Swagger, Vitest.
+
+## Padrão de controller
+
+```typescript
+// Schema Zod no topo
+const bodySchema = z.object({ ... })
+const bodyValidationPipe = new ZodValidationPipe(bodySchema)
+
+@ApiTags("Recurso")
+@ApiBearerAuth()
+@Controller("/recurso")
+@UseGuards(JwtAuthGuard)  // omitir em rotas públicas
+export class CreateRecursoController {
+  constructor(private prisma: PrismaService) {}
+
+  @Post()
+  async handle(
+    @Body(bodyValidationPipe) body: BodySchema,
+    @CurrentUser() user: UserPayload,
+  ) { ... }
+}
+```
+
+## Checklist para novo endpoint
+
+1. Criar `api/src/controllers/<domínio>/<ação>.controller.ts`
+2. Registrar em `api/src/app.module.ts`
+3. Adicionar teste e2e `*.e2e-spec.ts` no mesmo diretório
+4. Documentar com decorators `@ApiOperation`, `@ApiResponse`
+
+## Prisma
+
+- Schema: `api/prisma/schema.prisma`
+- Client gerado: `api/src/generated/prisma/` — **não editar manualmente**
+- Após alterar schema: `npx prisma migrate dev`
+- Multi-tenant: operações usam `accountId` via `AccountMember` do usuário autenticado
+
+## Env validado em `api/src/env.ts`
+
+`DATABASE_URL`, `PORT` (3333), `JWT_PRIVATE_KEY`, `JWT_PUBLIC_KEY` (base64)
+
+## Testes e2e
+
+Usar `Test.createTestingModule({ imports: [AppModule] })`, criar user/account/membership no banco, assinar JWT com `JwtService.sign({ userId })`.

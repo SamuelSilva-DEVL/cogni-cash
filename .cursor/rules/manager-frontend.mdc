@@ -1,0 +1,50 @@
+---
+description: Convenções do frontend Next.js (manager/)
+globs: manager/**
+alwaysApply: false
+---
+
+# Frontend — manager/
+
+## Stack
+
+Next.js 14 (Pages Router), React 18, TypeScript, Tailwind, shadcn/ui, TanStack Query, Axios, React Hook Form + Zod.
+
+## Estrutura
+
+- `src/pages/` — rotas (ex: `dashboard.tsx`, `goals/[id].tsx`)
+- `src/components/ui/` — componentes shadcn (não reinventar; usar os existentes)
+- `src/components/` — componentes de domínio (dashboard, goals, etc.)
+- `src/contexts/` — AuthContext, FinanceContext
+- `src/api/index.ts` — cliente Axios com interceptor JWT
+
+## Chamadas à API
+
+```typescript
+import api from "@/src/api"
+
+// Token injetado automaticamente via interceptor
+const { data } = await api.get("/goals")
+```
+
+Base URL: `process.env.NEXT_PUBLIC_API_URL`
+
+## UI
+
+- Estilização com Tailwind + variáveis CSS em `src/styles/globals.css`
+- Ícones: `lucide-react`
+- Formulários: react-hook-form + zod resolver
+- Tabelas: `@tanstack/react-table` via `data-table.tsx`
+- Gráficos: `recharts`
+
+## Aliases (tsconfig)
+
+- `@/` → raiz de `manager/`
+- shadcn: `@/components/ui`, `@/lib/utils`
+
+## Convenções
+
+- Componentes funcionais com TypeScript
+- Extrair lógica reutilizável em hooks quando fizer sentido
+- Manter páginas enxutas; lógica complexa em componentes ou contextos
+- Não usar App Router — o projeto usa Pages Router
