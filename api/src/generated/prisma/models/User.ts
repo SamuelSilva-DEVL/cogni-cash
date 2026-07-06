@@ -30,6 +30,7 @@ export type UserMinAggregateOutputType = {
   email: string | null
   password: string | null
   telephone: string | null
+  whitelabelId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -40,6 +41,7 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   password: string | null
   telephone: string | null
+  whitelabelId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +52,7 @@ export type UserCountAggregateOutputType = {
   email: number
   password: number
   telephone: number
+  whitelabelId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -62,6 +65,7 @@ export type UserMinAggregateInputType = {
   email?: true
   password?: true
   telephone?: true
+  whitelabelId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -72,6 +76,7 @@ export type UserMaxAggregateInputType = {
   email?: true
   password?: true
   telephone?: true
+  whitelabelId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +87,7 @@ export type UserCountAggregateInputType = {
   email?: true
   password?: true
   telephone?: true
+  whitelabelId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -165,6 +171,7 @@ export type UserGroupByOutputType = {
   email: string
   password: string
   telephone: string | null
+  whitelabelId: string
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -196,10 +203,13 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
   telephone?: Prisma.StringNullableFilter<"User"> | string | null
+  whitelabelId?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  whitelabel?: Prisma.XOR<Prisma.WhitelabelScalarRelationFilter, Prisma.WhitelabelWhereInput>
   memberships?: Prisma.AccountMemberListRelationFilter
   createdTransactions?: Prisma.TransactionListRelationFilter
+  sentInvites?: Prisma.MemberInviteListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -208,26 +218,33 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   telephone?: Prisma.SortOrderInput | Prisma.SortOrder
+  whitelabelId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  whitelabel?: Prisma.WhitelabelOrderByWithRelationInput
   memberships?: Prisma.AccountMemberOrderByRelationAggregateInput
   createdTransactions?: Prisma.TransactionOrderByRelationAggregateInput
+  sentInvites?: Prisma.MemberInviteOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  email?: string
-  telephone?: string
+  whitelabelId_email?: Prisma.UserWhitelabelIdEmailCompoundUniqueInput
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringFilter<"User"> | string
+  email?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
+  telephone?: Prisma.StringNullableFilter<"User"> | string | null
+  whitelabelId?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  whitelabel?: Prisma.XOR<Prisma.WhitelabelScalarRelationFilter, Prisma.WhitelabelWhereInput>
   memberships?: Prisma.AccountMemberListRelationFilter
   createdTransactions?: Prisma.TransactionListRelationFilter
-}, "id" | "email" | "telephone">
+  sentInvites?: Prisma.MemberInviteListRelationFilter
+}, "id" | "whitelabelId_email">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -235,6 +252,7 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   telephone?: Prisma.SortOrderInput | Prisma.SortOrder
+  whitelabelId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -251,6 +269,7 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   telephone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  whitelabelId?: Prisma.StringWithAggregatesFilter<"User"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -263,8 +282,10 @@ export type UserCreateInput = {
   telephone?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whitelabel: Prisma.WhitelabelCreateNestedOneWithoutUsersInput
   memberships?: Prisma.AccountMemberCreateNestedManyWithoutUserInput
   createdTransactions?: Prisma.TransactionCreateNestedManyWithoutCreatorInput
+  sentInvites?: Prisma.MemberInviteCreateNestedManyWithoutInvitedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -273,10 +294,12 @@ export type UserUncheckedCreateInput = {
   email: string
   password: string
   telephone?: string | null
+  whitelabelId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   memberships?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutUserInput
   createdTransactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutCreatorInput
+  sentInvites?: Prisma.MemberInviteUncheckedCreateNestedManyWithoutInvitedByInput
 }
 
 export type UserUpdateInput = {
@@ -287,8 +310,10 @@ export type UserUpdateInput = {
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whitelabel?: Prisma.WhitelabelUpdateOneRequiredWithoutUsersNestedInput
   memberships?: Prisma.AccountMemberUpdateManyWithoutUserNestedInput
   createdTransactions?: Prisma.TransactionUpdateManyWithoutCreatorNestedInput
+  sentInvites?: Prisma.MemberInviteUpdateManyWithoutInvitedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -297,10 +322,12 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.AccountMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTransactions?: Prisma.TransactionUncheckedUpdateManyWithoutCreatorNestedInput
+  sentInvites?: Prisma.MemberInviteUncheckedUpdateManyWithoutInvitedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -309,6 +336,7 @@ export type UserCreateManyInput = {
   email: string
   password: string
   telephone?: string | null
+  whitelabelId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -329,8 +357,24 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type UserListRelationFilter = {
+  every?: Prisma.UserWhereInput
+  some?: Prisma.UserWhereInput
+  none?: Prisma.UserWhereInput
+}
+
+export type UserOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type UserWhitelabelIdEmailCompoundUniqueInput = {
+  whitelabelId: string
+  email: string
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -339,6 +383,7 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
+  whitelabelId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -349,6 +394,7 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
+  whitelabelId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -359,6 +405,7 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
+  whitelabelId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -368,16 +415,46 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
+export type UserCreateNestedManyWithoutWhitelabelInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWhitelabelInput, Prisma.UserUncheckedCreateWithoutWhitelabelInput> | Prisma.UserCreateWithoutWhitelabelInput[] | Prisma.UserUncheckedCreateWithoutWhitelabelInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWhitelabelInput | Prisma.UserCreateOrConnectWithoutWhitelabelInput[]
+  createMany?: Prisma.UserCreateManyWhitelabelInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
+export type UserUncheckedCreateNestedManyWithoutWhitelabelInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWhitelabelInput, Prisma.UserUncheckedCreateWithoutWhitelabelInput> | Prisma.UserCreateWithoutWhitelabelInput[] | Prisma.UserUncheckedCreateWithoutWhitelabelInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWhitelabelInput | Prisma.UserCreateOrConnectWithoutWhitelabelInput[]
+  createMany?: Prisma.UserCreateManyWhitelabelInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
+export type UserUpdateManyWithoutWhitelabelNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWhitelabelInput, Prisma.UserUncheckedCreateWithoutWhitelabelInput> | Prisma.UserCreateWithoutWhitelabelInput[] | Prisma.UserUncheckedCreateWithoutWhitelabelInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWhitelabelInput | Prisma.UserCreateOrConnectWithoutWhitelabelInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutWhitelabelInput | Prisma.UserUpsertWithWhereUniqueWithoutWhitelabelInput[]
+  createMany?: Prisma.UserCreateManyWhitelabelInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutWhitelabelInput | Prisma.UserUpdateWithWhereUniqueWithoutWhitelabelInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutWhitelabelInput | Prisma.UserUpdateManyWithWhereWithoutWhitelabelInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutWhitelabelNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWhitelabelInput, Prisma.UserUncheckedCreateWithoutWhitelabelInput> | Prisma.UserCreateWithoutWhitelabelInput[] | Prisma.UserUncheckedCreateWithoutWhitelabelInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWhitelabelInput | Prisma.UserCreateOrConnectWithoutWhitelabelInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutWhitelabelInput | Prisma.UserUpsertWithWhereUniqueWithoutWhitelabelInput[]
+  createMany?: Prisma.UserCreateManyWhitelabelInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutWhitelabelInput | Prisma.UserUpdateWithWhereUniqueWithoutWhitelabelInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutWhitelabelInput | Prisma.UserUpdateManyWithWhereWithoutWhitelabelInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
 export type UserCreateNestedOneWithoutMembershipsInput = {
@@ -394,6 +471,20 @@ export type UserUpdateOneRequiredWithoutMembershipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMembershipsInput, Prisma.UserUpdateWithoutMembershipsInput>, Prisma.UserUncheckedUpdateWithoutMembershipsInput>
 }
 
+export type UserCreateNestedOneWithoutSentInvitesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentInvitesInput, Prisma.UserUncheckedCreateWithoutSentInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentInvitesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSentInvitesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentInvitesInput, Prisma.UserUncheckedCreateWithoutSentInvitesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentInvitesInput
+  upsert?: Prisma.UserUpsertWithoutSentInvitesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSentInvitesInput, Prisma.UserUpdateWithoutSentInvitesInput>, Prisma.UserUncheckedUpdateWithoutSentInvitesInput>
+}
+
 export type UserCreateNestedOneWithoutCreatedTransactionsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedTransactionsInput, Prisma.UserUncheckedCreateWithoutCreatedTransactionsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedTransactionsInput
@@ -408,6 +499,72 @@ export type UserUpdateOneRequiredWithoutCreatedTransactionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedTransactionsInput, Prisma.UserUpdateWithoutCreatedTransactionsInput>, Prisma.UserUncheckedUpdateWithoutCreatedTransactionsInput>
 }
 
+export type UserCreateWithoutWhitelabelInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  telephone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.AccountMemberCreateNestedManyWithoutUserInput
+  createdTransactions?: Prisma.TransactionCreateNestedManyWithoutCreatorInput
+  sentInvites?: Prisma.MemberInviteCreateNestedManyWithoutInvitedByInput
+}
+
+export type UserUncheckedCreateWithoutWhitelabelInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  telephone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTransactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutCreatorInput
+  sentInvites?: Prisma.MemberInviteUncheckedCreateNestedManyWithoutInvitedByInput
+}
+
+export type UserCreateOrConnectWithoutWhitelabelInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWhitelabelInput, Prisma.UserUncheckedCreateWithoutWhitelabelInput>
+}
+
+export type UserCreateManyWhitelabelInputEnvelope = {
+  data: Prisma.UserCreateManyWhitelabelInput | Prisma.UserCreateManyWhitelabelInput[]
+  skipDuplicates?: boolean
+}
+
+export type UserUpsertWithWhereUniqueWithoutWhitelabelInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWhitelabelInput, Prisma.UserUncheckedUpdateWithoutWhitelabelInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWhitelabelInput, Prisma.UserUncheckedCreateWithoutWhitelabelInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutWhitelabelInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWhitelabelInput, Prisma.UserUncheckedUpdateWithoutWhitelabelInput>
+}
+
+export type UserUpdateManyWithWhereWithoutWhitelabelInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutWhitelabelInput>
+}
+
+export type UserScalarWhereInput = {
+  AND?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  OR?: Prisma.UserScalarWhereInput[]
+  NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  id?: Prisma.StringFilter<"User"> | string
+  name?: Prisma.StringFilter<"User"> | string
+  email?: Prisma.StringFilter<"User"> | string
+  password?: Prisma.StringFilter<"User"> | string
+  telephone?: Prisma.StringNullableFilter<"User"> | string | null
+  whitelabelId?: Prisma.StringFilter<"User"> | string
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+}
+
 export type UserCreateWithoutMembershipsInput = {
   id?: string
   name: string
@@ -416,7 +573,9 @@ export type UserCreateWithoutMembershipsInput = {
   telephone?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whitelabel: Prisma.WhitelabelCreateNestedOneWithoutUsersInput
   createdTransactions?: Prisma.TransactionCreateNestedManyWithoutCreatorInput
+  sentInvites?: Prisma.MemberInviteCreateNestedManyWithoutInvitedByInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -425,9 +584,11 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   email: string
   password: string
   telephone?: string | null
+  whitelabelId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   createdTransactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutCreatorInput
+  sentInvites?: Prisma.MemberInviteUncheckedCreateNestedManyWithoutInvitedByInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -454,7 +615,9 @@ export type UserUpdateWithoutMembershipsInput = {
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whitelabel?: Prisma.WhitelabelUpdateOneRequiredWithoutUsersNestedInput
   createdTransactions?: Prisma.TransactionUpdateManyWithoutCreatorNestedInput
+  sentInvites?: Prisma.MemberInviteUpdateManyWithoutInvitedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -463,8 +626,78 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdTransactions?: Prisma.TransactionUncheckedUpdateManyWithoutCreatorNestedInput
+  sentInvites?: Prisma.MemberInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+}
+
+export type UserCreateWithoutSentInvitesInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  telephone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  whitelabel: Prisma.WhitelabelCreateNestedOneWithoutUsersInput
+  memberships?: Prisma.AccountMemberCreateNestedManyWithoutUserInput
+  createdTransactions?: Prisma.TransactionCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutSentInvitesInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  telephone?: string | null
+  whitelabelId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutUserInput
+  createdTransactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutSentInvitesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentInvitesInput, Prisma.UserUncheckedCreateWithoutSentInvitesInput>
+}
+
+export type UserUpsertWithoutSentInvitesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSentInvitesInput, Prisma.UserUncheckedUpdateWithoutSentInvitesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentInvitesInput, Prisma.UserUncheckedCreateWithoutSentInvitesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSentInvitesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSentInvitesInput, Prisma.UserUncheckedUpdateWithoutSentInvitesInput>
+}
+
+export type UserUpdateWithoutSentInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whitelabel?: Prisma.WhitelabelUpdateOneRequiredWithoutUsersNestedInput
+  memberships?: Prisma.AccountMemberUpdateManyWithoutUserNestedInput
+  createdTransactions?: Prisma.TransactionUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSentInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.AccountMemberUncheckedUpdateManyWithoutUserNestedInput
   createdTransactions?: Prisma.TransactionUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
@@ -476,7 +709,9 @@ export type UserCreateWithoutCreatedTransactionsInput = {
   telephone?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  whitelabel: Prisma.WhitelabelCreateNestedOneWithoutUsersInput
   memberships?: Prisma.AccountMemberCreateNestedManyWithoutUserInput
+  sentInvites?: Prisma.MemberInviteCreateNestedManyWithoutInvitedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTransactionsInput = {
@@ -485,9 +720,11 @@ export type UserUncheckedCreateWithoutCreatedTransactionsInput = {
   email: string
   password: string
   telephone?: string | null
+  whitelabelId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   memberships?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutUserInput
+  sentInvites?: Prisma.MemberInviteUncheckedCreateNestedManyWithoutInvitedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTransactionsInput = {
@@ -514,7 +751,9 @@ export type UserUpdateWithoutCreatedTransactionsInput = {
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whitelabel?: Prisma.WhitelabelUpdateOneRequiredWithoutUsersNestedInput
   memberships?: Prisma.AccountMemberUpdateManyWithoutUserNestedInput
+  sentInvites?: Prisma.MemberInviteUpdateManyWithoutInvitedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTransactionsInput = {
@@ -523,9 +762,57 @@ export type UserUncheckedUpdateWithoutCreatedTransactionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.AccountMemberUncheckedUpdateManyWithoutUserNestedInput
+  sentInvites?: Prisma.MemberInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+}
+
+export type UserCreateManyWhitelabelInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  telephone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type UserUpdateWithoutWhitelabelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.AccountMemberUpdateManyWithoutUserNestedInput
+  createdTransactions?: Prisma.TransactionUpdateManyWithoutCreatorNestedInput
+  sentInvites?: Prisma.MemberInviteUpdateManyWithoutInvitedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWhitelabelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.AccountMemberUncheckedUpdateManyWithoutUserNestedInput
+  createdTransactions?: Prisma.TransactionUncheckedUpdateManyWithoutCreatorNestedInput
+  sentInvites?: Prisma.MemberInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutWhitelabelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  telephone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -536,11 +823,13 @@ export type UserUncheckedUpdateWithoutCreatedTransactionsInput = {
 export type UserCountOutputType = {
   memberships: number
   createdTransactions: number
+  sentInvites: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
   createdTransactions?: boolean | UserCountOutputTypeCountCreatedTransactionsArgs
+  sentInvites?: boolean | UserCountOutputTypeCountSentInvitesArgs
 }
 
 /**
@@ -567,6 +856,13 @@ export type UserCountOutputTypeCountCreatedTransactionsArgs<ExtArgs extends runt
   where?: Prisma.TransactionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSentInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MemberInviteWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -574,10 +870,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   password?: boolean
   telephone?: boolean
+  whitelabelId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
   createdTransactions?: boolean | Prisma.User$createdTransactionsArgs<ExtArgs>
+  sentInvites?: boolean | Prisma.User$sentInvitesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -587,8 +886,10 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   password?: boolean
   telephone?: boolean
+  whitelabelId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -597,8 +898,10 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   password?: boolean
   telephone?: boolean
+  whitelabelId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -607,24 +910,33 @@ export type UserSelectScalar = {
   email?: boolean
   password?: boolean
   telephone?: boolean
+  whitelabelId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "telephone" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "telephone" | "whitelabelId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
   createdTransactions?: boolean | Prisma.User$createdTransactionsArgs<ExtArgs>
+  sentInvites?: boolean | Prisma.User$sentInvitesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
+}
+export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
+}
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    whitelabel: Prisma.$WhitelabelPayload<ExtArgs>
     memberships: Prisma.$AccountMemberPayload<ExtArgs>[]
     createdTransactions: Prisma.$TransactionPayload<ExtArgs>[]
+    sentInvites: Prisma.$MemberInvitePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -632,6 +944,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     password: string
     telephone: string | null
+    whitelabelId: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1028,8 +1341,10 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  whitelabel<T extends Prisma.WhitelabelDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhitelabelDefaultArgs<ExtArgs>>): Prisma.Prisma__WhitelabelClient<runtime.Types.Result.GetResult<Prisma.$WhitelabelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   memberships<T extends Prisma.User$membershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdTransactions<T extends Prisma.User$createdTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sentInvites<T extends Prisma.User$sentInvitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentInvitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1064,6 +1379,7 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly telephone: Prisma.FieldRef<"User", 'String'>
+  readonly whitelabelId: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -1315,6 +1631,10 @@ export type UserCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    */
   data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1385,6 +1705,10 @@ export type UserUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many Users to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1499,6 +1823,30 @@ export type User$createdTransactionsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.TransactionScalarFieldEnum | Prisma.TransactionScalarFieldEnum[]
+}
+
+/**
+ * User.sentInvites
+ */
+export type User$sentInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MemberInvite
+   */
+  select?: Prisma.MemberInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MemberInvite
+   */
+  omit?: Prisma.MemberInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MemberInviteInclude<ExtArgs> | null
+  where?: Prisma.MemberInviteWhereInput
+  orderBy?: Prisma.MemberInviteOrderByWithRelationInput | Prisma.MemberInviteOrderByWithRelationInput[]
+  cursor?: Prisma.MemberInviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MemberInviteScalarFieldEnum | Prisma.MemberInviteScalarFieldEnum[]
 }
 
 /**

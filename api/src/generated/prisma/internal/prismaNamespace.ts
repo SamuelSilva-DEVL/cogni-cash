@@ -384,9 +384,11 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
+  Whitelabel: 'Whitelabel',
   User: 'User',
   Account: 'Account',
   AccountMember: 'AccountMember',
+  MemberInvite: 'MemberInvite',
   Category: 'Category',
   Transaction: 'Transaction',
   Budget: 'Budget',
@@ -406,10 +408,84 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "account" | "accountMember" | "category" | "transaction" | "budget" | "goal"
+    modelProps: "whitelabel" | "user" | "account" | "accountMember" | "memberInvite" | "category" | "transaction" | "budget" | "goal"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
+    Whitelabel: {
+      payload: Prisma.$WhitelabelPayload<ExtArgs>
+      fields: Prisma.WhitelabelFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WhitelabelFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhitelabelPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WhitelabelFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhitelabelPayload>
+        }
+        findFirst: {
+          args: Prisma.WhitelabelFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhitelabelPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WhitelabelFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhitelabelPayload>
+        }
+        findMany: {
+          args: Prisma.WhitelabelFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhitelabelPayload>[]
+        }
+        create: {
+          args: Prisma.WhitelabelCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhitelabelPayload>
+        }
+        createMany: {
+          args: Prisma.WhitelabelCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WhitelabelCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhitelabelPayload>[]
+        }
+        delete: {
+          args: Prisma.WhitelabelDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhitelabelPayload>
+        }
+        update: {
+          args: Prisma.WhitelabelUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhitelabelPayload>
+        }
+        deleteMany: {
+          args: Prisma.WhitelabelDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WhitelabelUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WhitelabelUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhitelabelPayload>[]
+        }
+        upsert: {
+          args: Prisma.WhitelabelUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhitelabelPayload>
+        }
+        aggregate: {
+          args: Prisma.WhitelabelAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWhitelabel>
+        }
+        groupBy: {
+          args: Prisma.WhitelabelGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WhitelabelGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WhitelabelCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WhitelabelCountAggregateOutputType> | number
+        }
+      }
+    }
     User: {
       payload: Prisma.$UserPayload<ExtArgs>
       fields: Prisma.UserFieldRefs
@@ -629,6 +705,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AccountMemberCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AccountMemberCountAggregateOutputType> | number
+        }
+      }
+    }
+    MemberInvite: {
+      payload: Prisma.$MemberInvitePayload<ExtArgs>
+      fields: Prisma.MemberInviteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MemberInviteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MemberInviteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitePayload>
+        }
+        findFirst: {
+          args: Prisma.MemberInviteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MemberInviteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitePayload>
+        }
+        findMany: {
+          args: Prisma.MemberInviteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitePayload>[]
+        }
+        create: {
+          args: Prisma.MemberInviteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitePayload>
+        }
+        createMany: {
+          args: Prisma.MemberInviteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MemberInviteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitePayload>[]
+        }
+        delete: {
+          args: Prisma.MemberInviteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitePayload>
+        }
+        update: {
+          args: Prisma.MemberInviteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitePayload>
+        }
+        deleteMany: {
+          args: Prisma.MemberInviteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MemberInviteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MemberInviteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitePayload>[]
+        }
+        upsert: {
+          args: Prisma.MemberInviteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MemberInvitePayload>
+        }
+        aggregate: {
+          args: Prisma.MemberInviteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMemberInvite>
+        }
+        groupBy: {
+          args: Prisma.MemberInviteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MemberInviteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MemberInviteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MemberInviteCountAggregateOutputType> | number
         }
       }
     }
@@ -967,12 +1117,24 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const WhitelabelScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WhitelabelScalarFieldEnum = (typeof WhitelabelScalarFieldEnum)[keyof typeof WhitelabelScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
   password: 'password',
   telephone: 'telephone',
+  whitelabelId: 'whitelabelId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -984,6 +1146,7 @@ export const AccountScalarFieldEnum = {
   id: 'id',
   name: 'name',
   plan: 'plan',
+  whitelabelId: 'whitelabelId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -993,14 +1156,30 @@ export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeo
 
 export const AccountMemberScalarFieldEnum = {
   id: 'id',
+  role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  role: 'role',
   userId: 'userId',
   accountId: 'accountId'
 } as const
 
 export type AccountMemberScalarFieldEnum = (typeof AccountMemberScalarFieldEnum)[keyof typeof AccountMemberScalarFieldEnum]
+
+
+export const MemberInviteScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  token: 'token',
+  role: 'role',
+  expiresAt: 'expiresAt',
+  acceptedAt: 'acceptedAt',
+  createdAt: 'createdAt',
+  accountId: 'accountId',
+  whitelabelId: 'whitelabelId',
+  invitedById: 'invitedById'
+} as const
+
+export type MemberInviteScalarFieldEnum = (typeof MemberInviteScalarFieldEnum)[keyof typeof MemberInviteScalarFieldEnum]
 
 
 export const CategoryScalarFieldEnum = {
@@ -1038,7 +1217,8 @@ export const BudgetScalarFieldEnum = {
   year: 'year',
   accountId: 'accountId',
   categoryId: 'categoryId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type BudgetScalarFieldEnum = (typeof BudgetScalarFieldEnum)[keyof typeof BudgetScalarFieldEnum]
@@ -1128,6 +1308,20 @@ export type EnumPlansFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
  * Reference to a field of type 'Plans[]'
  */
 export type ListEnumPlansFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Plans[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AccountMemberRole'
+ */
+export type EnumAccountMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountMemberRole'>
+    
+
+
+/**
+ * Reference to a field of type 'AccountMemberRole[]'
+ */
+export type ListEnumAccountMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountMemberRole[]'>
     
 
 
@@ -1281,9 +1475,11 @@ export type PrismaClientOptions = ({
   comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
+  whitelabel?: Prisma.WhitelabelOmit
   user?: Prisma.UserOmit
   account?: Prisma.AccountOmit
   accountMember?: Prisma.AccountMemberOmit
+  memberInvite?: Prisma.MemberInviteOmit
   category?: Prisma.CategoryOmit
   transaction?: Prisma.TransactionOmit
   budget?: Prisma.BudgetOmit

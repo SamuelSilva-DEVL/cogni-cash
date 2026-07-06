@@ -4,11 +4,15 @@ import { INestApplication } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
 import { Test } from "@nestjs/testing"
 import request from "supertest"
+import {
+  createTitularWithWhitelabel,
+  signAccessToken,
+} from "../../../test/helpers/e2e-whitelabel"
 
 describe("Fetch List Goals (e2e)", () => {
   let app: INestApplication
   let prisma: PrismaService
-  let jwT: JwtService
+  let jwt: JwtService
 
   beforeAll(async () => {
     if (!process.env.DATABASE_URL) {
@@ -22,68 +26,30 @@ describe("Fetch List Goals (e2e)", () => {
     app = moduleRef.createNestApplication()
 
     prisma = moduleRef.get(PrismaService)
-    jwT = moduleRef.get(JwtService)
+    jwt = moduleRef.get(JwtService)
 
     await app.init()
   })
 
   test("[GET] /goals", async () => {
-    const prismaClient = prisma as any
-
-    const user = await prismaClient.user.create({
-      data: {
-        name: "John Doe",
-        email: "1Mn0o@example.com",
-        password: "123456",
-      },
+    const setup = await createTitularWithWhitelabel(prisma, {
+      email: "1Mn0o@example.com",
     })
 
-    const account = await prismaClient.account.create({
-      data: {
-        name: "Conta Principal",
-      },
+    const otherSetup = await createTitularWithWhitelabel(prisma, {
+      email: "jane@example.com",
     })
 
-    await prismaClient.accountMember.create({
-      data: {
-        userId: user.id,
-        accountId: account.id,
-        role: "owner",
-      },
-    })
+    const accessToken = signAccessToken(jwt, setup)
 
-    const otherUser = await prismaClient.user.create({
-      data: {
-        name: "Jane Doe",
-        email: "jane@example.com",
-        password: "123456",
-      },
-    })
-
-    const otherAccount = await prismaClient.account.create({
-      data: {
-        name: "Conta Secundaria",
-      },
-    })
-
-    await prismaClient.accountMember.create({
-      data: {
-        userId: otherUser.id,
-        accountId: otherAccount.id,
-        role: "owner",
-      },
-    })
-
-    const accessToken = jwT.sign({ userId: user.id })
-
-    await prismaClient.goal.createMany({
+    await prisma.goal.createMany({
       data: [
         {
           title: "Goal 1",
           targetAmount: 1000.0,
           currentAmount: 0.0,
           deadline: new Date("2024-12-31T23:59:59Z"),
-          accountId: account.id,
+          accountId: setup.account.id,
           slug: "goal-1",
         },
         {
@@ -91,7 +57,7 @@ describe("Fetch List Goals (e2e)", () => {
           targetAmount: 2000.0,
           currentAmount: 500.0,
           deadline: new Date("2024-11-30T23:59:59Z"),
-          accountId: account.id,
+          accountId: setup.account.id,
           slug: "goal-2",
         },
         {
@@ -99,7 +65,7 @@ describe("Fetch List Goals (e2e)", () => {
           targetAmount: 3000.0,
           currentAmount: 800.0,
           deadline: new Date("2024-10-31T23:59:59Z"),
-          accountId: otherAccount.id,
+          accountId: otherSetup.account.id,
           slug: "other-account-goal",
         },
       ],

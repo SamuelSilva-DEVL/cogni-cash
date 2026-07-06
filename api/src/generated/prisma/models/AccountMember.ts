@@ -26,27 +26,27 @@ export type AggregateAccountMember = {
 
 export type AccountMemberMinAggregateOutputType = {
   id: string | null
+  role: $Enums.AccountMemberRole | null
   createdAt: Date | null
   updatedAt: Date | null
-  role: string | null
   userId: string | null
   accountId: string | null
 }
 
 export type AccountMemberMaxAggregateOutputType = {
   id: string | null
+  role: $Enums.AccountMemberRole | null
   createdAt: Date | null
   updatedAt: Date | null
-  role: string | null
   userId: string | null
   accountId: string | null
 }
 
 export type AccountMemberCountAggregateOutputType = {
   id: number
+  role: number
   createdAt: number
   updatedAt: number
-  role: number
   userId: number
   accountId: number
   _all: number
@@ -55,27 +55,27 @@ export type AccountMemberCountAggregateOutputType = {
 
 export type AccountMemberMinAggregateInputType = {
   id?: true
+  role?: true
   createdAt?: true
   updatedAt?: true
-  role?: true
   userId?: true
   accountId?: true
 }
 
 export type AccountMemberMaxAggregateInputType = {
   id?: true
+  role?: true
   createdAt?: true
   updatedAt?: true
-  role?: true
   userId?: true
   accountId?: true
 }
 
 export type AccountMemberCountAggregateInputType = {
   id?: true
+  role?: true
   createdAt?: true
   updatedAt?: true
-  role?: true
   userId?: true
   accountId?: true
   _all?: true
@@ -155,9 +155,9 @@ export type AccountMemberGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 
 export type AccountMemberGroupByOutputType = {
   id: string
+  role: $Enums.AccountMemberRole
   createdAt: Date
   updatedAt: Date
-  role: string | null
   userId: string
   accountId: string
   _count: AccountMemberCountAggregateOutputType | null
@@ -185,9 +185,9 @@ export type AccountMemberWhereInput = {
   OR?: Prisma.AccountMemberWhereInput[]
   NOT?: Prisma.AccountMemberWhereInput | Prisma.AccountMemberWhereInput[]
   id?: Prisma.StringFilter<"AccountMember"> | string
+  role?: Prisma.EnumAccountMemberRoleFilter<"AccountMember"> | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFilter<"AccountMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AccountMember"> | Date | string
-  role?: Prisma.StringNullableFilter<"AccountMember"> | string | null
   userId?: Prisma.StringFilter<"AccountMember"> | string
   accountId?: Prisma.StringFilter<"AccountMember"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -196,9 +196,9 @@ export type AccountMemberWhereInput = {
 
 export type AccountMemberOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  role?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -211,9 +211,9 @@ export type AccountMemberWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AccountMemberWhereInput | Prisma.AccountMemberWhereInput[]
   OR?: Prisma.AccountMemberWhereInput[]
   NOT?: Prisma.AccountMemberWhereInput | Prisma.AccountMemberWhereInput[]
+  role?: Prisma.EnumAccountMemberRoleFilter<"AccountMember"> | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFilter<"AccountMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AccountMember"> | Date | string
-  role?: Prisma.StringNullableFilter<"AccountMember"> | string | null
   userId?: Prisma.StringFilter<"AccountMember"> | string
   accountId?: Prisma.StringFilter<"AccountMember"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -222,9 +222,9 @@ export type AccountMemberWhereUniqueInput = Prisma.AtLeast<{
 
 export type AccountMemberOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  role?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   _count?: Prisma.AccountMemberCountOrderByAggregateInput
@@ -237,70 +237,70 @@ export type AccountMemberScalarWhereWithAggregatesInput = {
   OR?: Prisma.AccountMemberScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AccountMemberScalarWhereWithAggregatesInput | Prisma.AccountMemberScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"AccountMember"> | string
+  role?: Prisma.EnumAccountMemberRoleWithAggregatesFilter<"AccountMember"> | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AccountMember"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AccountMember"> | Date | string
-  role?: Prisma.StringNullableWithAggregatesFilter<"AccountMember"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"AccountMember"> | string
   accountId?: Prisma.StringWithAggregatesFilter<"AccountMember"> | string
 }
 
 export type AccountMemberCreateInput = {
   id?: string
+  role?: $Enums.AccountMemberRole
   createdAt?: Date | string
   updatedAt?: Date | string
-  role?: string | null
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   account: Prisma.AccountCreateNestedOneWithoutMembersInput
 }
 
 export type AccountMemberUncheckedCreateInput = {
   id?: string
+  role?: $Enums.AccountMemberRole
   createdAt?: Date | string
   updatedAt?: Date | string
-  role?: string | null
   userId: string
   accountId: string
 }
 
 export type AccountMemberUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   account?: Prisma.AccountUpdateOneRequiredWithoutMembersNestedInput
 }
 
 export type AccountMemberUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AccountMemberCreateManyInput = {
   id?: string
+  role?: $Enums.AccountMemberRole
   createdAt?: Date | string
   updatedAt?: Date | string
-  role?: string | null
   userId: string
   accountId: string
 }
 
 export type AccountMemberUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type AccountMemberUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -322,27 +322,27 @@ export type AccountMemberUserIdAccountIdCompoundUniqueInput = {
 
 export type AccountMemberCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  role?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
 }
 
 export type AccountMemberMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  role?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
 }
 
 export type AccountMemberMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  role?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
 }
@@ -431,19 +431,23 @@ export type AccountMemberUncheckedUpdateManyWithoutAccountNestedInput = {
   deleteMany?: Prisma.AccountMemberScalarWhereInput | Prisma.AccountMemberScalarWhereInput[]
 }
 
+export type EnumAccountMemberRoleFieldUpdateOperationsInput = {
+  set?: $Enums.AccountMemberRole
+}
+
 export type AccountMemberCreateWithoutUserInput = {
   id?: string
+  role?: $Enums.AccountMemberRole
   createdAt?: Date | string
   updatedAt?: Date | string
-  role?: string | null
   account: Prisma.AccountCreateNestedOneWithoutMembersInput
 }
 
 export type AccountMemberUncheckedCreateWithoutUserInput = {
   id?: string
+  role?: $Enums.AccountMemberRole
   createdAt?: Date | string
   updatedAt?: Date | string
-  role?: string | null
   accountId: string
 }
 
@@ -478,26 +482,26 @@ export type AccountMemberScalarWhereInput = {
   OR?: Prisma.AccountMemberScalarWhereInput[]
   NOT?: Prisma.AccountMemberScalarWhereInput | Prisma.AccountMemberScalarWhereInput[]
   id?: Prisma.StringFilter<"AccountMember"> | string
+  role?: Prisma.EnumAccountMemberRoleFilter<"AccountMember"> | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFilter<"AccountMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AccountMember"> | Date | string
-  role?: Prisma.StringNullableFilter<"AccountMember"> | string | null
   userId?: Prisma.StringFilter<"AccountMember"> | string
   accountId?: Prisma.StringFilter<"AccountMember"> | string
 }
 
 export type AccountMemberCreateWithoutAccountInput = {
   id?: string
+  role?: $Enums.AccountMemberRole
   createdAt?: Date | string
   updatedAt?: Date | string
-  role?: string | null
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
 }
 
 export type AccountMemberUncheckedCreateWithoutAccountInput = {
   id?: string
+  role?: $Enums.AccountMemberRole
   createdAt?: Date | string
   updatedAt?: Date | string
-  role?: string | null
   userId: string
 }
 
@@ -529,65 +533,65 @@ export type AccountMemberUpdateManyWithWhereWithoutAccountInput = {
 
 export type AccountMemberCreateManyUserInput = {
   id?: string
+  role?: $Enums.AccountMemberRole
   createdAt?: Date | string
   updatedAt?: Date | string
-  role?: string | null
   accountId: string
 }
 
 export type AccountMemberUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account?: Prisma.AccountUpdateOneRequiredWithoutMembersNestedInput
 }
 
 export type AccountMemberUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AccountMemberUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AccountMemberCreateManyAccountInput = {
   id?: string
+  role?: $Enums.AccountMemberRole
   createdAt?: Date | string
   updatedAt?: Date | string
-  role?: string | null
   userId: string
 }
 
 export type AccountMemberUpdateWithoutAccountInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
 }
 
 export type AccountMemberUncheckedUpdateWithoutAccountInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AccountMemberUncheckedUpdateManyWithoutAccountInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -595,9 +599,9 @@ export type AccountMemberUncheckedUpdateManyWithoutAccountInput = {
 
 export type AccountMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  role?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  role?: boolean
   userId?: boolean
   accountId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -606,9 +610,9 @@ export type AccountMemberSelect<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type AccountMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  role?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  role?: boolean
   userId?: boolean
   accountId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -617,9 +621,9 @@ export type AccountMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types
 
 export type AccountMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  role?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  role?: boolean
   userId?: boolean
   accountId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -628,14 +632,14 @@ export type AccountMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
 
 export type AccountMemberSelectScalar = {
   id?: boolean
+  role?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  role?: boolean
   userId?: boolean
   accountId?: boolean
 }
 
-export type AccountMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "role" | "userId" | "accountId", ExtArgs["result"]["accountMember"]>
+export type AccountMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "role" | "createdAt" | "updatedAt" | "userId" | "accountId", ExtArgs["result"]["accountMember"]>
 export type AccountMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
@@ -657,9 +661,9 @@ export type $AccountMemberPayload<ExtArgs extends runtime.Types.Extensions.Inter
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    role: $Enums.AccountMemberRole
     createdAt: Date
     updatedAt: Date
-    role: string | null
     userId: string
     accountId: string
   }, ExtArgs["result"]["accountMember"]>
@@ -1088,9 +1092,9 @@ export interface Prisma__AccountMemberClient<T, Null = never, ExtArgs extends ru
  */
 export interface AccountMemberFieldRefs {
   readonly id: Prisma.FieldRef<"AccountMember", 'String'>
+  readonly role: Prisma.FieldRef<"AccountMember", 'AccountMemberRole'>
   readonly createdAt: Prisma.FieldRef<"AccountMember", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"AccountMember", 'DateTime'>
-  readonly role: Prisma.FieldRef<"AccountMember", 'String'>
   readonly userId: Prisma.FieldRef<"AccountMember", 'String'>
   readonly accountId: Prisma.FieldRef<"AccountMember", 'String'>
 }

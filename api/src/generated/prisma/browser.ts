@@ -18,6 +18,11 @@ export { Prisma }
 export * as $Enums from './enums.js'
 export * from './enums.js';
 /**
+ * Model Whitelabel
+ * 
+ */
+export type Whitelabel = Prisma.WhitelabelModel
+/**
  * Model User
  * 
  */
@@ -32,6 +37,11 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type AccountMember = Prisma.AccountMemberModel
+/**
+ * Model MemberInvite
+ * 
+ */
+export type MemberInvite = Prisma.MemberInviteModel
 /**
  * Model Category
  * 

@@ -27,8 +27,8 @@ export * from "./enums.js"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Users
- * const users = await prisma.user.findMany()
+ * // Fetch zero or more Whitelabels
+ * const whitelabels = await prisma.whitelabel.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -37,6 +37,11 @@ export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
 export { Prisma }
 
+/**
+ * Model Whitelabel
+ * 
+ */
+export type Whitelabel = Prisma.WhitelabelModel
 /**
  * Model User
  * 
@@ -52,6 +57,11 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type AccountMember = Prisma.AccountMemberModel
+/**
+ * Model MemberInvite
+ * 
+ */
+export type MemberInvite = Prisma.MemberInviteModel
 /**
  * Model Category
  * 

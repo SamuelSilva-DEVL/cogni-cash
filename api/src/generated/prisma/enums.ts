@@ -17,6 +17,15 @@ export const Plans = {
 export type Plans = (typeof Plans)[keyof typeof Plans]
 
 
+export const AccountMemberRole = {
+  OWNER: 'OWNER',
+  DEPENDENT: 'DEPENDENT',
+  VIEWER: 'VIEWER'
+} as const
+
+export type AccountMemberRole = (typeof AccountMemberRole)[keyof typeof AccountMemberRole]
+
+
 export const transactionType = {
   EXPENSE: 'EXPENSE',
   INCOME: 'INCOME'

@@ -8,58 +8,104 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id        String    @id @default(uuid())
-  name      String
-  email     String    @unique
-  password  String
-  telephone String?   @unique
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-
-  memberships AccountMember[]
-  createdTransactions Transaction[] @relation("transaction_creator")
-
-  @@map("users")
-}
-
 enum Plans {
   FREE
   PREMIUM
 }
 
-model Account {
-  id String @id @default(uuid())
-  name      String?
+enum AccountMemberRole {
+  OWNER
+  DEPENDENT
+  VIEWER
+}
 
-  plan      Plans   @default(FREE)
+model Whitelabel {
+  id        String   @id @default(uuid())
+  name      String?
+  status    String   @default("active")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  users    User[]
+  accounts Account[]
+  invites  MemberInvite[]
+
+  @@map("whitelabels")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String
+  password     String
+  telephone    String?
+  whitelabelId String   @map("whitelabel_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  whitelabel          Whitelabel     @relation(fields: [whitelabelId], references: [id], onDelete: Cascade)
+  memberships         AccountMember[]
+  createdTransactions Transaction[]  @relation("transaction_creator")
+  sentInvites         MemberInvite[] @relation("sent_invites")
+
+  @@unique([whitelabelId, email])
+  @@map("users")
+}
+
+model Account {
+  id           String   @id @default(uuid())
+  name         String?
+  plan         Plans    @default(FREE)
+  whitelabelId String   @map("whitelabel_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  whitelabel   Whitelabel      @relation(fields: [whitelabelId], references: [id], onDelete: Cascade)
   members      AccountMember[]
   transactions Transaction[]
   categories   Category[]
   budgets      Budget[]
   goals        Goal[]
+  invites      MemberInvite[]
 
+  @@index([whitelabelId])
   @@map("accounts")
 }
 
 model AccountMember {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  role String? @default("member")
+  id        String            @id @default(uuid())
+  role      AccountMemberRole @default(DEPENDENT)
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
 
   userId    String @map("user_id")
   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  accountId String @map("account_id")
+  accountId String  @map("account_id")
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
   @@unique([userId, accountId])
   @@map("account_members")
+}
+
+model MemberInvite {
+  id         String            @id @default(uuid())
+  email      String
+  token      String            @unique @default(uuid())
+  role       AccountMemberRole @default(DEPENDENT)
+  expiresAt  DateTime          @map("expires_at")
+  acceptedAt DateTime?         @map("accepted_at")
+  createdAt  DateTime          @default(now()) @map("created_at")
+
+  accountId    String @map("account_id")
+  account      Account    @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  whitelabelId String     @map("whitelabel_id")
+  whitelabel   Whitelabel @relation(fields: [whitelabelId], references: [id], onDelete: Cascade)
+  invitedById  String     @map("invited_by_id")
+  invitedBy    User       @relation("sent_invites", fields: [invitedById], references: [id], onDelete: Cascade)
+
+  @@unique([whitelabelId, email, accountId])
+  @@map("member_invites")
 }
 
 model Category {
@@ -68,7 +114,7 @@ model Category {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  accountId String @map("account_id")
+  accountId String  @map("account_id")
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
   transactions Transaction[]
@@ -90,13 +136,13 @@ model Transaction {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  type transactionType
+  type   transactionType
   source String?
 
-  accountId String @map("account_id")
+  accountId String  @map("account_id")
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
-  categoryId String?  @map("category_id")
+  categoryId String?   @map("category_id")
   category   Category? @relation(fields: [categoryId], references: [id])
 
   createdBy String @map("created_by")
@@ -110,7 +156,7 @@ model Transaction {
 model Budget {
   id String @id @default(uuid())
 
-  limit Decimal @db.Decimal(10,2)
+  limit Decimal @db.Decimal(10, 2)
 
   month Int
   year  Int
@@ -122,7 +168,9 @@ model Budget {
   category   Category @relation(fields: [categoryId], references: [id])
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @map("updated_at")
 
+  @@unique([accountId, categoryId, month, year])
   @@map("budgets")
 }
 
@@ -131,8 +179,8 @@ model Goal {
 
   title String
 
-  targetAmount Decimal @db.Decimal(10,2)
-  currentAmount Decimal @default(0) @db.Decimal(10,2)
+  targetAmount  Decimal @db.Decimal(10, 2)
+  currentAmount Decimal @default(0) @db.Decimal(10, 2)
 
   deadline DateTime?
 

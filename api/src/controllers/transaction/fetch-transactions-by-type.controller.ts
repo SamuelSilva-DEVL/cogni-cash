@@ -2,15 +2,14 @@ import {
   Controller,
   Get,
   Query,
-  UnauthorizedException,
   UseGuards,
-  BadRequestException,
 } from "@nestjs/common"
 import { CurrentUser } from "@/auth/current-user-decorator"
 import { type UserPayload } from "@/auth/jwt.strategy"
 import { JwtAuthGuard } from "@/auth/jwt-auth.guard"
 import { ZodValidationPipe } from "@/pipes/zod-validation-pipe"
 import { PrismaService } from "@/prisma/prisma.service"
+import { AccountContextService } from "@/services/account-context.service"
 import {
   ApiTags,
   ApiOperation,
@@ -39,7 +38,10 @@ const queryValidationPipe = new ZodValidationPipe(fetchTransactionQuerySchema)
 @Controller("/transactions")
 @UseGuards(JwtAuthGuard)
 export class FetchTransactionsByTypeController {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private accountContext: AccountContextService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: "Buscar transações por tipo (INCOME ou EXPENSE)" })
@@ -47,82 +49,34 @@ export class FetchTransactionsByTypeController {
     name: "type",
     required: true,
     enum: ["INCOME", "EXPENSE"],
-    description: "Tipo de transação a buscar",
-    example: "EXPENSE",
   })
   @ApiQuery({
     name: "page",
     required: false,
     type: Number,
-    description: "Número da página (padrão: 1)",
-    example: 1,
   })
-  @ApiResponse({
-    status: 200,
-    description: "Transações retornadas com sucesso",
-    schema: {
-      example: {
-        transactions: [
-          {
-            id: "txn_123",
-            description: "Compras no supermercado",
-            amount: "150.50",
-            date: "2026-03-28T14:30:00Z",
-            type: "EXPENSE",
-            categoryName: "Alimentação",
-            source: null,
-            createdAt: "2026-03-28T14:30:00Z",
-          },
-        ],
-        total: 42,
-        page: 1,
-        pageSize: 10,
-      },
-    },
-  })
+  @ApiResponse({ status: 200, description: "Transações retornadas com sucesso" })
   @ApiResponse({ status: 401, description: "Não autenticado" })
-  @ApiResponse({
-    status: 400,
-    description: "Tipo de transação inválido",
-  })
   async fetchByType(
     @Query(queryValidationPipe) query: FetchTransactionQuerySchema,
     @CurrentUser() user: UserPayload,
   ) {
     const { type, page } = query
     const perPage = 10
-    const prisma = this.prisma as any
+    const context = await this.accountContext.resolve(user)
 
-    // Buscar a conta do usuário
-    const membership = await prisma.accountMember.findFirst({
+    const total = await this.prisma.transaction.count({
       where: {
-        userId: user.userId,
-      },
-      select: {
-        accountId: true,
-      },
-    })
-
-    if (!membership) {
-      throw new UnauthorizedException("Usuário sem conta vinculada")
-    }
-
-    const accountId = membership.accountId
-
-    // Contar total de transações
-    const total = await prisma.transaction.count({
-      where: {
-        accountId,
+        accountId: context.accountId,
         type,
       },
     })
 
-    // Buscar transações paginadas
-    const transactions = await prisma.transaction.findMany({
+    const transactions = await this.prisma.transaction.findMany({
       take: perPage,
       skip: (page - 1) * perPage,
       where: {
-        accountId,
+        accountId: context.accountId,
         type,
       },
       include: {
@@ -134,7 +88,7 @@ export class FetchTransactionsByTypeController {
     })
 
     return {
-      transactions: transactions.map((txn: any) => ({
+      transactions: transactions.map((txn) => ({
         id: txn.id,
         description: txn.description,
         amount: txn.amount.toString(),

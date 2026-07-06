@@ -1,13 +1,13 @@
 import {
   Controller,
   Get,
-  UnauthorizedException,
   UseGuards,
 } from "@nestjs/common"
 import { CurrentUser } from "@/auth/current-user-decorator"
 import { JwtAuthGuard } from "@/auth/jwt-auth.guard"
 import { type UserPayload } from "@/auth/jwt.strategy"
 import { PrismaService } from "@/prisma/prisma.service"
+import { AccountContextService } from "@/services/account-context.service"
 import {
   ApiTags,
   ApiOperation,
@@ -20,55 +20,21 @@ import {
 @Controller("/categories")
 @UseGuards(JwtAuthGuard)
 export class ListCategoriesController {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private accountContext: AccountContextService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: "Listar categorias da conta" })
-  @ApiResponse({
-    status: 200,
-    description: "Categorias listadas com sucesso",
-    schema: {
-      example: {
-        categories: [
-          {
-            id: "cat_123",
-            name: "Alimentação",
-            createdAt: "2026-03-29T10:00:00Z",
-          },
-          {
-            id: "cat_456",
-            name: "Transporte",
-            createdAt: "2026-03-28T14:30:00Z",
-          },
-        ],
-        total: 2,
-      },
-    },
-  })
+  @ApiResponse({ status: 200, description: "Categorias listadas com sucesso" })
   @ApiResponse({ status: 401, description: "Não autenticado" })
   async list(@CurrentUser() user: UserPayload) {
-    const prisma = this.prisma as any
+    const context = await this.accountContext.resolve(user)
 
-    // Buscar a conta do usuário
-    const membership = await prisma.accountMember.findFirst({
+    const categories = await this.prisma.category.findMany({
       where: {
-        userId: user.userId,
-      },
-      select: {
-        accountId: true,
-      },
-    })
-
-    if (!membership) {
-      throw new UnauthorizedException("Usuário sem conta vinculada")
-    }
-
-    const accountId = membership.accountId
-
-    // Buscar todas as categorias
-    const categories = await prisma.category.findMany({
-      where: {
-        accountId,
+        accountId: context.accountId,
       },
       orderBy: {
         name: "asc",
@@ -76,7 +42,7 @@ export class ListCategoriesController {
     })
 
     return {
-      categories: categories.map((cat: any) => ({
+      categories: categories.map((cat) => ({
         id: cat.id,
         name: cat.name,
         createdAt: cat.createdAt.toISOString(),

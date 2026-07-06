@@ -1,23 +1,27 @@
 import {
   Body,
-  ConflictException,
   Controller,
+  Headers,
   HttpCode,
   Post,
   UnauthorizedException,
   UsePipes,
 } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
-import { compare, hash } from "bcryptjs"
+import { compare } from "bcryptjs"
 import { ZodValidationPipe } from "@/pipes/zod-validation-pipe"
 import { PrismaService } from "@/prisma/prisma.service"
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
-  ApiBearerAuth,
   ApiBody,
+  ApiHeader,
 } from "@nestjs/swagger"
+import {
+  resolveWhitelabelById,
+  WHITELABEL_ID_HEADER,
+} from "@/whitelabel/resolve-whitelabel"
 import z from "zod"
 
 const authenticateBodySchema = z.object({
@@ -38,16 +42,17 @@ export class AuthenticateController {
   @Post()
   @HttpCode(200)
   @ApiOperation({ summary: "Autenticar usuário e obter token JWT" })
+  @ApiHeader({
+    name: WHITELABEL_ID_HEADER,
+    description: "ID da central whitelabel do usuário",
+    required: true,
+  })
   @ApiBody({
     description: "Credenciais do usuário",
     schema: {
       example: {
         email: "usuario@example.com",
         password: "senha123",
-      },
-      properties: {
-        email: { type: "string", description: "Email do usuário" },
-        password: { type: "string", description: "Senha do usuário" },
       },
     },
   })
@@ -62,12 +67,23 @@ export class AuthenticateController {
   })
   @ApiResponse({ status: 401, description: "Email ou senha inválidos" })
   @UsePipes(new ZodValidationPipe(authenticateBodySchema))
-  async handle(@Body() body: AuthenticateBodySchema) {
+  async handle(
+    @Body() body: AuthenticateBodySchema,
+    @Headers(WHITELABEL_ID_HEADER) whitelabelIdHeader: string | undefined,
+  ) {
     const { email, password } = body
+
+    const whitelabel = await resolveWhitelabelById(
+      this.prisma,
+      whitelabelIdHeader,
+    )
 
     const user = await this.prisma.user.findUnique({
       where: {
-        email,
+        whitelabelId_email: {
+          whitelabelId: whitelabel.id,
+          email,
+        },
       },
     })
 
@@ -81,7 +97,30 @@ export class AuthenticateController {
       throw new UnauthorizedException("Email ou senha inválidos")
     }
 
-    const accessToken = this.jwt.sign({ userId: user.id })
+    const membership = await this.prisma.accountMember.findFirst({
+      where: {
+        userId: user.id,
+        account: {
+          whitelabelId: whitelabel.id,
+        },
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+      select: {
+        accountId: true,
+      },
+    })
+
+    if (!membership) {
+      throw new UnauthorizedException("Usuário sem conta vinculada")
+    }
+
+    const accessToken = this.jwt.sign({
+      userId: user.id,
+      whitelabelId: whitelabel.id,
+      accountId: membership.accountId,
+    })
 
     return {
       access_token: accessToken,

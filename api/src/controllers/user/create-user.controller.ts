@@ -10,6 +10,7 @@ import { hash } from "bcryptjs"
 import { ZodValidationPipe } from "@/pipes/zod-validation-pipe"
 import { PrismaService } from "@/prisma/prisma.service"
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from "@nestjs/swagger"
+import { AccountMemberRole } from "@/generated/prisma/client"
 import z from "zod"
 
 const createUserSchema = z.object({
@@ -27,22 +28,14 @@ export class CreateUserController {
 
   @Post()
   @HttpCode(201)
-  @ApiOperation({ summary: "Criar novo usuário" })
+  @ApiOperation({ summary: "Criar novo usuário titular" })
   @ApiBody({
-    description: "Dados para criar novo usuário",
+    description: "Dados para criar novo usuário titular (cria whitelabel automaticamente)",
     schema: {
       example: {
         name: "João Silva",
         email: "joao@example.com",
         password: "senha123",
-      },
-      properties: {
-        name: { type: "string", description: "Nome completo do usuário" },
-        email: { type: "string", description: "Email único do usuário" },
-        password: {
-          type: "string",
-          description: "Senha com mínimo 6 caracteres",
-        },
       },
     },
   })
@@ -54,6 +47,8 @@ export class CreateUserController {
         id: "user_123",
         name: "João Silva",
         email: "joao@example.com",
+        whitelabelId: "wl_123",
+        accountId: "acc_123",
       },
     },
   })
@@ -61,32 +56,42 @@ export class CreateUserController {
   @UsePipes(new ZodValidationPipe(createUserSchema))
   async createUser(@Body() body: CreateUserSchema) {
     const { name, email, password } = body
-    const prisma = this.prisma as any
-
-    const hasExistingUserWithEmail = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    })
-
-    if (hasExistingUserWithEmail) {
-      throw new ConflictException("Um usuário com esse email já existe")
-    }
 
     const hashedPassword = await hash(password, 8)
 
-    await prisma.$transaction(async (tx: any) => {
+    const result = await this.prisma.$transaction(async (tx) => {
+      const whitelabel = await tx.whitelabel.create({
+        data: {
+          name: `Família de ${name}`,
+        },
+      })
+
+      const existingUser = await tx.user.findUnique({
+        where: {
+          whitelabelId_email: {
+            whitelabelId: whitelabel.id,
+            email,
+          },
+        },
+      })
+
+      if (existingUser) {
+        throw new ConflictException("Um usuário com esse email já existe")
+      }
+
       const user = await tx.user.create({
         data: {
           name,
           email,
           password: hashedPassword,
+          whitelabelId: whitelabel.id,
         },
       })
 
       const account = await tx.account.create({
         data: {
           name: `Conta de ${name}`,
+          whitelabelId: whitelabel.id,
         },
       })
 
@@ -94,9 +99,19 @@ export class CreateUserController {
         data: {
           userId: user.id,
           accountId: account.id,
-          role: "owner",
+          role: AccountMemberRole.OWNER,
         },
       })
+
+      return { user, whitelabel, account }
     })
+
+    return {
+      id: result.user.id,
+      name: result.user.name,
+      email: result.user.email,
+      whitelabelId: result.whitelabel.id,
+      accountId: result.account.id,
+    }
   }
 }

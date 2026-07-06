@@ -2,16 +2,18 @@ import {
   Body,
   Controller,
   Post,
-  UnauthorizedException,
   UseGuards,
   HttpCode,
-  BadRequestException,
 } from "@nestjs/common"
 import { CurrentUser } from "@/auth/current-user-decorator"
 import { JwtAuthGuard } from "@/auth/jwt-auth.guard"
+import { RolesGuard } from "@/auth/roles.guard"
+import { RequireRoles } from "@/auth/require-roles.decorator"
+import { WRITE_FINANCE_ROLES } from "@/auth/account-member-role"
 import { type UserPayload } from "@/auth/jwt.strategy"
 import { ZodValidationPipe } from "@/pipes/zod-validation-pipe"
 import { PrismaService } from "@/prisma/prisma.service"
+import { AccountContextService } from "@/services/account-context.service"
 import {
   ApiTags,
   ApiOperation,
@@ -37,15 +39,18 @@ const bodyValidationPipe = new ZodValidationPipe(createTransactionBodySchema)
 @ApiTags("Transactions")
 @ApiBearerAuth()
 @Controller("/transactions")
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class CreateTransactionController {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private accountContext: AccountContextService,
+  ) {}
 
   @Post()
+  @RequireRoles(...WRITE_FINANCE_ROLES)
   @HttpCode(201)
   @ApiOperation({ summary: "Criar nova transação" })
   @ApiBody({
-    description: "Dados para criar uma nova transação",
     schema: {
       example: {
         description: "Salário do mês",
@@ -55,95 +60,33 @@ export class CreateTransactionController {
         categoryName: "Salário",
         source: "Trabalho",
       },
-      properties: {
-        description: {
-          type: "string",
-          description: "Descrição da transação",
-        },
-        amount: {
-          type: "number",
-          description: "Valor da transação",
-        },
-        date: {
-          type: "string",
-          description: "Data da transação (ISO 8601)",
-        },
-        type: {
-          type: "string",
-          enum: ["INCOME", "EXPENSE"],
-          description: "Tipo de transação",
-        },
-        categoryName: {
-          type: "string",
-          description: "Nome da categoria (será criada se não existir)",
-        },
-        source: {
-          type: "string",
-          description: "Origem da transação (opcional)",
-        },
-      },
     },
   })
-  @ApiResponse({
-    status: 201,
-    description: "Transação criada com sucesso",
-    schema: {
-      example: {
-        id: "txn_123",
-        description: "Salário do mês",
-        amount: "5000.00",
-        date: "2026-03-29T10:00:00Z",
-        type: "INCOME",
-        categoryName: "Salário",
-        source: "Trabalho",
-        createdAt: "2026-03-29T10:00:00Z",
-      },
-    },
-  })
+  @ApiResponse({ status: 201, description: "Transação criada com sucesso" })
   @ApiResponse({ status: 401, description: "Não autenticado" })
-  @ApiResponse({
-    status: 400,
-    description: "Dados inválidos",
-  })
+  @ApiResponse({ status: 403, description: "Sem permissão" })
   async create(
     @Body(bodyValidationPipe) body: CreateTransactionBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
     const { description, amount, date, type, categoryName, source } = body
-    const prisma = this.prisma as any
-
-    // Buscar a conta do usuário
-    const membership = await prisma.accountMember.findFirst({
-      where: {
-        userId: user.userId,
-      },
-      select: {
-        accountId: true,
-      },
-    })
-
-    if (!membership) {
-      throw new UnauthorizedException("Usuário sem conta vinculada")
-    }
-
-    const accountId = membership.accountId
+    const context = await this.accountContext.resolve(user)
 
     let categoryId: string | null = null
 
-    // Se uma categoria foi informada, buscar ou criar
     if (categoryName) {
-      let category = await prisma.category.findFirst({
+      let category = await this.prisma.category.findFirst({
         where: {
           name: categoryName,
-          accountId,
+          accountId: context.accountId,
         },
       })
 
       if (!category) {
-        category = await prisma.category.create({
+        category = await this.prisma.category.create({
           data: {
             name: categoryName,
-            accountId,
+            accountId: context.accountId,
           },
         })
       }
@@ -151,15 +94,14 @@ export class CreateTransactionController {
       categoryId = category.id
     }
 
-    // Criar a transação
-    const transaction = await prisma.transaction.create({
+    const transaction = await this.prisma.transaction.create({
       data: {
         description,
         amount,
         date: new Date(date),
         type,
         source: source || null,
-        accountId,
+        accountId: context.accountId,
         categoryId,
         createdBy: user.userId,
       },

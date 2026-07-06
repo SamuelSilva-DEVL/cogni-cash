@@ -2,8 +2,10 @@ import { AppModule } from "@/app.module"
 import { PrismaService } from "@/prisma/prisma.service"
 import { INestApplication } from "@nestjs/common"
 import { Test } from "@nestjs/testing"
-import { hash } from 'bcryptjs'
 import request from "supertest"
+import {
+  createTitularWithWhitelabel,
+} from "../../../test/helpers/e2e-whitelabel"
 
 describe("Authenticate (e2e)", () => {
   let app: INestApplication
@@ -26,22 +28,19 @@ describe("Authenticate (e2e)", () => {
   })
 
   test("[POST] /sessions", async () => {
-    await prisma.user.create({
-      data: {
-        name: "John Doe",
-        email: "1Mn0o@example.com",
-        password: await hash("123456", 8),
-      },
+    const setup = await createTitularWithWhitelabel(prisma, {
+      email: "1Mn0o@example.com",
     })
 
     const response = await request(app.getHttpServer())
       .post("/sessions")
+      .set("x-whitelabel-id", setup.whitelabel.id)
       .send({
         email: "1Mn0o@example.com",
         password: "123456",
       })
 
-    expect(response.statusCode).toBe(201)
+    expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
       access_token: expect.any(String),
     })

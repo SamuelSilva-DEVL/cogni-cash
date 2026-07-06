@@ -2,14 +2,17 @@ import {
   Body,
   Controller,
   Post,
-  UnauthorizedException,
   UseGuards,
 } from "@nestjs/common"
 import { CurrentUser } from "@/auth/current-user-decorator"
 import { JwtAuthGuard } from "@/auth/jwt-auth.guard"
+import { RolesGuard } from "@/auth/roles.guard"
+import { RequireRoles } from "@/auth/require-roles.decorator"
+import { WRITE_STRUCTURE_ROLES } from "@/auth/account-member-role"
 import { type UserPayload } from "@/auth/jwt.strategy"
 import { ZodValidationPipe } from "@/pipes/zod-validation-pipe"
 import { PrismaService } from "@/prisma/prisma.service"
+import { AccountContextService } from "@/services/account-context.service"
 import {
   ApiTags,
   ApiOperation,
@@ -33,11 +36,15 @@ const bodyValidationPipe = new ZodValidationPipe(createGoalBodySchema)
 @ApiTags("Goals")
 @ApiBearerAuth()
 @Controller("/goals")
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class CreateGoalController {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private accountContext: AccountContextService,
+  ) {}
 
   @Post()
+  @RequireRoles(...WRITE_STRUCTURE_ROLES)
   @ApiOperation({ summary: "Criar nova meta financeira" })
   @ApiBody({
     description: "Dados para criar uma nova meta de economias",
@@ -48,70 +55,27 @@ export class CreateGoalController {
         currentAmount: 2500,
         deadline: "2026-12-31",
       },
-      properties: {
-        title: { type: "string", description: "Nome da meta" },
-        targetAmount: {
-          type: "number",
-          description: "Valor alvo que deseja economizar",
-        },
-        currentAmount: {
-          type: "number",
-          description: "Valor já economizado (opcional)",
-        },
-        deadline: {
-          type: "string",
-          description: "Data limite para atingir a meta (ISO 8601, opcional)",
-        },
-      },
     },
   })
-  @ApiResponse({
-    status: 201,
-    description: "Meta criada com sucesso",
-    schema: {
-      example: {
-        id: "goal_123",
-        title: "Fundo de emergência",
-        targetAmount: 10000,
-        currentAmount: 2500,
-        slug: "fundo-de-emergencia",
-      },
-    },
-  })
+  @ApiResponse({ status: 201, description: "Meta criada com sucesso" })
   @ApiResponse({ status: 401, description: "Não autenticado" })
+  @ApiResponse({ status: 403, description: "Sem permissão" })
   async handle(
     @Body(bodyValidationPipe) body: CreateGoalBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
     const { title, targetAmount, currentAmount, deadline } = body
-    const { userId } = user
     const slug = this.convertSlug(title)
-    const prisma = this.prisma as any
+    const context = await this.accountContext.resolve(user)
 
-    const membership = await prisma.accountMember.findFirst({
-      where: {
-        userId,
-      },
-      orderBy: {
-        createdAt: "asc",
-      },
-      select: {
-        accountId: true,
-      },
-    })
-
-    if (!membership) {
-      throw new UnauthorizedException("Usuário sem conta vinculada")
-    }
-
-    await prisma.goal.create({
+    await this.prisma.goal.create({
       data: {
         title,
         targetAmount,
         currentAmount,
         deadline: deadline ? new Date(deadline) : undefined,
-        accountId: membership.accountId,
-        slug: slug,
+        accountId: context.accountId,
+        slug,
       },
     })
 

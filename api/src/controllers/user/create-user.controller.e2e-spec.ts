@@ -34,10 +34,20 @@ describe("CreateUserController (e2e)", () => {
       })
     
     expect(response.statusCode).toBe(201)
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        id: expect.any(String),
+        whitelabelId: expect.any(String),
+        accountId: expect.any(String),
+      }),
+    )
 
     const userOnDatabase = await prisma.user.findUnique({
       where: {
-        email: "1Mn0o@example.com",
+        whitelabelId_email: {
+          whitelabelId: response.body.whitelabelId,
+          email: "1Mn0o@example.com",
+        },
       },
     })
 
@@ -53,7 +63,7 @@ describe("CreateUserController (e2e)", () => {
     })
 
     expect(membership).toBeTruthy()
-    expect(membership?.account).toBeTruthy()
+    expect(membership?.account.whitelabelId).toBe(response.body.whitelabelId)
   })
 
   afterAll(async () => {

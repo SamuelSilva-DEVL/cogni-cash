@@ -28,6 +28,7 @@ export type AccountMinAggregateOutputType = {
   id: string | null
   name: string | null
   plan: $Enums.Plans | null
+  whitelabelId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -36,6 +37,7 @@ export type AccountMaxAggregateOutputType = {
   id: string | null
   name: string | null
   plan: $Enums.Plans | null
+  whitelabelId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,6 +46,7 @@ export type AccountCountAggregateOutputType = {
   id: number
   name: number
   plan: number
+  whitelabelId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -54,6 +57,7 @@ export type AccountMinAggregateInputType = {
   id?: true
   name?: true
   plan?: true
+  whitelabelId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -62,6 +66,7 @@ export type AccountMaxAggregateInputType = {
   id?: true
   name?: true
   plan?: true
+  whitelabelId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -70,6 +75,7 @@ export type AccountCountAggregateInputType = {
   id?: true
   name?: true
   plan?: true
+  whitelabelId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -151,6 +157,7 @@ export type AccountGroupByOutputType = {
   id: string
   name: string | null
   plan: $Enums.Plans
+  whitelabelId: string
   createdAt: Date
   updatedAt: Date
   _count: AccountCountAggregateOutputType | null
@@ -180,26 +187,32 @@ export type AccountWhereInput = {
   id?: Prisma.StringFilter<"Account"> | string
   name?: Prisma.StringNullableFilter<"Account"> | string | null
   plan?: Prisma.EnumPlansFilter<"Account"> | $Enums.Plans
+  whitelabelId?: Prisma.StringFilter<"Account"> | string
   createdAt?: Prisma.DateTimeFilter<"Account"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Account"> | Date | string
+  whitelabel?: Prisma.XOR<Prisma.WhitelabelScalarRelationFilter, Prisma.WhitelabelWhereInput>
   members?: Prisma.AccountMemberListRelationFilter
   transactions?: Prisma.TransactionListRelationFilter
   categories?: Prisma.CategoryListRelationFilter
   budgets?: Prisma.BudgetListRelationFilter
   goals?: Prisma.GoalListRelationFilter
+  invites?: Prisma.MemberInviteListRelationFilter
 }
 
 export type AccountOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   plan?: Prisma.SortOrder
+  whitelabelId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  whitelabel?: Prisma.WhitelabelOrderByWithRelationInput
   members?: Prisma.AccountMemberOrderByRelationAggregateInput
   transactions?: Prisma.TransactionOrderByRelationAggregateInput
   categories?: Prisma.CategoryOrderByRelationAggregateInput
   budgets?: Prisma.BudgetOrderByRelationAggregateInput
   goals?: Prisma.GoalOrderByRelationAggregateInput
+  invites?: Prisma.MemberInviteOrderByRelationAggregateInput
 }
 
 export type AccountWhereUniqueInput = Prisma.AtLeast<{
@@ -209,19 +222,23 @@ export type AccountWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AccountWhereInput | Prisma.AccountWhereInput[]
   name?: Prisma.StringNullableFilter<"Account"> | string | null
   plan?: Prisma.EnumPlansFilter<"Account"> | $Enums.Plans
+  whitelabelId?: Prisma.StringFilter<"Account"> | string
   createdAt?: Prisma.DateTimeFilter<"Account"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Account"> | Date | string
+  whitelabel?: Prisma.XOR<Prisma.WhitelabelScalarRelationFilter, Prisma.WhitelabelWhereInput>
   members?: Prisma.AccountMemberListRelationFilter
   transactions?: Prisma.TransactionListRelationFilter
   categories?: Prisma.CategoryListRelationFilter
   budgets?: Prisma.BudgetListRelationFilter
   goals?: Prisma.GoalListRelationFilter
+  invites?: Prisma.MemberInviteListRelationFilter
 }, "id">
 
 export type AccountOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   plan?: Prisma.SortOrder
+  whitelabelId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AccountCountOrderByAggregateInput
@@ -236,6 +253,7 @@ export type AccountScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Account"> | string
   name?: Prisma.StringNullableWithAggregatesFilter<"Account"> | string | null
   plan?: Prisma.EnumPlansWithAggregatesFilter<"Account"> | $Enums.Plans
+  whitelabelId?: Prisma.StringWithAggregatesFilter<"Account"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Account"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Account"> | Date | string
 }
@@ -246,17 +264,20 @@ export type AccountCreateInput = {
   plan?: $Enums.Plans
   createdAt?: Date | string
   updatedAt?: Date | string
+  whitelabel: Prisma.WhitelabelCreateNestedOneWithoutAccountsInput
   members?: Prisma.AccountMemberCreateNestedManyWithoutAccountInput
   transactions?: Prisma.TransactionCreateNestedManyWithoutAccountInput
   categories?: Prisma.CategoryCreateNestedManyWithoutAccountInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutAccountInput
   goals?: Prisma.GoalCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateInput = {
   id?: string
   name?: string | null
   plan?: $Enums.Plans
+  whitelabelId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutAccountInput
@@ -264,6 +285,7 @@ export type AccountUncheckedCreateInput = {
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutAccountInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutAccountInput
   goals?: Prisma.GoalUncheckedCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUpdateInput = {
@@ -272,17 +294,20 @@ export type AccountUpdateInput = {
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whitelabel?: Prisma.WhitelabelUpdateOneRequiredWithoutAccountsNestedInput
   members?: Prisma.AccountMemberUpdateManyWithoutAccountNestedInput
   transactions?: Prisma.TransactionUpdateManyWithoutAccountNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutAccountNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutAccountNestedInput
   goals?: Prisma.GoalUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.AccountMemberUncheckedUpdateManyWithoutAccountNestedInput
@@ -290,12 +315,14 @@ export type AccountUncheckedUpdateInput = {
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutAccountNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutAccountNestedInput
   goals?: Prisma.GoalUncheckedUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountCreateManyInput = {
   id?: string
   name?: string | null
   plan?: $Enums.Plans
+  whitelabelId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -312,14 +339,26 @@ export type AccountUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AccountListRelationFilter = {
+  every?: Prisma.AccountWhereInput
+  some?: Prisma.AccountWhereInput
+  none?: Prisma.AccountWhereInput
+}
+
+export type AccountOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type AccountCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   plan?: Prisma.SortOrder
+  whitelabelId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -328,6 +367,7 @@ export type AccountMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   plan?: Prisma.SortOrder
+  whitelabelId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -336,6 +376,7 @@ export type AccountMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   plan?: Prisma.SortOrder
+  whitelabelId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -343,6 +384,48 @@ export type AccountMinOrderByAggregateInput = {
 export type AccountScalarRelationFilter = {
   is?: Prisma.AccountWhereInput
   isNot?: Prisma.AccountWhereInput
+}
+
+export type AccountCreateNestedManyWithoutWhitelabelInput = {
+  create?: Prisma.XOR<Prisma.AccountCreateWithoutWhitelabelInput, Prisma.AccountUncheckedCreateWithoutWhitelabelInput> | Prisma.AccountCreateWithoutWhitelabelInput[] | Prisma.AccountUncheckedCreateWithoutWhitelabelInput[]
+  connectOrCreate?: Prisma.AccountCreateOrConnectWithoutWhitelabelInput | Prisma.AccountCreateOrConnectWithoutWhitelabelInput[]
+  createMany?: Prisma.AccountCreateManyWhitelabelInputEnvelope
+  connect?: Prisma.AccountWhereUniqueInput | Prisma.AccountWhereUniqueInput[]
+}
+
+export type AccountUncheckedCreateNestedManyWithoutWhitelabelInput = {
+  create?: Prisma.XOR<Prisma.AccountCreateWithoutWhitelabelInput, Prisma.AccountUncheckedCreateWithoutWhitelabelInput> | Prisma.AccountCreateWithoutWhitelabelInput[] | Prisma.AccountUncheckedCreateWithoutWhitelabelInput[]
+  connectOrCreate?: Prisma.AccountCreateOrConnectWithoutWhitelabelInput | Prisma.AccountCreateOrConnectWithoutWhitelabelInput[]
+  createMany?: Prisma.AccountCreateManyWhitelabelInputEnvelope
+  connect?: Prisma.AccountWhereUniqueInput | Prisma.AccountWhereUniqueInput[]
+}
+
+export type AccountUpdateManyWithoutWhitelabelNestedInput = {
+  create?: Prisma.XOR<Prisma.AccountCreateWithoutWhitelabelInput, Prisma.AccountUncheckedCreateWithoutWhitelabelInput> | Prisma.AccountCreateWithoutWhitelabelInput[] | Prisma.AccountUncheckedCreateWithoutWhitelabelInput[]
+  connectOrCreate?: Prisma.AccountCreateOrConnectWithoutWhitelabelInput | Prisma.AccountCreateOrConnectWithoutWhitelabelInput[]
+  upsert?: Prisma.AccountUpsertWithWhereUniqueWithoutWhitelabelInput | Prisma.AccountUpsertWithWhereUniqueWithoutWhitelabelInput[]
+  createMany?: Prisma.AccountCreateManyWhitelabelInputEnvelope
+  set?: Prisma.AccountWhereUniqueInput | Prisma.AccountWhereUniqueInput[]
+  disconnect?: Prisma.AccountWhereUniqueInput | Prisma.AccountWhereUniqueInput[]
+  delete?: Prisma.AccountWhereUniqueInput | Prisma.AccountWhereUniqueInput[]
+  connect?: Prisma.AccountWhereUniqueInput | Prisma.AccountWhereUniqueInput[]
+  update?: Prisma.AccountUpdateWithWhereUniqueWithoutWhitelabelInput | Prisma.AccountUpdateWithWhereUniqueWithoutWhitelabelInput[]
+  updateMany?: Prisma.AccountUpdateManyWithWhereWithoutWhitelabelInput | Prisma.AccountUpdateManyWithWhereWithoutWhitelabelInput[]
+  deleteMany?: Prisma.AccountScalarWhereInput | Prisma.AccountScalarWhereInput[]
+}
+
+export type AccountUncheckedUpdateManyWithoutWhitelabelNestedInput = {
+  create?: Prisma.XOR<Prisma.AccountCreateWithoutWhitelabelInput, Prisma.AccountUncheckedCreateWithoutWhitelabelInput> | Prisma.AccountCreateWithoutWhitelabelInput[] | Prisma.AccountUncheckedCreateWithoutWhitelabelInput[]
+  connectOrCreate?: Prisma.AccountCreateOrConnectWithoutWhitelabelInput | Prisma.AccountCreateOrConnectWithoutWhitelabelInput[]
+  upsert?: Prisma.AccountUpsertWithWhereUniqueWithoutWhitelabelInput | Prisma.AccountUpsertWithWhereUniqueWithoutWhitelabelInput[]
+  createMany?: Prisma.AccountCreateManyWhitelabelInputEnvelope
+  set?: Prisma.AccountWhereUniqueInput | Prisma.AccountWhereUniqueInput[]
+  disconnect?: Prisma.AccountWhereUniqueInput | Prisma.AccountWhereUniqueInput[]
+  delete?: Prisma.AccountWhereUniqueInput | Prisma.AccountWhereUniqueInput[]
+  connect?: Prisma.AccountWhereUniqueInput | Prisma.AccountWhereUniqueInput[]
+  update?: Prisma.AccountUpdateWithWhereUniqueWithoutWhitelabelInput | Prisma.AccountUpdateWithWhereUniqueWithoutWhitelabelInput[]
+  updateMany?: Prisma.AccountUpdateManyWithWhereWithoutWhitelabelInput | Prisma.AccountUpdateManyWithWhereWithoutWhitelabelInput[]
+  deleteMany?: Prisma.AccountScalarWhereInput | Prisma.AccountScalarWhereInput[]
 }
 
 export type EnumPlansFieldUpdateOperationsInput = {
@@ -361,6 +444,20 @@ export type AccountUpdateOneRequiredWithoutMembersNestedInput = {
   upsert?: Prisma.AccountUpsertWithoutMembersInput
   connect?: Prisma.AccountWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.AccountUpdateToOneWithWhereWithoutMembersInput, Prisma.AccountUpdateWithoutMembersInput>, Prisma.AccountUncheckedUpdateWithoutMembersInput>
+}
+
+export type AccountCreateNestedOneWithoutInvitesInput = {
+  create?: Prisma.XOR<Prisma.AccountCreateWithoutInvitesInput, Prisma.AccountUncheckedCreateWithoutInvitesInput>
+  connectOrCreate?: Prisma.AccountCreateOrConnectWithoutInvitesInput
+  connect?: Prisma.AccountWhereUniqueInput
+}
+
+export type AccountUpdateOneRequiredWithoutInvitesNestedInput = {
+  create?: Prisma.XOR<Prisma.AccountCreateWithoutInvitesInput, Prisma.AccountUncheckedCreateWithoutInvitesInput>
+  connectOrCreate?: Prisma.AccountCreateOrConnectWithoutInvitesInput
+  upsert?: Prisma.AccountUpsertWithoutInvitesInput
+  connect?: Prisma.AccountWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AccountUpdateToOneWithWhereWithoutInvitesInput, Prisma.AccountUpdateWithoutInvitesInput>, Prisma.AccountUncheckedUpdateWithoutInvitesInput>
 }
 
 export type AccountCreateNestedOneWithoutCategoriesInput = {
@@ -419,28 +516,98 @@ export type AccountUpdateOneRequiredWithoutGoalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AccountUpdateToOneWithWhereWithoutGoalsInput, Prisma.AccountUpdateWithoutGoalsInput>, Prisma.AccountUncheckedUpdateWithoutGoalsInput>
 }
 
+export type AccountCreateWithoutWhitelabelInput = {
+  id?: string
+  name?: string | null
+  plan?: $Enums.Plans
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.AccountMemberCreateNestedManyWithoutAccountInput
+  transactions?: Prisma.TransactionCreateNestedManyWithoutAccountInput
+  categories?: Prisma.CategoryCreateNestedManyWithoutAccountInput
+  budgets?: Prisma.BudgetCreateNestedManyWithoutAccountInput
+  goals?: Prisma.GoalCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteCreateNestedManyWithoutAccountInput
+}
+
+export type AccountUncheckedCreateWithoutWhitelabelInput = {
+  id?: string
+  name?: string | null
+  plan?: $Enums.Plans
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutAccountInput
+  transactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutAccountInput
+  categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutAccountInput
+  budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutAccountInput
+  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteUncheckedCreateNestedManyWithoutAccountInput
+}
+
+export type AccountCreateOrConnectWithoutWhitelabelInput = {
+  where: Prisma.AccountWhereUniqueInput
+  create: Prisma.XOR<Prisma.AccountCreateWithoutWhitelabelInput, Prisma.AccountUncheckedCreateWithoutWhitelabelInput>
+}
+
+export type AccountCreateManyWhitelabelInputEnvelope = {
+  data: Prisma.AccountCreateManyWhitelabelInput | Prisma.AccountCreateManyWhitelabelInput[]
+  skipDuplicates?: boolean
+}
+
+export type AccountUpsertWithWhereUniqueWithoutWhitelabelInput = {
+  where: Prisma.AccountWhereUniqueInput
+  update: Prisma.XOR<Prisma.AccountUpdateWithoutWhitelabelInput, Prisma.AccountUncheckedUpdateWithoutWhitelabelInput>
+  create: Prisma.XOR<Prisma.AccountCreateWithoutWhitelabelInput, Prisma.AccountUncheckedCreateWithoutWhitelabelInput>
+}
+
+export type AccountUpdateWithWhereUniqueWithoutWhitelabelInput = {
+  where: Prisma.AccountWhereUniqueInput
+  data: Prisma.XOR<Prisma.AccountUpdateWithoutWhitelabelInput, Prisma.AccountUncheckedUpdateWithoutWhitelabelInput>
+}
+
+export type AccountUpdateManyWithWhereWithoutWhitelabelInput = {
+  where: Prisma.AccountScalarWhereInput
+  data: Prisma.XOR<Prisma.AccountUpdateManyMutationInput, Prisma.AccountUncheckedUpdateManyWithoutWhitelabelInput>
+}
+
+export type AccountScalarWhereInput = {
+  AND?: Prisma.AccountScalarWhereInput | Prisma.AccountScalarWhereInput[]
+  OR?: Prisma.AccountScalarWhereInput[]
+  NOT?: Prisma.AccountScalarWhereInput | Prisma.AccountScalarWhereInput[]
+  id?: Prisma.StringFilter<"Account"> | string
+  name?: Prisma.StringNullableFilter<"Account"> | string | null
+  plan?: Prisma.EnumPlansFilter<"Account"> | $Enums.Plans
+  whitelabelId?: Prisma.StringFilter<"Account"> | string
+  createdAt?: Prisma.DateTimeFilter<"Account"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Account"> | Date | string
+}
+
 export type AccountCreateWithoutMembersInput = {
   id?: string
   name?: string | null
   plan?: $Enums.Plans
   createdAt?: Date | string
   updatedAt?: Date | string
+  whitelabel: Prisma.WhitelabelCreateNestedOneWithoutAccountsInput
   transactions?: Prisma.TransactionCreateNestedManyWithoutAccountInput
   categories?: Prisma.CategoryCreateNestedManyWithoutAccountInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutAccountInput
   goals?: Prisma.GoalCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateWithoutMembersInput = {
   id?: string
   name?: string | null
   plan?: $Enums.Plans
+  whitelabelId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   transactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutAccountInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutAccountInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutAccountInput
   goals?: Prisma.GoalUncheckedCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountCreateOrConnectWithoutMembersInput = {
@@ -465,18 +632,94 @@ export type AccountUpdateWithoutMembersInput = {
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whitelabel?: Prisma.WhitelabelUpdateOneRequiredWithoutAccountsNestedInput
   transactions?: Prisma.TransactionUpdateManyWithoutAccountNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutAccountNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutAccountNestedInput
   goals?: Prisma.GoalUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateWithoutMembersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transactions?: Prisma.TransactionUncheckedUpdateManyWithoutAccountNestedInput
+  categories?: Prisma.CategoryUncheckedUpdateManyWithoutAccountNestedInput
+  budgets?: Prisma.BudgetUncheckedUpdateManyWithoutAccountNestedInput
+  goals?: Prisma.GoalUncheckedUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUncheckedUpdateManyWithoutAccountNestedInput
+}
+
+export type AccountCreateWithoutInvitesInput = {
+  id?: string
+  name?: string | null
+  plan?: $Enums.Plans
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  whitelabel: Prisma.WhitelabelCreateNestedOneWithoutAccountsInput
+  members?: Prisma.AccountMemberCreateNestedManyWithoutAccountInput
+  transactions?: Prisma.TransactionCreateNestedManyWithoutAccountInput
+  categories?: Prisma.CategoryCreateNestedManyWithoutAccountInput
+  budgets?: Prisma.BudgetCreateNestedManyWithoutAccountInput
+  goals?: Prisma.GoalCreateNestedManyWithoutAccountInput
+}
+
+export type AccountUncheckedCreateWithoutInvitesInput = {
+  id?: string
+  name?: string | null
+  plan?: $Enums.Plans
+  whitelabelId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  members?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutAccountInput
+  transactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutAccountInput
+  categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutAccountInput
+  budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutAccountInput
+  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutAccountInput
+}
+
+export type AccountCreateOrConnectWithoutInvitesInput = {
+  where: Prisma.AccountWhereUniqueInput
+  create: Prisma.XOR<Prisma.AccountCreateWithoutInvitesInput, Prisma.AccountUncheckedCreateWithoutInvitesInput>
+}
+
+export type AccountUpsertWithoutInvitesInput = {
+  update: Prisma.XOR<Prisma.AccountUpdateWithoutInvitesInput, Prisma.AccountUncheckedUpdateWithoutInvitesInput>
+  create: Prisma.XOR<Prisma.AccountCreateWithoutInvitesInput, Prisma.AccountUncheckedCreateWithoutInvitesInput>
+  where?: Prisma.AccountWhereInput
+}
+
+export type AccountUpdateToOneWithWhereWithoutInvitesInput = {
+  where?: Prisma.AccountWhereInput
+  data: Prisma.XOR<Prisma.AccountUpdateWithoutInvitesInput, Prisma.AccountUncheckedUpdateWithoutInvitesInput>
+}
+
+export type AccountUpdateWithoutInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whitelabel?: Prisma.WhitelabelUpdateOneRequiredWithoutAccountsNestedInput
+  members?: Prisma.AccountMemberUpdateManyWithoutAccountNestedInput
+  transactions?: Prisma.TransactionUpdateManyWithoutAccountNestedInput
+  categories?: Prisma.CategoryUpdateManyWithoutAccountNestedInput
+  budgets?: Prisma.BudgetUpdateManyWithoutAccountNestedInput
+  goals?: Prisma.GoalUpdateManyWithoutAccountNestedInput
+}
+
+export type AccountUncheckedUpdateWithoutInvitesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.AccountMemberUncheckedUpdateManyWithoutAccountNestedInput
   transactions?: Prisma.TransactionUncheckedUpdateManyWithoutAccountNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutAccountNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutAccountNestedInput
@@ -489,22 +732,26 @@ export type AccountCreateWithoutCategoriesInput = {
   plan?: $Enums.Plans
   createdAt?: Date | string
   updatedAt?: Date | string
+  whitelabel: Prisma.WhitelabelCreateNestedOneWithoutAccountsInput
   members?: Prisma.AccountMemberCreateNestedManyWithoutAccountInput
   transactions?: Prisma.TransactionCreateNestedManyWithoutAccountInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutAccountInput
   goals?: Prisma.GoalCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateWithoutCategoriesInput = {
   id?: string
   name?: string | null
   plan?: $Enums.Plans
+  whitelabelId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutAccountInput
   transactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutAccountInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutAccountInput
   goals?: Prisma.GoalUncheckedCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountCreateOrConnectWithoutCategoriesInput = {
@@ -529,22 +776,26 @@ export type AccountUpdateWithoutCategoriesInput = {
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whitelabel?: Prisma.WhitelabelUpdateOneRequiredWithoutAccountsNestedInput
   members?: Prisma.AccountMemberUpdateManyWithoutAccountNestedInput
   transactions?: Prisma.TransactionUpdateManyWithoutAccountNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutAccountNestedInput
   goals?: Prisma.GoalUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateWithoutCategoriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.AccountMemberUncheckedUpdateManyWithoutAccountNestedInput
   transactions?: Prisma.TransactionUncheckedUpdateManyWithoutAccountNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutAccountNestedInput
   goals?: Prisma.GoalUncheckedUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountCreateWithoutTransactionsInput = {
@@ -553,22 +804,26 @@ export type AccountCreateWithoutTransactionsInput = {
   plan?: $Enums.Plans
   createdAt?: Date | string
   updatedAt?: Date | string
+  whitelabel: Prisma.WhitelabelCreateNestedOneWithoutAccountsInput
   members?: Prisma.AccountMemberCreateNestedManyWithoutAccountInput
   categories?: Prisma.CategoryCreateNestedManyWithoutAccountInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutAccountInput
   goals?: Prisma.GoalCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateWithoutTransactionsInput = {
   id?: string
   name?: string | null
   plan?: $Enums.Plans
+  whitelabelId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutAccountInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutAccountInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutAccountInput
   goals?: Prisma.GoalUncheckedCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountCreateOrConnectWithoutTransactionsInput = {
@@ -593,22 +848,26 @@ export type AccountUpdateWithoutTransactionsInput = {
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whitelabel?: Prisma.WhitelabelUpdateOneRequiredWithoutAccountsNestedInput
   members?: Prisma.AccountMemberUpdateManyWithoutAccountNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutAccountNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutAccountNestedInput
   goals?: Prisma.GoalUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateWithoutTransactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.AccountMemberUncheckedUpdateManyWithoutAccountNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutAccountNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutAccountNestedInput
   goals?: Prisma.GoalUncheckedUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountCreateWithoutBudgetsInput = {
@@ -617,22 +876,26 @@ export type AccountCreateWithoutBudgetsInput = {
   plan?: $Enums.Plans
   createdAt?: Date | string
   updatedAt?: Date | string
+  whitelabel: Prisma.WhitelabelCreateNestedOneWithoutAccountsInput
   members?: Prisma.AccountMemberCreateNestedManyWithoutAccountInput
   transactions?: Prisma.TransactionCreateNestedManyWithoutAccountInput
   categories?: Prisma.CategoryCreateNestedManyWithoutAccountInput
   goals?: Prisma.GoalCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateWithoutBudgetsInput = {
   id?: string
   name?: string | null
   plan?: $Enums.Plans
+  whitelabelId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutAccountInput
   transactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutAccountInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutAccountInput
   goals?: Prisma.GoalUncheckedCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountCreateOrConnectWithoutBudgetsInput = {
@@ -657,22 +920,26 @@ export type AccountUpdateWithoutBudgetsInput = {
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whitelabel?: Prisma.WhitelabelUpdateOneRequiredWithoutAccountsNestedInput
   members?: Prisma.AccountMemberUpdateManyWithoutAccountNestedInput
   transactions?: Prisma.TransactionUpdateManyWithoutAccountNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutAccountNestedInput
   goals?: Prisma.GoalUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateWithoutBudgetsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   members?: Prisma.AccountMemberUncheckedUpdateManyWithoutAccountNestedInput
   transactions?: Prisma.TransactionUncheckedUpdateManyWithoutAccountNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutAccountNestedInput
   goals?: Prisma.GoalUncheckedUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountCreateWithoutGoalsInput = {
@@ -681,22 +948,26 @@ export type AccountCreateWithoutGoalsInput = {
   plan?: $Enums.Plans
   createdAt?: Date | string
   updatedAt?: Date | string
+  whitelabel: Prisma.WhitelabelCreateNestedOneWithoutAccountsInput
   members?: Prisma.AccountMemberCreateNestedManyWithoutAccountInput
   transactions?: Prisma.TransactionCreateNestedManyWithoutAccountInput
   categories?: Prisma.CategoryCreateNestedManyWithoutAccountInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateWithoutGoalsInput = {
   id?: string
   name?: string | null
   plan?: $Enums.Plans
+  whitelabelId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   members?: Prisma.AccountMemberUncheckedCreateNestedManyWithoutAccountInput
   transactions?: Prisma.TransactionUncheckedCreateNestedManyWithoutAccountInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutAccountInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutAccountInput
+  invites?: Prisma.MemberInviteUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountCreateOrConnectWithoutGoalsInput = {
@@ -721,13 +992,51 @@ export type AccountUpdateWithoutGoalsInput = {
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whitelabel?: Prisma.WhitelabelUpdateOneRequiredWithoutAccountsNestedInput
   members?: Prisma.AccountMemberUpdateManyWithoutAccountNestedInput
   transactions?: Prisma.TransactionUpdateManyWithoutAccountNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutAccountNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateWithoutGoalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
+  whitelabelId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.AccountMemberUncheckedUpdateManyWithoutAccountNestedInput
+  transactions?: Prisma.TransactionUncheckedUpdateManyWithoutAccountNestedInput
+  categories?: Prisma.CategoryUncheckedUpdateManyWithoutAccountNestedInput
+  budgets?: Prisma.BudgetUncheckedUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUncheckedUpdateManyWithoutAccountNestedInput
+}
+
+export type AccountCreateManyWhitelabelInput = {
+  id?: string
+  name?: string | null
+  plan?: $Enums.Plans
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type AccountUpdateWithoutWhitelabelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.AccountMemberUpdateManyWithoutAccountNestedInput
+  transactions?: Prisma.TransactionUpdateManyWithoutAccountNestedInput
+  categories?: Prisma.CategoryUpdateManyWithoutAccountNestedInput
+  budgets?: Prisma.BudgetUpdateManyWithoutAccountNestedInput
+  goals?: Prisma.GoalUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUpdateManyWithoutAccountNestedInput
+}
+
+export type AccountUncheckedUpdateWithoutWhitelabelInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
@@ -737,6 +1046,16 @@ export type AccountUncheckedUpdateWithoutGoalsInput = {
   transactions?: Prisma.TransactionUncheckedUpdateManyWithoutAccountNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutAccountNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutAccountNestedInput
+  goals?: Prisma.GoalUncheckedUpdateManyWithoutAccountNestedInput
+  invites?: Prisma.MemberInviteUncheckedUpdateManyWithoutAccountNestedInput
+}
+
+export type AccountUncheckedUpdateManyWithoutWhitelabelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.EnumPlansFieldUpdateOperationsInput | $Enums.Plans
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -750,6 +1069,7 @@ export type AccountCountOutputType = {
   categories: number
   budgets: number
   goals: number
+  invites: number
 }
 
 export type AccountCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -758,6 +1078,7 @@ export type AccountCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   categories?: boolean | AccountCountOutputTypeCountCategoriesArgs
   budgets?: boolean | AccountCountOutputTypeCountBudgetsArgs
   goals?: boolean | AccountCountOutputTypeCountGoalsArgs
+  invites?: boolean | AccountCountOutputTypeCountInvitesArgs
 }
 
 /**
@@ -805,18 +1126,28 @@ export type AccountCountOutputTypeCountGoalsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.GoalWhereInput
 }
 
+/**
+ * AccountCountOutputType without action
+ */
+export type AccountCountOutputTypeCountInvitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MemberInviteWhereInput
+}
+
 
 export type AccountSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   plan?: boolean
+  whitelabelId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
   members?: boolean | Prisma.Account$membersArgs<ExtArgs>
   transactions?: boolean | Prisma.Account$transactionsArgs<ExtArgs>
   categories?: boolean | Prisma.Account$categoriesArgs<ExtArgs>
   budgets?: boolean | Prisma.Account$budgetsArgs<ExtArgs>
   goals?: boolean | Prisma.Account$goalsArgs<ExtArgs>
+  invites?: boolean | Prisma.Account$invitesArgs<ExtArgs>
   _count?: boolean | Prisma.AccountCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["account"]>
 
@@ -824,51 +1155,65 @@ export type AccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   plan?: boolean
+  whitelabelId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["account"]>
 
 export type AccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   plan?: boolean
+  whitelabelId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["account"]>
 
 export type AccountSelectScalar = {
   id?: boolean
   name?: boolean
   plan?: boolean
+  whitelabelId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "plan" | "createdAt" | "updatedAt", ExtArgs["result"]["account"]>
+export type AccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "plan" | "whitelabelId" | "createdAt" | "updatedAt", ExtArgs["result"]["account"]>
 export type AccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
   members?: boolean | Prisma.Account$membersArgs<ExtArgs>
   transactions?: boolean | Prisma.Account$transactionsArgs<ExtArgs>
   categories?: boolean | Prisma.Account$categoriesArgs<ExtArgs>
   budgets?: boolean | Prisma.Account$budgetsArgs<ExtArgs>
   goals?: boolean | Prisma.Account$goalsArgs<ExtArgs>
+  invites?: boolean | Prisma.Account$invitesArgs<ExtArgs>
   _count?: boolean | Prisma.AccountCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type AccountIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type AccountIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type AccountIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
+}
+export type AccountIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  whitelabel?: boolean | Prisma.WhitelabelDefaultArgs<ExtArgs>
+}
 
 export type $AccountPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Account"
   objects: {
+    whitelabel: Prisma.$WhitelabelPayload<ExtArgs>
     members: Prisma.$AccountMemberPayload<ExtArgs>[]
     transactions: Prisma.$TransactionPayload<ExtArgs>[]
     categories: Prisma.$CategoryPayload<ExtArgs>[]
     budgets: Prisma.$BudgetPayload<ExtArgs>[]
     goals: Prisma.$GoalPayload<ExtArgs>[]
+    invites: Prisma.$MemberInvitePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string | null
     plan: $Enums.Plans
+    whitelabelId: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["account"]>
@@ -1265,11 +1610,13 @@ readonly fields: AccountFieldRefs;
  */
 export interface Prisma__AccountClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  whitelabel<T extends Prisma.WhitelabelDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhitelabelDefaultArgs<ExtArgs>>): Prisma.Prisma__WhitelabelClient<runtime.Types.Result.GetResult<Prisma.$WhitelabelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   members<T extends Prisma.Account$membersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$membersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transactions<T extends Prisma.Account$transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   categories<T extends Prisma.Account$categoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   budgets<T extends Prisma.Account$budgetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$budgetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BudgetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   goals<T extends Prisma.Account$goalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$goalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GoalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invites<T extends Prisma.Account$invitesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$invitesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1302,6 +1649,7 @@ export interface AccountFieldRefs {
   readonly id: Prisma.FieldRef<"Account", 'String'>
   readonly name: Prisma.FieldRef<"Account", 'String'>
   readonly plan: Prisma.FieldRef<"Account", 'Plans'>
+  readonly whitelabelId: Prisma.FieldRef<"Account", 'String'>
   readonly createdAt: Prisma.FieldRef<"Account", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Account", 'DateTime'>
 }
@@ -1553,6 +1901,10 @@ export type AccountCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    */
   data: Prisma.AccountCreateManyInput | Prisma.AccountCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AccountIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1623,6 +1975,10 @@ export type AccountUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many Accounts to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AccountIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1809,6 +2165,30 @@ export type Account$goalsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.GoalScalarFieldEnum | Prisma.GoalScalarFieldEnum[]
+}
+
+/**
+ * Account.invites
+ */
+export type Account$invitesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MemberInvite
+   */
+  select?: Prisma.MemberInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MemberInvite
+   */
+  omit?: Prisma.MemberInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MemberInviteInclude<ExtArgs> | null
+  where?: Prisma.MemberInviteWhereInput
+  orderBy?: Prisma.MemberInviteOrderByWithRelationInput | Prisma.MemberInviteOrderByWithRelationInput[]
+  cursor?: Prisma.MemberInviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MemberInviteScalarFieldEnum | Prisma.MemberInviteScalarFieldEnum[]
 }
 
 /**

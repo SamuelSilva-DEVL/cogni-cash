@@ -9,7 +9,7 @@ import {
   signAccessToken,
 } from "../../../test/helpers/e2e-whitelabel"
 
-describe("Create Goal (e2e)", () => {
+describe("Account Members (e2e)", () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
@@ -24,40 +24,55 @@ describe("Create Goal (e2e)", () => {
     }).compile()
 
     app = moduleRef.createNestApplication()
-
     prisma = moduleRef.get(PrismaService)
     jwt = moduleRef.get(JwtService)
-
     await app.init()
   })
 
-  test("[POST] /goals", async () => {
+  test("[POST] /accounts/members/invite + accept", async () => {
     const setup = await createTitularWithWhitelabel(prisma, {
-      email: "1Mn0o@example.com",
+      email: "titular@example.com",
     })
-
     const accessToken = signAccessToken(jwt, setup)
 
-    const response = await request(app.getHttpServer())
-      .post("/goals")
+    const inviteResponse = await request(app.getHttpServer())
+      .post("/accounts/members/invite")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({
-        title: "New Goal",
-        targetAmount: 1000.0,
-        currentAmount: 0.0,
-        deadline: "2024-12-31T23:59:59Z",
+        email: "dependente@example.com",
+        role: "DEPENDENT",
       })
 
-    expect(response.statusCode).toBe(201)
+    expect(inviteResponse.statusCode).toBe(201)
+    expect(inviteResponse.body.token).toBeTruthy()
 
-    const createdGoal = await prisma.goal.findFirst({
-      where: {
-        slug: "new-goal",
+    const acceptResponse = await request(app.getHttpServer())
+      .post("/accounts/members/accept")
+      .send({
+        token: inviteResponse.body.token,
+        name: "Maria Dependente",
+        password: "123456",
+      })
+
+    expect(acceptResponse.statusCode).toBe(201)
+    expect(acceptResponse.body).toEqual(
+      expect.objectContaining({
+        email: "dependente@example.com",
+        whitelabelId: setup.whitelabel.id,
         accountId: setup.account.id,
+        access_token: expect.any(String),
+      }),
+    )
+
+    const member = await prisma.accountMember.findFirst({
+      where: {
+        accountId: setup.account.id,
+        user: { email: "dependente@example.com" },
       },
     })
 
-    expect(createdGoal).toBeTruthy()
+    expect(member).toBeTruthy()
+    expect(member?.role).toBe("DEPENDENT")
   })
 
   afterAll(async () => {

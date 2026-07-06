@@ -2,16 +2,19 @@ import {
   Body,
   Controller,
   Post,
-  UnauthorizedException,
   UseGuards,
   HttpCode,
   ConflictException,
 } from "@nestjs/common"
 import { CurrentUser } from "@/auth/current-user-decorator"
 import { JwtAuthGuard } from "@/auth/jwt-auth.guard"
+import { RolesGuard } from "@/auth/roles.guard"
+import { RequireRoles } from "@/auth/require-roles.decorator"
+import { WRITE_STRUCTURE_ROLES } from "@/auth/account-member-role"
 import { type UserPayload } from "@/auth/jwt.strategy"
 import { ZodValidationPipe } from "@/pipes/zod-validation-pipe"
 import { PrismaService } from "@/prisma/prisma.service"
+import { AccountContextService } from "@/services/account-context.service"
 import {
   ApiTags,
   ApiOperation,
@@ -32,77 +35,38 @@ const bodyValidationPipe = new ZodValidationPipe(createCategoryBodySchema)
 @ApiTags("Categories")
 @ApiBearerAuth()
 @Controller("/categories")
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class CreateCategoryController {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private accountContext: AccountContextService,
+  ) {}
 
   @Post()
+  @RequireRoles(...WRITE_STRUCTURE_ROLES)
   @HttpCode(201)
   @ApiOperation({ summary: "Criar nova categoria" })
   @ApiBody({
-    description: "Dados para criar uma nova categoria",
-    schema: {
-      example: {
-        name: "Alimentação",
-      },
-      properties: {
-        name: {
-          type: "string",
-          description: "Nome da categoria",
-          minLength: 1,
-          maxLength: 100,
-        },
-      },
-    },
+    schema: { example: { name: "Alimentação" } },
   })
-  @ApiResponse({
-    status: 201,
-    description: "Categoria criada com sucesso",
-    schema: {
-      example: {
-        id: "cat_123",
-        name: "Alimentação",
-        createdAt: "2026-03-29T10:00:00Z",
-      },
-    },
-  })
+  @ApiResponse({ status: 201, description: "Categoria criada com sucesso" })
   @ApiResponse({ status: 401, description: "Não autenticado" })
+  @ApiResponse({ status: 403, description: "Sem permissão" })
   @ApiResponse({
     status: 409,
     description: "Categoria com este nome já existe para esta conta",
-  })
-  @ApiResponse({
-    status: 400,
-    description: "Dados inválidos",
   })
   async create(
     @Body(bodyValidationPipe) body: CreateCategoryBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
     const { name } = body
-    const prisma = this.prisma as any
+    const context = await this.accountContext.resolve(user)
 
-    // Buscar a conta do usuário
-    const membership = await prisma.accountMember.findFirst({
-      where: {
-        userId: user.userId,
-      },
-      select: {
-        accountId: true,
-      },
-    })
-
-    if (!membership) {
-      throw new UnauthorizedException("Usuário sem conta vinculada")
-    }
-
-    const accountId = membership.accountId
-
-    // Verificar se categoria já existe nesta conta
-    const existingCategory = await prisma.category.findFirst({
+    const existingCategory = await this.prisma.category.findFirst({
       where: {
         name,
-        accountId,
+        accountId: context.accountId,
       },
     })
 
@@ -112,11 +76,10 @@ export class CreateCategoryController {
       )
     }
 
-    // Criar a categoria
-    const category = await prisma.category.create({
+    const category = await this.prisma.category.create({
       data: {
         name,
-        accountId,
+        accountId: context.accountId,
       },
     })
 

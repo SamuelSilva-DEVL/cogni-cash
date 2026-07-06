@@ -51,9 +51,11 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Whitelabel: 'Whitelabel',
   User: 'User',
   Account: 'Account',
   AccountMember: 'AccountMember',
+  MemberInvite: 'MemberInvite',
   Category: 'Category',
   Transaction: 'Transaction',
   Budget: 'Budget',
@@ -76,12 +78,24 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const WhitelabelScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WhitelabelScalarFieldEnum = (typeof WhitelabelScalarFieldEnum)[keyof typeof WhitelabelScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
   password: 'password',
   telephone: 'telephone',
+  whitelabelId: 'whitelabelId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -93,6 +107,7 @@ export const AccountScalarFieldEnum = {
   id: 'id',
   name: 'name',
   plan: 'plan',
+  whitelabelId: 'whitelabelId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -102,14 +117,30 @@ export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeo
 
 export const AccountMemberScalarFieldEnum = {
   id: 'id',
+  role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  role: 'role',
   userId: 'userId',
   accountId: 'accountId'
 } as const
 
 export type AccountMemberScalarFieldEnum = (typeof AccountMemberScalarFieldEnum)[keyof typeof AccountMemberScalarFieldEnum]
+
+
+export const MemberInviteScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  token: 'token',
+  role: 'role',
+  expiresAt: 'expiresAt',
+  acceptedAt: 'acceptedAt',
+  createdAt: 'createdAt',
+  accountId: 'accountId',
+  whitelabelId: 'whitelabelId',
+  invitedById: 'invitedById'
+} as const
+
+export type MemberInviteScalarFieldEnum = (typeof MemberInviteScalarFieldEnum)[keyof typeof MemberInviteScalarFieldEnum]
 
 
 export const CategoryScalarFieldEnum = {
@@ -147,7 +178,8 @@ export const BudgetScalarFieldEnum = {
   year: 'year',
   accountId: 'accountId',
   categoryId: 'categoryId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type BudgetScalarFieldEnum = (typeof BudgetScalarFieldEnum)[keyof typeof BudgetScalarFieldEnum]
