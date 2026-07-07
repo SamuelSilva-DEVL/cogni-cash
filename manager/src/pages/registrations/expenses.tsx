@@ -1,243 +1,209 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
+import { ColumnDef, ColumnFiltersState, SortingState } from "@tanstack/react-table"
 import { Layout } from "@/src/components/Layout"
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
-import { Label } from "@/src/components/ui/label"
-import { Skeleton } from "@/src/components/ui/skeleton"
-import { useExpenses, useCreateExpense } from "@/src/hooks/use-transactions"
+import { DataTable } from "@/src/components/ui/data-table"
+import { ExpenseFormDialog } from "@/src/components/registrations/ExpenseFormDialog"
+import { useExpenses } from "@/src/hooks/use-transactions"
 import { formatCurrency, formatDate } from "@/src/lib/utils"
 import { CATEGORY_LABELS } from "@/src/lib/mockData"
 import { Expense } from "@/src/types"
-import { TrendingDown } from "lucide-react"
-import { isAxiosError } from "axios"
-import { toast } from "sonner"
+import { Plus, X } from "lucide-react"
+
+const columns: ColumnDef<Expense>[] = [
+  {
+    accessorKey: "description",
+    header: "Descrição",
+    filterFn: "includesString",
+    cell: ({ getValue }) => (
+      <span className="font-medium">{getValue<string>()}</span>
+    ),
+  },
+  {
+    accessorKey: "category",
+    header: "Categoria",
+    filterFn: "equals",
+    cell: ({ getValue }) => CATEGORY_LABELS[getValue<string>()] ?? getValue<string>(),
+  },
+  {
+    accessorKey: "type",
+    header: "Tipo",
+    filterFn: "equals",
+    cell: ({ getValue }) => (getValue<string>() === "fixo" ? "Fixa" : "Variável"),
+  },
+  {
+    accessorKey: "date",
+    header: "Data",
+    filterFn: "dateRange" as never,
+    enableSorting: true,
+    cell: ({ getValue }) => formatDate(getValue<string>()),
+  },
+  {
+    accessorKey: "value",
+    header: "Valor",
+    filterFn: "inNumberRange",
+    enableSorting: true,
+    cell: ({ getValue }) => (
+      <span className="font-mono tabular-nums text-red-600 font-semibold">
+        {formatCurrency(getValue<number>())}
+      </span>
+    ),
+  },
+]
 
 export default function ExpensesPage() {
   const { data, isLoading } = useExpenses()
-  const createExpense = useCreateExpense()
   const expenses = data?.expenses ?? []
-  const [formData, setFormData] = useState({
-    value: "",
-    category: "alimentacao" as Expense["category"],
-    type: "variavel" as Expense["type"],
-    date: new Date().toISOString().split("T")[0],
-    description: "",
-  })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<SortingState>([])
 
-    try {
-      await createExpense.mutateAsync({
-        value: Number(formData.value),
-        category: formData.category,
-        type: formData.type,
-        date: formData.date,
-        description: formData.description,
-      })
+  const [descFilter, setDescFilter] = useState("")
+  const [categoryFilter, setCategoryFilter] = useState("")
+  const [typeFilter, setTypeFilter] = useState("")
+  const [dateFrom, setDateFrom] = useState("")
+  const [dateTo, setDateTo] = useState("")
+  const [valueMin, setValueMin] = useState("")
+  const [valueMax, setValueMax] = useState("")
 
-      toast.success("Despesa registrada", {
-        description: "Já está no seu histórico.",
-      })
+  const hasActiveFilters =
+    descFilter || categoryFilter || typeFilter || dateFrom || dateTo || valueMin || valueMax
 
-      setFormData({
-        value: "",
-        category: "alimentacao",
-        type: "variavel",
-        date: new Date().toISOString().split("T")[0],
-        description: "",
-      })
-    } catch (err) {
-      const message = isAxiosError(err)
-        ? (err.response?.data?.message as string | undefined) ??
-          "Não foi possível registrar a despesa."
-        : "Não foi possível registrar a despesa."
-      toast.error(message)
-    }
+  function buildFilters(): ColumnFiltersState {
+    const filters: ColumnFiltersState = []
+    if (descFilter) filters.push({ id: "description", value: descFilter })
+    if (categoryFilter) filters.push({ id: "category", value: categoryFilter })
+    if (typeFilter) filters.push({ id: "type", value: typeFilter })
+    if (dateFrom || dateTo) filters.push({ id: "date", value: [dateFrom, dateTo] })
+    if (valueMin || valueMax)
+      filters.push({ id: "value", value: [valueMin ? Number(valueMin) : undefined, valueMax ? Number(valueMax) : undefined] })
+    return filters
   }
 
-  const recentExpenses = expenses.slice(0, 5)
+  useMemo(() => {
+    setColumnFilters(buildFilters())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [descFilter, categoryFilter, typeFilter, dateFrom, dateTo, valueMin, valueMax])
+
+  function clearFilters() {
+    setDescFilter("")
+    setCategoryFilter("")
+    setTypeFilter("")
+    setDateFrom("")
+    setDateTo("")
+    setValueMin("")
+    setValueMax("")
+  }
 
   return (
     <Layout>
-      <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
-            Registrar despesa
-          </h1>
-          <p className="text-muted-foreground">
-            Anote o gasto agora — seu futuro eu agradece.
-          </p>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-1 text-balance">Despesas</h1>
+            <p className="text-muted-foreground">Anote o gasto agora — seu futuro eu agradece.</p>
+          </div>
+          <Button
+            variant="soft"
+            className="gap-2 shrink-0 sm:mt-1"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            <Plus className="h-4 w-4" />
+            Nova despesa
+          </Button>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingDown className="h-5 w-5 text-red-500" aria-hidden="true" />
-                Nova despesa
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="value">Valor (R$)</Label>
-                  <Input
-                    id="value"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={formData.value}
-                    onChange={(e) =>
-                      setFormData({ ...formData, value: e.target.value })
-                    }
-                    placeholder="150.00"
-                    className="font-mono tabular-nums"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="category">Categoria</Label>
-                  <select
-                    id="category"
-                    value={formData.category}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        category: e.target.value as Expense["category"],
-                      })
-                    }
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    required
-                  >
-                    {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
-                      <option key={value} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Tipo de despesa</Label>
-                  <div className="flex gap-4">
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="type"
-                        value="fixo"
-                        checked={formData.type === "fixo"}
-                        onChange={() =>
-                          setFormData({ ...formData, type: "fixo" })
-                        }
-                        className="h-4 w-4"
-                      />
-                      <span className="text-sm">Fixa</span>
-                    </label>
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="type"
-                        value="variavel"
-                        checked={formData.type === "variavel"}
-                        onChange={() =>
-                          setFormData({ ...formData, type: "variavel" })
-                        }
-                        className="h-4 w-4"
-                      />
-                      <span className="text-sm">Variável</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="date">Data</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) =>
-                      setFormData({ ...formData, date: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="description">Descrição</Label>
-                  <Input
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
-                    placeholder="Ex: Supermercado do mês"
-                    required
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="soft"
-                  className="w-full"
-                  disabled={createExpense.isPending}
-                >
-                  {createExpense.isPending ? "Registrando..." : "Registrar despesa"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Despesas recentes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {isLoading ? (
-                  Array.from({ length: 3 }).map((_, i) => (
-                    <Skeleton key={i} className="h-20 w-full" />
-                  ))
-                ) : recentExpenses.length > 0 ? (
-                  recentExpenses.map((expense) => (
-                    <div
-                      key={expense.id}
-                      className="p-4 rounded-lg border bg-muted/30"
-                    >
-                      <div className="flex items-start justify-between mb-2 gap-3">
-                        <div className="min-w-0">
-                          <p className="font-semibold truncate">
-                            {expense.description}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {CATEGORY_LABELS[expense.category]} •{" "}
-                            {expense.type === "fixo" ? "Fixa" : "Variável"}
-                          </p>
-                        </div>
-                        <p className="font-bold text-red-500 tabular-nums font-mono shrink-0">
-                          {formatCurrency(expense.value)}
-                        </p>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {formatDate(expense.date)}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-10 text-muted-foreground">
-                    <p className="font-medium mb-1">Nenhuma despesa ainda</p>
-                    <p className="text-sm">
-                      Use o formulário ao lado para registrar a primeira.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+        {/* Filter bar */}
+        <div className="space-y-3">
+          <div className="flex flex-wrap gap-3">
+            <Input
+              placeholder="Buscar descrição..."
+              value={descFilter}
+              onChange={(e) => setDescFilter(e.target.value)}
+              className="h-9 w-48"
+            />
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <option value="">Todas as categorias</option>
+              {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <option value="">Todos os tipos</option>
+              <option value="fixo">Fixa</option>
+              <option value="variavel">Variável</option>
+            </select>
+          </div>
+          <div className="flex flex-wrap gap-3 items-center">
+            <Input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="h-9 w-40"
+              title="Data inicial"
+            />
+            <span className="text-muted-foreground text-sm">até</span>
+            <Input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="h-9 w-40"
+              title="Data final"
+            />
+            <Input
+              type="number"
+              placeholder="Valor mín."
+              value={valueMin}
+              onChange={(e) => setValueMin(e.target.value)}
+              className="h-9 w-32 font-mono tabular-nums"
+            />
+            <Input
+              type="number"
+              placeholder="Valor máx."
+              value={valueMax}
+              onChange={(e) => setValueMax(e.target.value)}
+              className="h-9 w-32 font-mono tabular-nums"
+            />
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearFilters}
+                className="h-9 gap-1.5 text-muted-foreground"
+              >
+                <X className="h-3.5 w-3.5" />
+                Limpar filtros
+              </Button>
+            )}
+          </div>
         </div>
+
+        {/* Table */}
+        <DataTable
+          columns={columns}
+          data={expenses}
+          columnFilters={columnFilters}
+          onColumnFiltersChange={setColumnFilters}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          isLoading={isLoading}
+        />
       </div>
+
+      <ExpenseFormDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </Layout>
   )
 }

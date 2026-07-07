@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/src/components/ui/dialog"
@@ -89,8 +90,8 @@ export const GoalFormDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px] p-0 overflow-hidden">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b">
+      <DialogContent className="sm:max-w-[480px]">
+        <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
             {mode === "create" ? "Nova meta" : "Editar meta"}
           </DialogTitle>
@@ -185,7 +186,7 @@ export const GoalFormDialog = ({
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t bg-muted/30">
+          <DialogFooter>
             <Button
               type="button"
               variant="cancel"
@@ -196,7 +197,7 @@ export const GoalFormDialog = ({
             <Button type="submit" variant="soft" disabled={createGoal.isPending} className="min-w-[110px]">
               {createGoal.isPending ? "Salvando..." : mode === "create" ? "Criar meta" : "Salvar"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
