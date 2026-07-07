@@ -1,11 +1,12 @@
 import axios from "axios"
+import { getApiUrl } from "@/src/config/environment"
 
 export const TOKEN_KEY = "COGNI_CASH_TOKEN"
 export const WHITELABEL_KEY = "COGNI_CASH_WHITELABEL_ID"
 export const WHITELABEL_HEADER = "x-whitelabel-id"
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: getApiUrl(),
 })
 
 api.interceptors.request.use(async (config) => {
