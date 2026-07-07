@@ -1,9 +1,9 @@
 export type AppEnvironment = "development" | "production"
 
-const API_URLS: Record<AppEnvironment, string> = {
-  development: "http://localhost:3333",
-  production: "https://cogni-cash-production.up.railway.app",
-}
+const API_URL_ENV_KEYS = {
+  development: "NEXT_PUBLIC_API_URL_DEV",
+  production: "NEXT_PUBLIC_API_URL_PROD",
+} as const satisfies Record<AppEnvironment, string>
 
 export function getAppEnvironment(): AppEnvironment {
   const env = process.env.NEXT_PUBLIC_APP_ENV
@@ -16,5 +16,13 @@ export function getAppEnvironment(): AppEnvironment {
 }
 
 export function getApiUrl(): string {
-  return API_URLS[getAppEnvironment()]
+  const environment = getAppEnvironment()
+  const envKey = API_URL_ENV_KEYS[environment]
+  const url = process.env[envKey]
+
+  if (!url) {
+    throw new Error(`Missing ${envKey} for ${environment} environment`)
+  }
+
+  return url
 }
