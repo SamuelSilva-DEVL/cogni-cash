@@ -4,12 +4,13 @@ import { useRouter } from "next/router"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
-import { Wallet, Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react"
+import { Wallet, Mail, Lock, Eye, EyeOff } from "lucide-react"
 import z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAuth } from "@/src/contexts/authContext"
 import { isAxiosError } from "axios"
+import { toast } from "sonner"
 
 const loginSchema = z.object({
   email: z.email("O email deve ser válido").min(1, "Campo obrigatório"),
@@ -23,7 +24,6 @@ export default function LoginPage() {
   const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [loginError, setLoginError] = useState<string | null>(null)
 
   const {
     register,
@@ -36,7 +36,6 @@ export default function LoginPage() {
   const doLogin = async (data: LoginSchema) => {
     try {
       setIsLoading(true)
-      setLoginError(null)
       await login(data.email, data.password)
       router.push("/dashboard")
     } catch (error) {
@@ -47,7 +46,7 @@ export default function LoginPage() {
             ? (error.response?.data?.message as string | undefined) ??
               "E-mail ou senha inválidos"
             : "E-mail ou senha inválidos"
-      setLoginError(message)
+      toast.error(message)
     } finally {
       setIsLoading(false)
     }
@@ -80,16 +79,6 @@ export default function LoginPage() {
               Entre com suas credenciais para continuar
             </p>
           </div>
-
-          {loginError && (
-            <div
-              role="alert"
-              className="mb-5 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"
-            >
-              <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-              <p>{loginError}</p>
-            </div>
-          )}
 
           <form onSubmit={handleSubmit(doLogin)} className="space-y-5">
             <div className="space-y-2">
@@ -142,7 +131,7 @@ export default function LoginPage() {
               )}
             </div>
 
-            <Button type="submit" disabled={isLoading} className="w-full h-11">
+            <Button type="submit" variant="soft" disabled={isLoading} className="w-full h-11">
               {isLoading ? (
                 <span className="flex items-center gap-2">
                   <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

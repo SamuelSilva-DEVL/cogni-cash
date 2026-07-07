@@ -12,10 +12,10 @@ import {
   Eye,
   EyeOff,
   User,
-  AlertCircle,
 } from "lucide-react"
 import api from "@/src/api"
 import { useAuth } from "@/src/contexts/authContext"
+import { toast } from "sonner"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -23,7 +23,6 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -34,20 +33,19 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
 
     if (formData.password !== formData.confirmPassword) {
-      setError("As senhas não coincidem.")
+      toast.error("As senhas não coincidem.")
       return
     }
 
     if (formData.password.length < 6) {
-      setError("A senha deve ter no mínimo 6 caracteres.")
+      toast.error("A senha deve ter no mínimo 6 caracteres.")
       return
     }
 
     if (!formData.acceptTerms) {
-      setError("Você precisa aceitar os termos de uso.")
+      toast.error("Você precisa aceitar os termos de uso.")
       return
     }
 
@@ -68,7 +66,7 @@ export default function RegisterPage() {
         ? (err.response?.data?.message as string | undefined) ??
           "Não foi possível criar a conta. Tente novamente."
         : "Não foi possível criar a conta. Tente novamente."
-      setError(message)
+      toast.error(message)
     } finally {
       setIsLoading(false)
     }
@@ -119,16 +117,6 @@ export default function RegisterPage() {
               Preencha os dados para começar gratuitamente
             </p>
           </div>
-
-          {error && (
-            <div
-              role="alert"
-              className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3"
-            >
-              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-800">{error}</p>
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
@@ -267,7 +255,7 @@ export default function RegisterPage() {
               </span>
             </label>
 
-            <Button type="submit" disabled={isLoading} className="w-full h-11">
+            <Button type="submit" variant="soft" disabled={isLoading} className="w-full h-11">
               {isLoading ? (
                 <span className="flex items-center gap-2">
                   <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -3,24 +3,23 @@ import Link from "next/link"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
-import { Wallet, Mail, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react"
+import { Wallet, Mail, ArrowLeft, CheckCircle } from "lucide-react"
+import { toast } from "sonner"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
     setIsLoading(true)
 
     setTimeout(() => {
       if (email) {
         setIsSuccess(true)
       } else {
-        setError("Por favor, insira um e-mail válido.")
+        toast.error("Por favor, insira um e-mail válido.")
       }
       setIsLoading(false)
     }, 800)
@@ -52,16 +51,6 @@ export default function ForgotPasswordPage() {
                 </p>
               </div>
 
-              {error && (
-                <div
-                  role="alert"
-                  className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3"
-                >
-                  <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-red-800">{error}</p>
-                </div>
-              )}
-
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="email">E-mail</Label>
@@ -79,7 +68,7 @@ export default function ForgotPasswordPage() {
                   </div>
                 </div>
 
-                <Button type="submit" disabled={isLoading} className="w-full h-11">
+                <Button type="submit" variant="soft" disabled={isLoading} className="w-full h-11">
                   {isLoading ? (
                     <span className="flex items-center gap-2">
                       <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -108,7 +97,7 @@ export default function ForgotPasswordPage() {
 
           <div className="mt-6">
             <Link href="/login">
-              <Button variant="ghost" className="w-full gap-2">
+              <Button variant="soft" className="w-full gap-2">
                 <ArrowLeft className="h-4 w-4" />
                 Voltar para o login
               </Button>

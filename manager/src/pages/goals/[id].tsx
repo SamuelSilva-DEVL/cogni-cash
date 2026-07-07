@@ -58,7 +58,7 @@ export default function GoalDetailPage() {
         <div className="text-center py-12 space-y-4">
           <p className="text-slate-700">Meta não encontrada.</p>
           <Link href="/goals">
-            <Button>Voltar para metas</Button>
+            <Button variant="soft">Voltar para metas</Button>
           </Link>
         </div>
       </Layout>
@@ -84,7 +84,7 @@ export default function GoalDetailPage() {
       <div className="space-y-8">
         <div>
           <Link href="/goals">
-            <Button variant="ghost" className="gap-2 mb-4">
+            <Button variant="soft" className="gap-2 mb-4">
               <ArrowLeft className="h-4 w-4" />
               Voltar
             </Button>

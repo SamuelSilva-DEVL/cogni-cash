@@ -19,11 +19,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Check,
-  AlertCircle,
   Plus,
   Trash2,
 } from "lucide-react"
 import { isAxiosError } from "axios"
+import { toast } from "sonner"
 import {
   Dialog,
   DialogContent,
@@ -74,10 +74,7 @@ export default function BudgetsPage() {
   // estados inline de edição (budgetId → valor digitado)
   const [draftLimits, setDraftLimits] = useState<Record<string, string>>({})
 
-  // feedback
   const [successBudgetId, setSuccessBudgetId] = useState<string | null>(null)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [createSuccess, setCreateSuccess] = useState(false)
 
   // confirmação de exclusão
   const [deleteTarget, setDeleteTarget] = useState<{
@@ -100,8 +97,6 @@ export default function BudgetsPage() {
     setYear(d.getFullYear())
     setDraftLimits({})
     setSuccessBudgetId(null)
-    setErrorMessage(null)
-    setCreateSuccess(false)
   }
 
   async function handleCreate(event: React.FormEvent) {
@@ -109,30 +104,27 @@ export default function BudgetsPage() {
     const limit = Number(newLimit)
 
     if (!categoryToCreate) {
-      setErrorMessage("Selecione ou informe uma categoria.")
+      toast.error("Selecione ou informe uma categoria.")
       return
     }
     if (!newLimit || Number.isNaN(limit) || limit <= 0) {
-      setErrorMessage("Informe um limite válido maior que zero.")
+      toast.error("Informe um limite válido maior que zero.")
       return
     }
-
-    setErrorMessage(null)
 
     try {
       await createBudget.mutateAsync({ categoryName: categoryToCreate, limit })
       setNewLimit("")
       setCustomCategory("")
-      setCreateSuccess(true)
-      setTimeout(() => setCreateSuccess(false), 2500)
+      toast.success("Limite registrado com sucesso.")
     } catch (error) {
       if (isBudgetConflict(error)) {
-        setErrorMessage(
+        toast.error(
           `Já existe um limite para "${categoryToCreate}" em ${MONTH_LABELS[month - 1]}/${year}. Edite-o abaixo.`,
         )
         return
       }
-      setErrorMessage(
+      toast.error(
         isAxiosError(error)
           ? ((error.response?.data?.message as string | undefined) ??
             "Não foi possível registrar o limite.")
@@ -146,11 +138,9 @@ export default function BudgetsPage() {
     const limit = Number(rawValue)
 
     if (!rawValue || Number.isNaN(limit) || limit <= 0) {
-      setErrorMessage("Informe um limite válido maior que zero.")
+      toast.error("Informe um limite válido maior que zero.")
       return
     }
-
-    setErrorMessage(null)
 
     try {
       await updateBudget.mutateAsync({ id: budgetId, limit })
@@ -161,8 +151,9 @@ export default function BudgetsPage() {
         return next
       })
       setTimeout(() => setSuccessBudgetId(null), 2500)
+      toast.success("Limite atualizado.")
     } catch (error) {
-      setErrorMessage(
+      toast.error(
         isAxiosError(error)
           ? ((error.response?.data?.message as string | undefined) ??
             "Não foi possível atualizar o limite.")
@@ -175,8 +166,9 @@ export default function BudgetsPage() {
     if (!deleteTarget) return
     try {
       await deleteBudgetMutation.mutateAsync(deleteTarget.id)
+      toast.success("Limite removido.")
     } catch {
-      setErrorMessage("Não foi possível remover o limite.")
+      toast.error("Não foi possível remover o limite.")
     } finally {
       setDeleteTarget(null)
     }
@@ -198,26 +190,6 @@ export default function BudgetsPage() {
             registradas são contabilizadas automaticamente.
           </p>
         </div>
-
-        {errorMessage && (
-          <div
-            role="alert"
-            className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"
-          >
-            <AlertCircle className="h-5 w-5 shrink-0" />
-            <p>{errorMessage}</p>
-          </div>
-        )}
-
-        {createSuccess && (
-          <div
-            role="status"
-            className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800"
-          >
-            <Check className="h-5 w-5 shrink-0" />
-            <p>Limite registrado com sucesso.</p>
-          </div>
-        )}
 
         {/* ── Formulário de criação ── */}
         <Card>
@@ -280,6 +252,7 @@ export default function BudgetsPage() {
               <div className="flex items-end">
                 <Button
                   type="submit"
+                  variant="soft"
                   className="w-full"
                   disabled={createBudget.isPending}
                 >
@@ -300,7 +273,7 @@ export default function BudgetsPage() {
               </CardTitle>
               <div className="flex items-center gap-2">
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="icon"
                   onClick={() => shiftMonth(-1)}
                   aria-label="Mês anterior"
@@ -308,7 +281,7 @@ export default function BudgetsPage() {
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="icon"
                   onClick={() => shiftMonth(1)}
                   aria-label="Próximo mês"
@@ -448,7 +421,7 @@ export default function BudgetsPage() {
                         aria-label={`Novo limite para ${item.categoryName}`}
                       />
                       <Button
-                        variant="outline"
+                        variant="soft"
                         size="sm"
                         onClick={() => handleUpdate(budgetId)}
                         disabled={isSaving}
@@ -487,7 +460,7 @@ export default function BudgetsPage() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteTarget(null)}>
+            <Button variant="cancel" onClick={() => setDeleteTarget(null)}>
               Cancelar
             </Button>
             <Button
