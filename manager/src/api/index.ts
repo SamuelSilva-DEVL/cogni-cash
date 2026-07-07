@@ -5,11 +5,11 @@ export const TOKEN_KEY = "COGNI_CASH_TOKEN"
 export const WHITELABEL_KEY = "COGNI_CASH_WHITELABEL_ID"
 export const WHITELABEL_HEADER = "x-whitelabel-id"
 
-const api = axios.create({
-  baseURL: getApiUrl(),
-})
+const api = axios.create()
 
 api.interceptors.request.use(async (config) => {
+  config.baseURL = getApiUrl()
+
   if (typeof window !== "undefined") {
     const token = localStorage.getItem(TOKEN_KEY)
     if (token) {

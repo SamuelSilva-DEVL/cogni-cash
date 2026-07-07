@@ -31,10 +31,30 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Pull Vercel environment
-        run: npx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          npx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+          npx vercel env pull .env.production.local --environment=production --yes --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Verify production env vars
+        run: |
+          if [ -f .env.production.local ]; then
+            set -a
+            . ./.env.production.local
+            set +a
+          fi
+
+          if [ -z "$NEXT_PUBLIC_API_URL_PROD" ]; then
+            echo "Missing NEXT_PUBLIC_API_URL_PROD."
+            echo "Configure it in Vercel (Production) or GitHub Secrets."
+            exit 1
+          fi
+
+          echo "Production API URL is configured."
+        env:
+          NEXT_PUBLIC_API_URL_PROD: ${{ secrets.NEXT_PUBLIC_API_URL_PROD }}
 
       - name: Build project
         run: npx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
