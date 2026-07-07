@@ -1,5 +1,10 @@
 name: Deploy API (Railway)
 
+# Railway faz auto-deploy direto do GitHub ao detectar push em main.
+# Este workflow fica desabilitado para evitar deploy duplicado.
+# Para reativar deploy via CLI, configure RAILWAY_TOKEN, RAILWAY_PROJECT_ID
+# e RAILWAY_SERVICE_ID nos secrets do repositório e remova o 'if: false'.
+
 on:
   push:
     branches:
@@ -12,6 +17,7 @@ jobs:
   deploy:
     name: Deploy to Railway
     runs-on: ubuntu-latest
+    if: false
     defaults:
       run:
         working-directory: api
