@@ -13,9 +13,29 @@ import {
   EyeOff,
   User,
 } from "lucide-react"
+import z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import api from "@/src/api"
 import { useAuth } from "@/src/contexts/authContext"
 import { toast } from "sonner"
+
+const registerSchema = z
+  .object({
+    name: z.string().min(1, "Campo obrigatório"),
+    email: z.email("O email deve ser válido").min(1, "Campo obrigatório"),
+    password: z.string().min(6, "A senha deve ter no mínimo 6 caracteres."),
+    confirmPassword: z.string().min(1, "Campo obrigatório"),
+    acceptTerms: z.boolean().refine((v) => v === true, {
+      message: "Você precisa aceitar os termos de uso.",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "As senhas não coincidem.",
+    path: ["confirmPassword"],
+  })
+
+type RegisterSchema = z.infer<typeof registerSchema>
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -23,41 +43,35 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    acceptTerms: false,
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<RegisterSchema>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      acceptTerms: false,
+    },
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const password = watch("password")
 
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("As senhas não coincidem.")
-      return
-    }
-
-    if (formData.password.length < 6) {
-      toast.error("A senha deve ter no mínimo 6 caracteres.")
-      return
-    }
-
-    if (!formData.acceptTerms) {
-      toast.error("Você precisa aceitar os termos de uso.")
-      return
-    }
-
+  const doRegister = async (data: RegisterSchema) => {
     setIsLoading(true)
 
     try {
       const response = await api.post<{
         whitelabelId: string
       }>("/users", {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
+        name: data.name,
+        email: data.email,
+        password: data.password,
       })
       setWhitelabelId(response.data.whitelabelId)
       router.push("/login")
@@ -72,15 +86,15 @@ export default function RegisterPage() {
     }
   }
 
-  const passwordStrength = (password: string) => {
-    if (!password) return { strength: 0, label: "" }
+  const passwordStrength = (value: string) => {
+    if (!value) return { strength: 0, label: "" }
 
     let strength = 0
-    if (password.length >= 6) strength++
-    if (password.length >= 10) strength++
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++
-    if (/\d/.test(password)) strength++
-    if (/[^a-zA-Z0-9]/.test(password)) strength++
+    if (value.length >= 6) strength++
+    if (value.length >= 10) strength++
+    if (/[a-z]/.test(value) && /[A-Z]/.test(value)) strength++
+    if (/\d/.test(value)) strength++
+    if (/[^a-zA-Z0-9]/.test(value)) strength++
 
     const levels = [
       { strength: 1, label: "Muito fraca" },
@@ -93,7 +107,7 @@ export default function RegisterPage() {
     return levels[strength - 1] || levels[0]
   }
 
-  const strength = passwordStrength(formData.password)
+  const strength = passwordStrength(password)
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
@@ -118,7 +132,7 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit(doRegister)} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="name">Nome completo</Label>
               <div className="relative">
@@ -127,14 +141,13 @@ export default function RegisterPage() {
                   id="name"
                   type="text"
                   placeholder="João Silva"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
                   className="pl-10 h-11"
-                  required
+                  {...register("name")}
                 />
               </div>
+              {errors.name && (
+                <p className="text-sm text-red-600">{errors.name.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -145,14 +158,13 @@ export default function RegisterPage() {
                   id="email"
                   type="email"
                   placeholder="seu@email.com"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
                   className="pl-10 h-11"
-                  required
+                  {...register("email")}
                 />
               </div>
+              {errors.email && (
+                <p className="text-sm text-red-600">{errors.email.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -163,12 +175,8 @@ export default function RegisterPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
                   className="pl-10 pr-10 h-11"
-                  required
+                  {...register("password")}
                 />
                 <button
                   type="button"
@@ -183,8 +191,11 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-sm text-red-600">{errors.password.message}</p>
+              )}
 
-              {formData.password && (
+              {password && (
                 <div className="space-y-2">
                   <div className="flex gap-1" aria-hidden="true">
                     {[1, 2, 3, 4, 5].map((level) => (
@@ -214,15 +225,8 @@ export default function RegisterPage() {
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  value={formData.confirmPassword}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
                   className="pl-10 pr-10 h-11"
-                  required
+                  {...register("confirmPassword")}
                 />
                 <button
                   type="button"
@@ -239,21 +243,26 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
+              )}
             </div>
 
-            <label className="flex items-start space-x-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.acceptTerms}
-                onChange={(e) =>
-                  setFormData({ ...formData, acceptTerms: e.target.checked })
-                }
-                className="w-4 h-4 mt-1 rounded border-slate-300"
-              />
-              <span className="text-sm text-slate-700 leading-relaxed">
-                Aceito os termos de uso e política de privacidade
-              </span>
-            </label>
+            <div className="space-y-1">
+              <label className="flex items-start space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 mt-1 rounded border-slate-300"
+                  {...register("acceptTerms")}
+                />
+                <span className="text-sm text-slate-700 leading-relaxed">
+                  Aceito os termos de uso e política de privacidade
+                </span>
+              </label>
+              {errors.acceptTerms && (
+                <p className="text-sm text-red-600">{errors.acceptTerms.message}</p>
+              )}
+            </div>
 
             <Button type="submit" variant="soft" disabled={isLoading} className="w-full h-11">
               {isLoading ? (

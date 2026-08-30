@@ -1,6 +1,9 @@
-import React, { useState } from "react"
+import React, { useEffect } from "react"
 import { isAxiosError } from "axios"
 import { toast } from "sonner"
+import z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Dialog,
   DialogContent,
@@ -19,28 +22,60 @@ interface ReceiptFormDialogProps {
   onOpenChange: (open: boolean) => void
 }
 
-const INITIAL = {
+const receiptSchema = z.object({
+  value: z.string().min(1, "Campo obrigatório").refine(
+    (v) => !Number.isNaN(Number(v)) && Number(v) > 0,
+    "Informe um valor válido maior que zero",
+  ),
+  origin: z.string().min(1, "Campo obrigatório"),
+  date: z.string().min(1, "Campo obrigatório"),
+  recurrence: z.enum(["unico", "mensal"]),
+})
+
+type ReceiptSchema = z.infer<typeof receiptSchema>
+
+const DEFAULT_VALUES: ReceiptSchema = {
   value: "",
   origin: "",
   date: new Date().toISOString().split("T")[0],
-  recurrence: "unico" as Receipt["recurrence"],
+  recurrence: "unico",
 }
 
 export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps) {
   const createReceipt = useCreateReceipt()
-  const [formData, setFormData] = useState(INITIAL)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ReceiptSchema>({
+    resolver: zodResolver(receiptSchema),
+    defaultValues: DEFAULT_VALUES,
+  })
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        ...DEFAULT_VALUES,
+        date: new Date().toISOString().split("T")[0],
+      })
+    }
+  }, [open, reset])
+
+  const onSubmit = async (data: ReceiptSchema) => {
     try {
       await createReceipt.mutateAsync({
-        value: Number(formData.value),
-        origin: formData.origin,
-        date: formData.date,
-        recurrence: formData.recurrence,
+        value: Number(data.value),
+        origin: data.origin,
+        date: data.date,
+        recurrence: data.recurrence as Receipt["recurrence"],
       })
       toast.success("Receita registrada", { description: "Já está no seu histórico." })
-      setFormData(INITIAL)
+      reset({
+        ...DEFAULT_VALUES,
+        date: new Date().toISOString().split("T")[0],
+      })
       onOpenChange(false)
     } catch (err) {
       toast.error(
@@ -58,7 +93,7 @@ export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps
           <DialogTitle className="text-lg font-semibold">Nova receita</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="px-6 py-5 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
@@ -68,12 +103,13 @@ export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps
                   type="number"
                   step="0.01"
                   min="0"
-                  value={formData.value}
-                  onChange={(e) => setFormData({ ...formData, value: e.target.value })}
                   placeholder="5.500,00"
                   className="font-mono tabular-nums"
-                  required
+                  {...register("value")}
                 />
+                {errors.value && (
+                  <p className="text-sm text-red-600">{errors.value.message}</p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -81,10 +117,11 @@ export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps
                 <Input
                   id="rec-date"
                   type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  required
+                  {...register("date")}
                 />
+                {errors.date && (
+                  <p className="text-sm text-red-600">{errors.date.message}</p>
+                )}
               </div>
             </div>
 
@@ -92,26 +129,27 @@ export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps
               <Label htmlFor="rec-origin">Origem</Label>
               <Input
                 id="rec-origin"
-                value={formData.origin}
-                onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
                 placeholder="Ex: Salário, freelance"
-                required
+                {...register("origin")}
               />
+              {errors.origin && (
+                <p className="text-sm text-red-600">{errors.origin.message}</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="rec-recurrence">Recorrência</Label>
               <select
                 id="rec-recurrence"
-                value={formData.recurrence}
-                onChange={(e) =>
-                  setFormData({ ...formData, recurrence: e.target.value as Receipt["recurrence"] })
-                }
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                {...register("recurrence")}
               >
                 <option value="unico">Única</option>
                 <option value="mensal">Mensal</option>
               </select>
+              {errors.recurrence && (
+                <p className="text-sm text-red-600">{errors.recurrence.message}</p>
+              )}
             </div>
           </div>
 
