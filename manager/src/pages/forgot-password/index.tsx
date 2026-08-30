@@ -4,23 +4,36 @@ import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
 import { Wallet, Mail, ArrowLeft, CheckCircle } from "lucide-react"
-import { toast } from "sonner"
+import z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+const forgotPasswordSchema = z.object({
+  email: z.email("O email deve ser válido").min(1, "Campo obrigatório"),
+})
+
+type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [submittedEmail, setSubmittedEmail] = useState("")
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ForgotPasswordSchema>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: "" },
+  })
+
+  const onSubmit = async (data: ForgotPasswordSchema) => {
     setIsLoading(true)
 
     setTimeout(() => {
-      if (email) {
-        setIsSuccess(true)
-      } else {
-        toast.error("Por favor, insira um e-mail válido.")
-      }
+      setSubmittedEmail(data.email)
+      setIsSuccess(true)
       setIsLoading(false)
     }, 800)
   }
@@ -51,7 +64,7 @@ export default function ForgotPasswordPage() {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="email">E-mail</Label>
                   <div className="relative">
@@ -60,12 +73,13 @@ export default function ForgotPasswordPage() {
                       id="email"
                       type="email"
                       placeholder="seu@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
                       className="pl-10 h-11"
-                      required
+                      {...register("email")}
                     />
                   </div>
+                  {errors.email && (
+                    <p className="text-sm text-red-600">{errors.email.message}</p>
+                  )}
                 </div>
 
                 <Button type="submit" variant="soft" disabled={isLoading} className="w-full h-11">
@@ -89,7 +103,7 @@ export default function ForgotPasswordPage() {
                 E-mail enviado
               </h3>
               <p className="text-slate-700 text-sm mb-6">
-                Se existir uma conta para <strong>{email}</strong>, você receberá
+                Se existir uma conta para <strong>{submittedEmail}</strong>, você receberá
                 as instruções em breve.
               </p>
             </div>

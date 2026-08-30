@@ -24,6 +24,9 @@ import {
 } from "lucide-react"
 import { isAxiosError } from "axios"
 import { toast } from "sonner"
+import z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Dialog,
   DialogContent,
@@ -32,6 +35,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/src/components/ui/dialog"
+
+const budgetCreateSchema = z
+  .object({
+    category: z.string().min(1, "Selecione uma categoria."),
+    customCategory: z.string().optional(),
+    limit: z.string().min(1, "Informe um limite válido maior que zero.").refine(
+      (v) => !Number.isNaN(Number(v)) && Number(v) > 0,
+      "Informe um limite válido maior que zero.",
+    ),
+  })
+  .refine(
+    (data) => data.category !== "__custom__" || Boolean(data.customCategory?.trim()),
+    {
+      message: "Selecione ou informe uma categoria.",
+      path: ["customCategory"],
+    },
+  )
+
+type BudgetCreateSchema = z.infer<typeof budgetCreateSchema>
 
 const MONTH_LABELS = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -66,11 +88,6 @@ export default function BudgetsPage() {
   const [month, setMonth] = useState(now.getMonth() + 1)
   const [year, setYear] = useState(now.getFullYear())
 
-  // form de criação
-  const [newCategory, setNewCategory] = useState(PRESET_CATEGORIES[0])
-  const [customCategory, setCustomCategory] = useState("")
-  const [newLimit, setNewLimit] = useState("")
-
   // estados inline de edição (budgetId → valor digitado)
   const [draftLimits, setDraftLimits] = useState<Record<string, string>>({})
 
@@ -87,8 +104,23 @@ export default function BudgetsPage() {
   const updateBudget = useUpdateBudget(month, year)
   const deleteBudgetMutation = useDeleteBudget(month, year)
 
-  const isCustomCategory = newCategory === "__custom__"
-  const categoryToCreate = isCustomCategory ? customCategory.trim() : newCategory
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<BudgetCreateSchema>({
+    resolver: zodResolver(budgetCreateSchema),
+    defaultValues: {
+      category: PRESET_CATEGORIES[0],
+      customCategory: "",
+      limit: "",
+    },
+  })
+
+  const selectedCategory = watch("category")
+  const isCustomCategory = selectedCategory === "__custom__"
   const isSaving = createBudget.isPending || updateBudget.isPending
 
   function shiftMonth(delta: number) {
@@ -99,23 +131,20 @@ export default function BudgetsPage() {
     setSuccessBudgetId(null)
   }
 
-  async function handleCreate(event: React.FormEvent) {
-    event.preventDefault()
-    const limit = Number(newLimit)
-
-    if (!categoryToCreate) {
-      toast.error("Selecione ou informe uma categoria.")
-      return
-    }
-    if (!newLimit || Number.isNaN(limit) || limit <= 0) {
-      toast.error("Informe um limite válido maior que zero.")
-      return
-    }
+  async function onCreate(formData: BudgetCreateSchema) {
+    const categoryToCreate =
+      formData.category === "__custom__"
+        ? (formData.customCategory ?? "").trim()
+        : formData.category
+    const limit = Number(formData.limit)
 
     try {
       await createBudget.mutateAsync({ categoryName: categoryToCreate, limit })
-      setNewLimit("")
-      setCustomCategory("")
+      reset({
+        category: PRESET_CATEGORIES[0],
+        customCategory: "",
+        limit: "",
+      })
       toast.success("Limite registrado com sucesso.")
     } catch (error) {
       if (isBudgetConflict(error)) {
@@ -201,16 +230,15 @@ export default function BudgetsPage() {
           </CardHeader>
           <CardContent>
             <form
-              onSubmit={handleCreate}
+              onSubmit={handleSubmit(onCreate)}
               className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
             >
               <div className="space-y-2">
                 <Label htmlFor="category">Categoria</Label>
                 <select
                   id="category"
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  {...register("category")}
                 >
                   {PRESET_CATEGORIES.map((c) => (
                     <option key={c} value={c}>
@@ -219,6 +247,9 @@ export default function BudgetsPage() {
                   ))}
                   <option value="__custom__">Outra categoria...</option>
                 </select>
+                {errors.category && (
+                  <p className="text-sm text-red-600">{errors.category.message}</p>
+                )}
               </div>
 
               {isCustomCategory && (
@@ -226,11 +257,12 @@ export default function BudgetsPage() {
                   <Label htmlFor="customCategory">Nome da categoria</Label>
                   <Input
                     id="customCategory"
-                    value={customCategory}
-                    onChange={(e) => setCustomCategory(e.target.value)}
                     placeholder="Ex: Assinaturas"
-                    required
+                    {...register("customCategory")}
                   />
+                  {errors.customCategory && (
+                    <p className="text-sm text-red-600">{errors.customCategory.message}</p>
+                  )}
                 </div>
               )}
 
@@ -241,12 +273,13 @@ export default function BudgetsPage() {
                   type="number"
                   min="0.01"
                   step="0.01"
-                  value={newLimit}
-                  onChange={(e) => setNewLimit(e.target.value)}
                   placeholder="500,00"
                   className="font-mono tabular-nums"
-                  required
+                  {...register("limit")}
                 />
+                {errors.limit && (
+                  <p className="text-sm text-red-600">{errors.limit.message}</p>
+                )}
               </div>
 
               <div className="flex items-end">
