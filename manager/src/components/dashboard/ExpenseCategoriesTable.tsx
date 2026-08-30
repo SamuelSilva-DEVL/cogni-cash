@@ -1,90 +1,119 @@
-import React from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { Skeleton } from "@/src/components/ui/skeleton"
-import { useFinancialSummary } from "@/src/hooks/use-financial-summary"
-import { formatCurrency } from "@/src/lib/utils"
-import { CATEGORY_LABELS } from "@/src/lib/mockData"
-
-export const ExpenseCategoriesTable = () => {
-  const { categoryExpenses: categories, isLoading } = useFinancialSummary()
-
-  const categoryColors: Record<string, string> = {
-    alimentacao: "bg-amber-500",
-    transporte: "bg-blue-500",
-    moradia: "bg-slate-600",
-    saude: "bg-red-500",
-    educacao: "bg-indigo-500",
-    lazer: "bg-pink-500",
-    outros: "bg-slate-500",
-  }
-
-  if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <Skeleton className="h-6 w-48" />
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-10 w-full" />
-          ))}
-        </CardContent>
-      </Card>
-    )
-  }
-
-  if (categories.length === 0) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Despesas por Categoria</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-slate-700 text-center py-6">
-            Registre despesas para ver a distribuição por categoria.
-          </p>
-        </CardContent>
-      </Card>
-    )
-  }
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">Despesas por Categoria</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {categories.map((category) => (
-            <div key={category.category} className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium text-slate-800">
-                  {CATEGORY_LABELS[category.category] || category.category}
-                </span>
-                <div className="flex items-center gap-3">
-                  <span className="text-slate-700 tabular-nums font-mono">
-                    {formatCurrency(category.value)}
-                  </span>
-                  <span className="font-semibold text-slate-900 min-w-[3rem] text-right tabular-nums font-mono">
-                    {category.percentage}%
-                  </span>
-                </div>
-              </div>
-              <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-                <div
-                  className={`h-2 rounded-full transition-all duration-500 ${categoryColors[category.category] || "bg-slate-500"}`}
-                  style={{ width: `${category.percentage}%` }}
-                  role="progressbar"
-                  aria-valuenow={category.percentage}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-label={`${CATEGORY_LABELS[category.category] || category.category}: ${category.percentage}%`}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
+import React from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
+import { Skeleton } from "@/src/components/ui/skeleton"
+import { useFinancialSummary } from "@/src/hooks/use-financial-summary"
+import { formatCurrency } from "@/src/lib/utils"
+import { CATEGORY_LABELS } from "@/src/lib/mockData"
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
+
+const CATEGORY_COLORS: Record<string, string> = {
+  alimentacao: "#d97706",
+  transporte: "#2563eb",
+  moradia: "#475569",
+  saude: "#dc2626",
+  educacao: "#4f46e5",
+  lazer: "#db2777",
+  outros: "#64748b",
+}
+
+export const ExpenseCategoriesTable = () => {
+  const { categoryExpenses: categories, totalExpenses, isLoading } = useFinancialSummary()
+
+  if (isLoading) {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <Skeleton className="h-6 w-48" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="mx-auto size-40 rounded-full" />
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (categories.length === 0) {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle className="text-lg">Despesas por categoria</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="py-10 text-center text-sm text-slate-700">
+            Registre despesas para ver a distribuição por categoria.
+          </p>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  const chartData = categories.map((category) => ({
+    name: CATEGORY_LABELS[category.category] || category.category,
+    value: category.value,
+    percentage: category.percentage,
+    color: CATEGORY_COLORS[category.category] || "#64748b",
+  }))
+
+  return (
+    <Card className="h-full">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg">Despesas por categoria</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid items-center gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="relative h-52">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={58}
+                  outerRadius={82}
+                  paddingAngle={3}
+                  strokeWidth={0}
+                >
+                  {chartData.map((entry) => (
+                    <Cell key={entry.name} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  formatter={(value: number) => formatCurrency(value)}
+                  contentStyle={{
+                    borderRadius: 8,
+                    border: "1px solid oklch(0.922 0 0)",
+                    fontSize: 12,
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-[11px] text-slate-600">Total</span>
+              <span className="font-mono text-sm font-semibold tabular-nums">
+                {formatCurrency(totalExpenses.total)}
+              </span>
+            </div>
+          </div>
+
+          <ul className="space-y-3">
+            {chartData.map((entry) => (
+              <li key={entry.name} className="flex items-center justify-between gap-3 text-sm">
+                <span className="flex min-w-0 items-center gap-2">
+                  <span
+                    className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
+                    style={{ backgroundColor: entry.color }}
+                    aria-hidden="true"
+                  />
+                  <span className="truncate text-slate-800">{entry.name}</span>
+                </span>
+                <span className="flex-shrink-0 font-mono text-slate-700 tabular-nums">
+                  {entry.percentage}%
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}

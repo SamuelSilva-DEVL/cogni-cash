@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import Link from "next/link"
-import { Layout } from "@/src/components/Layout"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent } from "@/src/components/ui/card"
 import { Progress } from "@/src/components/ui/progress"
@@ -41,22 +40,20 @@ export default function GoalsPage() {
 
   if (isLoading) {
     return (
-      <Layout>
-        <div className="space-y-8">
-          <Skeleton className="h-10 w-64" />
-          <div className="grid gap-4 md:grid-cols-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-28 w-full" />
-            ))}
-          </div>
-          <Skeleton className="h-48 w-full" />
+      <div className="space-y-8">
+        <Skeleton className="h-10 w-64" />
+        <div className="grid gap-4 md:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-28 w-full" />
+          ))}
         </div>
-      </Layout>
+        <Skeleton className="h-48 w-full" />
+      </div>
     )
   }
 
   return (
-    <Layout>
+    <>
       <div className="space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -139,7 +136,7 @@ export default function GoalsPage() {
                     </Link>
 
                     <Button
-                      variant="soft"
+                      variant="outline"
                       size="sm"
                       onClick={() => handleEdit(goal)}
                       className="shrink-0"
@@ -217,6 +214,6 @@ export default function GoalsPage() {
         goal={editingGoal}
         mode={editingGoal ? "edit" : "create"}
       />
-    </Layout>
+    </>
   )
 }

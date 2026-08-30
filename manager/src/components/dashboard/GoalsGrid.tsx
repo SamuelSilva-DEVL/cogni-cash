@@ -1,127 +1,97 @@
-import React from "react"
-import Link from "next/link"
-import { Card, CardContent } from "@/src/components/ui/card"
-import { Progress } from "@/src/components/ui/progress"
-import { Skeleton } from "@/src/components/ui/skeleton"
-import { useGoals } from "@/src/hooks/use-goals"
-import {
-  formatCurrency,
-  calculatePercentage,
-  getDaysRemaining,
-} from "@/src/lib/utils"
-import { Clock, TrendingUp } from "lucide-react"
-import { cn } from "@/src/lib/utils"
-
-export const GoalsGrid = () => {
-  const { data: goals = [], isLoading } = useGoals()
-  const activeGoals = goals.filter((g) => g.active).slice(0, 6)
-
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-7 w-40" />
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Card key={i}>
-              <CardContent className="p-6 space-y-4">
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-2 w-full" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">Minhas Metas</h2>
-        <Link
-          href="/goals"
-          className="text-sm text-emerald-700 hover:underline font-medium"
-        >
-          Ver todas →
-        </Link>
-      </div>
-
-      {activeGoals.length === 0 ? (
-        <Card className="border border-dashed">
-          <CardContent className="p-8 text-center text-slate-700">
-            <p className="font-medium mb-1">Nenhuma meta cadastrada</p>
-            <p className="text-sm">Crie sua primeira meta para acompanhar o progresso.</p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {activeGoals.map((goal) => {
-            const progress = calculatePercentage(
-              goal.currentValue,
-              goal.totalValue,
-            )
-            const daysRemaining = getDaysRemaining(goal.deadlineDate)
-            const isAtRisk = daysRemaining < 60 && progress < 70
-
-            return (
-              <Link key={goal.id} href={`/goals/${goal.id}`}>
-                <Card
-                  className={cn(
-                    "cursor-pointer transition-shadow hover:shadow-md border",
-                    isAtRisk
-                      ? "border-amber-200 bg-amber-50/30"
-                      : "hover:border-emerald-200",
-                  )}
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <span className="text-3xl" aria-hidden="true">
-                          {goal.icon}
-                        </span>
-                        <div>
-                          <h3 className="font-semibold text-base line-clamp-1">
-                            {goal.name}
-                          </h3>
-                          <p className="text-xs text-slate-700 mt-1 tabular-nums font-mono">
-                            {formatCurrency(goal.currentValue)} de{" "}
-                            {formatCurrency(goal.totalValue)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-2xl font-bold tabular-nums font-mono">
-                            {progress}%
-                          </span>
-                          <span className="text-xs text-slate-700 flex items-center gap-1">
-                            <Clock className="h-3 w-3" aria-hidden="true" />
-                            {daysRemaining > 0
-                              ? `${daysRemaining} dias`
-                              : "Vencido"}
-                          </span>
-                        </div>
-                        <Progress value={progress} className="h-2" />
-                      </div>
-
-                      {isAtRisk && (
-                        <div className="flex items-center gap-2 text-xs text-amber-800 bg-amber-100 px-2 py-1 rounded">
-                          <TrendingUp className="h-3 w-3" aria-hidden="true" />
-                          <span>Requer atenção</span>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            )
-          })}
-        </div>
-      )}
-    </div>
-  )
-}
+import React from "react"
+import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
+import { Progress } from "@/src/components/ui/progress"
+import { Skeleton } from "@/src/components/ui/skeleton"
+import { useGoals } from "@/src/hooks/use-goals"
+import {
+  formatCurrency,
+  calculatePercentage,
+  getDaysRemaining,
+} from "@/src/lib/utils"
+import { ArrowUpRight } from "lucide-react"
+import { cn } from "@/src/lib/utils"
+
+export const GoalsGrid = () => {
+  const { data: goals = [], isLoading } = useGoals()
+  const activeGoals = goals.filter((g) => g.active).slice(0, 5)
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-6 w-40" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-14 w-full" />
+          ))}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return (
+    <Card>
+      <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-lg">Metas em andamento</CardTitle>
+        <Link
+          href="/goals"
+          className="inline-flex items-center gap-1 text-sm font-medium text-emerald-800 hover:text-emerald-950"
+        >
+          Ver todas
+          <ArrowUpRight className="h-3.5 w-3.5" />
+        </Link>
+      </CardHeader>
+      <CardContent>
+        {activeGoals.length === 0 ? (
+          <p className="py-8 text-center text-sm text-slate-700">
+            Nenhuma meta cadastrada. Crie a primeira na página de metas.
+          </p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {activeGoals.map((goal) => {
+              const progress = calculatePercentage(goal.currentValue, goal.totalValue)
+              const daysRemaining = getDaysRemaining(goal.deadlineDate)
+              const isAtRisk = daysRemaining < 60 && progress < 70
+
+              return (
+                <li key={goal.id}>
+                  <Link
+                    href={`/goals/${goal.id}`}
+                    className="flex items-center gap-4 py-4 transition-colors hover:bg-muted/60"
+                  >
+                    <span className="text-2xl" aria-hidden="true">
+                      {goal.icon}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1.5 flex items-center justify-between gap-3">
+                        <p className="truncate text-sm font-medium text-foreground">
+                          {goal.name}
+                        </p>
+                        <p className="flex-shrink-0 font-mono text-sm font-semibold tabular-nums">
+                          {progress}%
+                        </p>
+                      </div>
+                      <Progress value={progress} className="h-1.5" />
+                      <p
+                        className={cn(
+                          "mt-1.5 text-xs text-slate-600",
+                          isAtRisk && "text-amber-800",
+                        )}
+                      >
+                        {formatCurrency(goal.currentValue)} de{" "}
+                        {formatCurrency(goal.totalValue)}
+                        {isAtRisk ? " · vale um olhar" : ""}
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
+  )
+}

@@ -1,14 +1,17 @@
-import React, { useState, useMemo } from "react"
+import React, { useMemo, useState } from "react"
 import { ColumnDef, ColumnFiltersState, SortingState } from "@tanstack/react-table"
-import { Layout } from "@/src/components/Layout"
 import { Button } from "@/src/components/ui/button"
-import { Input } from "@/src/components/ui/input"
 import { DataTable } from "@/src/components/ui/data-table"
 import { ReceiptFormDialog } from "@/src/components/registrations/ReceiptFormDialog"
+import {
+  EMPTY_TRANSACTION_FILTERS,
+  TransactionFilters,
+  TransactionFilterValues,
+} from "@/src/components/registrations/TransactionFilters"
 import { useReceipts } from "@/src/hooks/use-transactions"
 import { formatCurrency, formatDate } from "@/src/lib/utils"
 import { Receipt } from "@/src/types"
-import { Plus, X } from "lucide-react"
+import { Plus } from "lucide-react"
 
 const columns: ColumnDef<Receipt>[] = [
   {
@@ -45,52 +48,40 @@ const columns: ColumnDef<Receipt>[] = [
   },
 ]
 
+function toColumnFilters(filters: TransactionFilterValues): ColumnFiltersState {
+  const next: ColumnFiltersState = []
+  if (filters.search) next.push({ id: "origin", value: filters.search })
+  if (filters.recurrence) next.push({ id: "recurrence", value: filters.recurrence })
+  if (filters.dateFrom || filters.dateTo) {
+    next.push({ id: "date", value: [filters.dateFrom, filters.dateTo] })
+  }
+  if (filters.valueMin || filters.valueMax) {
+    next.push({
+      id: "value",
+      value: [
+        filters.valueMin ? Number(filters.valueMin) : undefined,
+        filters.valueMax ? Number(filters.valueMax) : undefined,
+      ],
+    })
+  }
+  return next
+}
+
 export default function ReceiptsPage() {
   const { data, isLoading } = useReceipts()
   const receipts = data?.receipts ?? []
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [filters, setFilters] = useState<TransactionFilterValues>(
+    EMPTY_TRANSACTION_FILTERS,
+  )
   const [sorting, setSorting] = useState<SortingState>([])
 
-  const [originFilter, setOriginFilter] = useState("")
-  const [recurrenceFilter, setRecurrenceFilter] = useState("")
-  const [dateFrom, setDateFrom] = useState("")
-  const [dateTo, setDateTo] = useState("")
-  const [valueMin, setValueMin] = useState("")
-  const [valueMax, setValueMax] = useState("")
-
-  const hasActiveFilters =
-    originFilter || recurrenceFilter || dateFrom || dateTo || valueMin || valueMax
-
-  function buildFilters(): ColumnFiltersState {
-    const filters: ColumnFiltersState = []
-    if (originFilter) filters.push({ id: "origin", value: originFilter })
-    if (recurrenceFilter) filters.push({ id: "recurrence", value: recurrenceFilter })
-    if (dateFrom || dateTo) filters.push({ id: "date", value: [dateFrom, dateTo] })
-    if (valueMin || valueMax)
-      filters.push({ id: "value", value: [valueMin ? Number(valueMin) : undefined, valueMax ? Number(valueMax) : undefined] })
-    return filters
-  }
-
-  useMemo(() => {
-    setColumnFilters(buildFilters())
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [originFilter, recurrenceFilter, dateFrom, dateTo, valueMin, valueMax])
-
-  function clearFilters() {
-    setOriginFilter("")
-    setRecurrenceFilter("")
-    setDateFrom("")
-    setDateTo("")
-    setValueMin("")
-    setValueMax("")
-  }
+  const columnFilters = useMemo(() => toColumnFilters(filters), [filters])
 
   return (
-    <Layout>
+    <>
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-1 text-balance">Receitas</h1>
@@ -98,7 +89,7 @@ export default function ReceiptsPage() {
           </div>
           <Button
             variant="soft"
-            className="gap-2 shrink-0 sm:mt-1"
+            className="shrink-0 sm:mt-1"
             onClick={() => setIsDialogOpen(true)}
           >
             <Plus className="h-4 w-4" />
@@ -106,75 +97,17 @@ export default function ReceiptsPage() {
           </Button>
         </div>
 
-        {/* Filter bar */}
-        <div className="space-y-3">
-          <div className="flex flex-wrap gap-3">
-            <Input
-              placeholder="Buscar origem..."
-              value={originFilter}
-              onChange={(e) => setOriginFilter(e.target.value)}
-              className="h-9 w-48"
-            />
-            <select
-              value={recurrenceFilter}
-              onChange={(e) => setRecurrenceFilter(e.target.value)}
-              className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <option value="">Todas as recorrências</option>
-              <option value="unico">Única</option>
-              <option value="mensal">Mensal</option>
-            </select>
-          </div>
-          <div className="flex flex-wrap gap-3 items-center">
-            <Input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="h-9 w-40"
-              title="Data inicial"
-            />
-            <span className="text-muted-foreground text-sm">até</span>
-            <Input
-              type="date"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              className="h-9 w-40"
-              title="Data final"
-            />
-            <Input
-              type="number"
-              placeholder="Valor mín."
-              value={valueMin}
-              onChange={(e) => setValueMin(e.target.value)}
-              className="h-9 w-32 font-mono tabular-nums"
-            />
-            <Input
-              type="number"
-              placeholder="Valor máx."
-              value={valueMax}
-              onChange={(e) => setValueMax(e.target.value)}
-              className="h-9 w-32 font-mono tabular-nums"
-            />
-            {hasActiveFilters && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="h-9 gap-1.5 text-muted-foreground"
-              >
-                <X className="h-3.5 w-3.5" />
-                Limpar filtros
-              </Button>
-            )}
-          </div>
-        </div>
+        <TransactionFilters
+          variant="receipt"
+          value={filters}
+          onChange={setFilters}
+        />
 
-        {/* Table */}
         <DataTable
           columns={columns}
           data={receipts}
           columnFilters={columnFilters}
-          onColumnFiltersChange={setColumnFilters}
+          onColumnFiltersChange={() => undefined}
           sorting={sorting}
           onSortingChange={setSorting}
           isLoading={isLoading}
@@ -182,6 +115,6 @@ export default function ReceiptsPage() {
       </div>
 
       <ReceiptFormDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
-    </Layout>
+    </>
   )
 }

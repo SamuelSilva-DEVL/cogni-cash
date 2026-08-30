@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { Layout } from "@/src/components/Layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
@@ -179,7 +178,7 @@ export default function BudgetsPage() {
   )
 
   return (
-    <Layout>
+    <>
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
@@ -473,6 +472,6 @@ export default function BudgetsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Layout>
+    </>
   )
 }
