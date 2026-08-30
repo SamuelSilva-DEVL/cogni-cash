@@ -1,9 +1,15 @@
 import { createContext, useContext, useEffect, useState } from "react"
-import api, { TOKEN_KEY, WHITELABEL_KEY, WHITELABEL_HEADER } from "../api"
+import api, {
+  TOKEN_KEY,
+  USER_EMAIL_KEY,
+  WHITELABEL_KEY,
+  WHITELABEL_HEADER,
+} from "../api"
 import { decodeJwtPayload } from "@/src/lib/jwt"
 
 interface IAuthContextProps {
   access_token: string | null
+  userEmail: string | null
   isAuthenticated: boolean
   isReady: boolean
   login: (email: string, password: string) => Promise<void>
@@ -23,14 +29,17 @@ export function AuthContextProvider({
   children: React.ReactNode
 }) {
   const [access_token, setAccessToken] = useState<string | null>(null)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
   const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
     setAccessToken(localStorage.getItem(TOKEN_KEY))
+    setUserEmail(localStorage.getItem(USER_EMAIL_KEY))
     setIsReady(true)
 
     const handleUnauthorized = () => {
       setAccessToken(null)
+      setUserEmail(null)
     }
 
     window.addEventListener("cogni-cash:unauthorized", handleUnauthorized)
@@ -66,18 +75,23 @@ export function AuthContextProvider({
     }
 
     localStorage.setItem(TOKEN_KEY, token)
+    localStorage.setItem(USER_EMAIL_KEY, email)
     setAccessToken(token)
+    setUserEmail(email)
   }
 
   const logout = () => {
     localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(USER_EMAIL_KEY)
     setAccessToken(null)
+    setUserEmail(null)
   }
 
   return (
     <AuthContext.Provider
       value={{
         access_token,
+        userEmail,
         isAuthenticated: !!access_token,
         isReady,
         login,
