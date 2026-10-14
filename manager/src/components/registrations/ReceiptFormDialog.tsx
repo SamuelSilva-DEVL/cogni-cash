@@ -10,6 +10,7 @@ import {
 } from "@/src/components/ui/dialog"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
+import { FieldSelect } from "@/src/components/ui/field-select"
 import { Label } from "@/src/components/ui/label"
 import { useCreateReceipt } from "@/src/hooks/use-transactions"
 import { Receipt } from "@/src/types"
@@ -101,17 +102,16 @@ export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps
 
             <div className="space-y-1.5">
               <Label htmlFor="rec-recurrence">Recorrência</Label>
-              <select
+              <FieldSelect
                 id="rec-recurrence"
                 value={formData.recurrence}
                 onChange={(e) =>
                   setFormData({ ...formData, recurrence: e.target.value as Receipt["recurrence"] })
                 }
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <option value="unico">Única</option>
                 <option value="mensal">Mensal</option>
-              </select>
+              </FieldSelect>
             </div>
           </div>
 

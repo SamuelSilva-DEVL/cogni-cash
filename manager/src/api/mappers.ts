@@ -44,7 +44,7 @@ export function mapTransactionToExpense(transaction: ApiTransaction): Expense {
     id: transaction.id,
     value: Number(transaction.amount),
     category: normalizeCategoryName(transaction.categoryName),
-    type: "variavel",
+    type: transaction.expenseKind === "FIXED" ? "fixo" : "variavel",
     date: transaction.date.split("T")[0],
     description: transaction.description,
   }
@@ -56,11 +56,14 @@ export function mapTransactionToReceipt(transaction: ApiTransaction): Receipt {
     value: Number(transaction.amount),
     origin: transaction.source || transaction.description,
     date: transaction.date.split("T")[0],
-    recurrence: "unico",
+    recurrence: transaction.recurrence === "MONTHLY" ? "mensal" : "unico",
   }
 }
 
 export function toIsoDateTime(date: string): string {
-  const parsed = new Date(`${date}T12:00:00`)
-  return parsed.toISOString()
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return `${date}T12:00:00.000Z`
+  }
+
+  return new Date(date).toISOString()
 }

@@ -14,7 +14,12 @@ export function formatCurrency(value: number): string {
 }
 
 export function formatDate(date: Date | string, formatString = 'dd/MM/yyyy'): string {
-  return format(new Date(date), formatString)
+  const value =
+    typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)
+      ? new Date(`${date}T12:00:00`)
+      : new Date(date)
+
+  return format(value, formatString)
 }
 
 export function calculatePercentage(current: number, total: number): number {

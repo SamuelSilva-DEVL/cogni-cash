@@ -1201,6 +1201,8 @@ export const TransactionScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   type: 'type',
+  expenseKind: 'expenseKind',
+  recurrence: 'recurrence',
   source: 'source',
   accountId: 'accountId',
   categoryId: 'categoryId',
@@ -1350,6 +1352,34 @@ export type EnumtransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$
  * Reference to a field of type 'transactionType[]'
  */
 export type ListEnumtransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'transactionType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'expenseKind'
+ */
+export type EnumexpenseKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'expenseKind'>
+    
+
+
+/**
+ * Reference to a field of type 'expenseKind[]'
+ */
+export type ListEnumexpenseKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'expenseKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'incomeRecurrence'
+ */
+export type EnumincomeRecurrenceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'incomeRecurrence'>
+    
+
+
+/**
+ * Reference to a field of type 'incomeRecurrence[]'
+ */
+export type ListEnumincomeRecurrenceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'incomeRecurrence[]'>
     
 
 

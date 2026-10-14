@@ -1,8 +1,11 @@
 import React, { useState } from "react"
 import { Layout } from "@/src/components/Layout"
+import { PageHeader } from "@/src/components/PageHeader"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Button } from "@/src/components/ui/button"
+import { Badge } from "@/src/components/ui/badge"
 import { Input } from "@/src/components/ui/input"
+import { FieldSelect } from "@/src/components/ui/field-select"
 import { Label } from "@/src/components/ui/label"
 import { Skeleton } from "@/src/components/ui/skeleton"
 import {
@@ -181,21 +184,16 @@ export default function BudgetsPage() {
   return (
     <Layout>
       <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
-            Limites por categoria
-          </h1>
-          <p className="text-slate-700">
-            Defina quanto pretende gastar por categoria neste mês. As despesas
-            registradas são contabilizadas automaticamente.
-          </p>
-        </div>
+        <PageHeader
+          title="Limites por categoria"
+          description="Defina quanto pretende gastar por categoria neste mês. As despesas registradas entram na conta automaticamente."
+        />
 
         {/* ── Formulário de criação ── */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Plus className="h-5 w-5 text-emerald-600" aria-hidden="true" />
+              <Plus className="h-5 w-5 text-brand" aria-hidden="true" />
               Registrar limite
             </CardTitle>
           </CardHeader>
@@ -206,11 +204,10 @@ export default function BudgetsPage() {
             >
               <div className="space-y-2">
                 <Label htmlFor="category">Categoria</Label>
-                <select
+                <FieldSelect
                   id="category"
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {PRESET_CATEGORIES.map((c) => (
                     <option key={c} value={c}>
@@ -218,7 +215,7 @@ export default function BudgetsPage() {
                     </option>
                   ))}
                   <option value="__custom__">Outra categoria...</option>
-                </select>
+                </FieldSelect>
               </div>
 
               {isCustomCategory && (
@@ -252,7 +249,6 @@ export default function BudgetsPage() {
               <div className="flex items-end">
                 <Button
                   type="submit"
-                  variant="soft"
                   className="w-full"
                   disabled={createBudget.isPending}
                 >
@@ -268,7 +264,7 @@ export default function BudgetsPage() {
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between gap-4">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Gauge className="h-5 w-5 text-emerald-600" aria-hidden="true" />
+                <Gauge className="h-5 w-5 text-brand" aria-hidden="true" />
                 {MONTH_LABELS[month - 1]} de {year}
               </CardTitle>
               <div className="flex items-center gap-2">
@@ -303,10 +299,10 @@ export default function BudgetsPage() {
 
             {!isLoading && configuredLimits.length === 0 && (
               <div className="rounded-lg border border-dashed p-10 text-center">
-                <p className="font-medium text-slate-900 mb-1">
+                <p className="mb-1 font-medium text-foreground">
                   Nenhum limite registrado neste mês
                 </p>
-                <p className="text-sm text-slate-700 max-w-md mx-auto">
+                <p className="mx-auto max-w-md text-sm text-muted-foreground">
                   Use o formulário acima para definir o quanto pretende gastar
                   em cada categoria.
                 </p>
@@ -323,15 +319,15 @@ export default function BudgetsPage() {
                 return (
                   <div
                     key={budgetId}
-                    className="rounded-lg border bg-white p-5 space-y-4"
+                    className="space-y-4 border-b pb-5 last:border-b-0 last:pb-0"
                   >
                     {/* cabeçalho do item */}
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <h3 className="font-semibold text-slate-900">
+                        <h3 className="font-semibold text-foreground">
                           {item.categoryName}
                         </h3>
-                        <p className="text-sm text-slate-700 mt-0.5">
+                        <p className="mt-0.5 text-sm text-muted-foreground">
                           <span className="font-mono tabular-nums font-medium">
                             {formatCurrency(item.spent)}
                           </span>{" "}
@@ -343,24 +339,22 @@ export default function BudgetsPage() {
                       </div>
 
                       <div className="flex items-center gap-3 shrink-0">
-                        <span
-                          className={cn(
-                            "text-xs font-semibold px-2 py-1 rounded-full",
-                            item.status === "exceeded" &&
-                              "bg-red-100 text-red-700",
-                            item.status === "warning" &&
-                              "bg-amber-100 text-amber-700",
-                            item.status === "ok" &&
-                              "bg-emerald-100 text-emerald-700",
-                          )}
+                        <Badge
+                          tone={
+                            item.status === "exceeded"
+                              ? "danger"
+                              : item.status === "warning"
+                                ? "warning"
+                                : "brand"
+                          }
                         >
                           {statusLabel(item.status as BudgetStatus)}
-                        </span>
+                        </Badge>
 
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
+                          className="h-8 w-8 text-muted-foreground hover:bg-red-50 hover:text-destructive"
                           onClick={() =>
                             setDeleteTarget({
                               id: budgetId,
@@ -376,7 +370,7 @@ export default function BudgetsPage() {
 
                     {/* barra de progresso */}
                     <div className="space-y-1.5">
-                      <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                         <div
                           className={cn(
                             "h-2 rounded-full transition-all duration-500",
@@ -421,7 +415,6 @@ export default function BudgetsPage() {
                         aria-label={`Novo limite para ${item.categoryName}`}
                       />
                       <Button
-                        variant="soft"
                         size="sm"
                         onClick={() => handleUpdate(budgetId)}
                         disabled={isSaving}

@@ -12,6 +12,7 @@ import {
   FilterFn,
 } from "@tanstack/react-table"
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
+import { cn } from "@/src/lib/utils"
 import {
   Table,
   TableBody,
@@ -44,6 +45,8 @@ interface DataTableProps<TData, TValue> {
   sorting?: SortingState
   onSortingChange?: OnChangeFn<SortingState>
   isLoading?: boolean
+  className?: string
+  emptyLabel?: string
 }
 
 export function DataTable<TData, TValue>({
@@ -54,6 +57,8 @@ export function DataTable<TData, TValue>({
   sorting,
   onSortingChange,
   isLoading,
+  className,
+  emptyLabel = "Nenhum resultado encontrado.",
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -71,7 +76,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className={cn("overflow-hidden rounded-lg border bg-card", className)}>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -128,8 +133,8 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
-                Nenhum resultado encontrado.
+              <TableCell colSpan={columns.length} className="h-28 text-center text-sm text-muted-foreground">
+                {emptyLabel}
               </TableCell>
             </TableRow>
           )}

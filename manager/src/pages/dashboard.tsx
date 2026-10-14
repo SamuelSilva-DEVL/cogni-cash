@@ -1,5 +1,6 @@
 import React from "react"
 import { Layout } from "@/src/components/Layout"
+import { PageHeader } from "@/src/components/PageHeader"
 import { FinancialHealthCard } from "@/src/components/dashboard/FinancialHealthCard"
 import { SummaryCards } from "@/src/components/dashboard/SummaryCards"
 import { GoalsGrid } from "@/src/components/dashboard/GoalsGrid"
@@ -11,14 +12,10 @@ export default function DashboardPage() {
     <Layout>
       <div className="space-y-8">
         <div className="space-y-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
-              Dashboard Financeiro
-            </h1>
-            <p className="text-slate-700">
-              Registre movimentações e acompanhe seu progresso com calma.
-            </p>
-          </div>
+          <PageHeader
+            title="Dashboard financeiro"
+            description="Registre movimentações e acompanhe o progresso com calma."
+          />
           <QuickActions />
         </div>
 

@@ -94,6 +94,8 @@ export class FetchTransactionsByTypeController {
         amount: txn.amount.toString(),
         date: txn.date.toISOString(),
         type: txn.type,
+        expenseKind: txn.expenseKind,
+        recurrence: txn.recurrence,
         categoryName: txn.category?.name || null,
         source: txn.source,
         createdAt: txn.createdAt.toISOString(),

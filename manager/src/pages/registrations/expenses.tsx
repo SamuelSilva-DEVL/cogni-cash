@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from "react"
 import { ColumnDef, ColumnFiltersState, SortingState } from "@tanstack/react-table"
 import { Layout } from "@/src/components/Layout"
+import { PageHeader } from "@/src/components/PageHeader"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
+import { FieldSelect } from "@/src/components/ui/field-select"
 import { DataTable } from "@/src/components/ui/data-table"
 import { ExpenseFormDialog } from "@/src/components/registrations/ExpenseFormDialog"
 import { useExpenses } from "@/src/hooks/use-transactions"
@@ -45,7 +47,7 @@ const columns: ColumnDef<Expense>[] = [
     filterFn: "inNumberRange",
     enableSorting: true,
     cell: ({ getValue }) => (
-      <span className="font-mono tabular-nums text-red-600 font-semibold">
+      <span className="font-mono font-semibold tabular-nums text-destructive">
         {formatCurrency(getValue<number>())}
       </span>
     ),
@@ -101,106 +103,108 @@ export default function ExpensesPage() {
     <Layout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-1 text-balance">Despesas</h1>
-            <p className="text-muted-foreground">Anote o gasto agora — seu futuro eu agradece.</p>
-          </div>
-          <Button
-            variant="soft"
-            className="gap-2 shrink-0 sm:mt-1"
-            onClick={() => setIsDialogOpen(true)}
-          >
+        <PageHeader
+          title="Despesas"
+          description="Anote o gasto agora — seu futuro eu agradece."
+        >
+          <Button className="gap-2" onClick={() => setIsDialogOpen(true)}>
             <Plus className="h-4 w-4" />
             Nova despesa
           </Button>
-        </div>
+        </PageHeader>
 
-        {/* Filter bar */}
-        <div className="space-y-3">
-          <div className="flex flex-wrap gap-3">
-            <Input
-              placeholder="Buscar descrição..."
-              value={descFilter}
-              onChange={(e) => setDescFilter(e.target.value)}
-              className="h-9 w-48"
-            />
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <option value="">Todas as categorias</option>
-              {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <option value="">Todos os tipos</option>
-              <option value="fixo">Fixa</option>
-              <option value="variavel">Variável</option>
-            </select>
-          </div>
-          <div className="flex flex-wrap gap-3 items-center">
-            <Input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="h-9 w-40"
-              title="Data inicial"
-            />
-            <span className="text-muted-foreground text-sm">até</span>
-            <Input
-              type="date"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              className="h-9 w-40"
-              title="Data final"
-            />
-            <Input
-              type="number"
-              placeholder="Valor mín."
-              value={valueMin}
-              onChange={(e) => setValueMin(e.target.value)}
-              className="h-9 w-32 font-mono tabular-nums"
-            />
-            <Input
-              type="number"
-              placeholder="Valor máx."
-              value={valueMax}
-              onChange={(e) => setValueMax(e.target.value)}
-              className="h-9 w-32 font-mono tabular-nums"
-            />
-            {hasActiveFilters && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="h-9 gap-1.5 text-muted-foreground"
+        <div className="overflow-hidden rounded-lg border bg-card">
+          <div className="flex flex-col gap-3 border-b bg-muted/40 p-4">
+            <div className="flex flex-wrap gap-3">
+              <Input
+                placeholder="Buscar descrição"
+                value={descFilter}
+                onChange={(e) => setDescFilter(e.target.value)}
+                className="h-10 w-full sm:w-52"
+                aria-label="Buscar por descrição"
+              />
+              <FieldSelect
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="h-10 w-full sm:w-48"
+                aria-label="Filtrar por categoria"
               >
-                <X className="h-3.5 w-3.5" />
-                Limpar filtros
-              </Button>
-            )}
+                <option value="">Todas as categorias</option>
+                {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </FieldSelect>
+              <FieldSelect
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className="h-10 w-full sm:w-40"
+                aria-label="Filtrar por tipo"
+              >
+                <option value="">Todos os tipos</option>
+                <option value="fixo">Fixa</option>
+                <option value="variavel">Variável</option>
+              </FieldSelect>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="h-10 w-full sm:w-40"
+                aria-label="Data inicial"
+              />
+              <span className="text-sm text-muted-foreground">até</span>
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="h-10 w-full sm:w-40"
+                aria-label="Data final"
+              />
+              <Input
+                type="number"
+                placeholder="Valor mín."
+                value={valueMin}
+                onChange={(e) => setValueMin(e.target.value)}
+                className="h-10 w-full font-mono tabular-nums sm:w-32"
+                aria-label="Valor mínimo"
+              />
+              <Input
+                type="number"
+                placeholder="Valor máx."
+                value={valueMax}
+                onChange={(e) => setValueMax(e.target.value)}
+                className="h-10 w-full font-mono tabular-nums sm:w-32"
+                aria-label="Valor máximo"
+              />
+              {hasActiveFilters && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="h-10 gap-1.5 text-muted-foreground"
+                >
+                  <X className="h-3.5 w-3.5" />
+                  Limpar filtros
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Table */}
-        <DataTable
-          columns={columns}
-          data={expenses}
-          columnFilters={columnFilters}
-          onColumnFiltersChange={setColumnFilters}
-          sorting={sorting}
-          onSortingChange={setSorting}
-          isLoading={isLoading}
-        />
+          <DataTable
+            columns={columns}
+            data={expenses}
+            columnFilters={columnFilters}
+            onColumnFiltersChange={setColumnFilters}
+            sorting={sorting}
+            onSortingChange={setSorting}
+            isLoading={isLoading}
+            className="rounded-none border-0"
+            emptyLabel="Nenhuma despesa com esses filtros."
+          />
+        </div>
       </div>
 
       <ExpenseFormDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />

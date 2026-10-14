@@ -16,6 +16,8 @@ export interface ApiTransaction {
   amount: string
   date: string
   type: "INCOME" | "EXPENSE"
+  expenseKind: "FIXED" | "VARIABLE" | null
+  recurrence: "ONCE" | "MONTHLY" | null
   categoryName: string | null
   source: string | null
   createdAt: string
@@ -55,6 +57,8 @@ export interface CreateTransactionInput {
   amount: number
   date: string
   type: "INCOME" | "EXPENSE"
+  expenseKind?: "FIXED" | "VARIABLE"
+  recurrence?: "ONCE" | "MONTHLY"
   categoryName?: string
   source?: string
 }

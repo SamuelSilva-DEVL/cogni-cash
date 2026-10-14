@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import {
   Home,
+  MessageSquareText,
   Target,
   TrendingUp,
   TrendingDown,
@@ -32,6 +33,7 @@ interface LayoutProps {
 
 const ROUTE_LABELS: Record<string, string> = {
   dashboard: 'Dashboard',
+  analyst: 'Analista',
   goals: 'Metas',
   registrations: 'Registros',
   expenses: 'Despesas',
@@ -59,6 +61,7 @@ export const Layout = ({ children }: LayoutProps) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Analista', href: '/analyst', icon: MessageSquareText },
     { name: 'Metas', href: '/goals', icon: Target },
     { name: 'Despesas', href: '/registrations/expenses', icon: TrendingDown },
     { name: 'Receitas', href: '/registrations/receipts', icon: TrendingUp },
@@ -84,24 +87,23 @@ export const Layout = ({ children }: LayoutProps) => {
   }
 
   const brandMark = (
-    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-600 flex-shrink-0">
-      <Wallet className="h-4 w-4 text-white" />
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand text-brand-foreground">
+      <Wallet className="h-4 w-4" />
     </div>
   )
 
   return (
     <div className="min-h-screen bg-background">
-      {/* ── Mobile header ─────────────────────────────────── */}
-      <header className="lg:hidden sticky top-0 z-50 w-full shadow-sm bg-background/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-40 border-b bg-card lg:hidden">
         <div className="flex h-14 items-center justify-between px-4">
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link href="/dashboard" className="flex items-center gap-2.5">
             {brandMark}
-            <span className="text-base font-bold text-emerald-700">Cogni Cash</span>
+            <span className="text-base font-bold text-foreground">Cogni Cash</span>
           </Link>
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="rounded-lg p-2 hover:bg-muted transition-colors"
+            className="rounded-lg p-2 text-foreground transition-colors hover:bg-accent"
             aria-label={mobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
             aria-expanded={mobileMenuOpen}
           >
@@ -110,32 +112,29 @@ export const Layout = ({ children }: LayoutProps) => {
         </div>
       </header>
 
-      {/* ── Mobile backdrop ───────────────────────────────── */}
       {mobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-40 bg-black/50"
+          className="fixed inset-0 z-40 bg-foreground/40 lg:hidden"
           onClick={() => setMobileMenuOpen(false)}
           aria-hidden="true"
         />
       )}
 
-      {/* ── Sidebar ───────────────────────────────────────── */}
       <aside
         className={cn(
-          'fixed left-0 top-0 z-40 h-screen bg-sidebar shadow-[1px_0_0_0_var(--sidebar-border)] transition-all duration-300 ease-out',
+          'fixed left-0 top-0 z-40 h-screen border-r border-sidebar-border bg-sidebar transition-[transform,width] duration-200 ease-out',
           'lg:translate-x-0',
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
-          isExpanded ? 'w-64' : 'lg:w-16 w-64',
+          isExpanded ? 'w-64' : 'w-64 lg:w-16',
         )}
       >
         <div className="flex h-full flex-col">
-          {/* Logo */}
-          <div className="flex h-14 items-center border-b px-3">
+          <div className="flex h-14 items-center border-b border-sidebar-border px-3">
             <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden">
               {brandMark}
               <span
                 className={cn(
-                  'truncate text-base font-bold text-emerald-700 whitespace-nowrap transition-all duration-300',
+                  'truncate whitespace-nowrap text-base font-bold text-foreground',
                   !isExpanded && 'lg:hidden',
                 )}
               >
@@ -144,8 +143,7 @@ export const Layout = ({ children }: LayoutProps) => {
             </Link>
           </div>
 
-          {/* Navigation links */}
-          <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 py-3">
+          <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 py-3" aria-label="Principal">
             {navigation.map((item) => {
               const isActive =
                 router.pathname === item.href ||
@@ -155,15 +153,16 @@ export const Layout = ({ children }: LayoutProps) => {
                   key={item.name}
                   href={item.href}
                   title={!isExpanded ? item.name : undefined}
+                  aria-current={isActive ? 'page' : undefined}
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
                     !isExpanded && 'lg:justify-center lg:px-2',
                     isActive
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                      ? 'bg-brand text-brand-foreground'
+                      : 'text-muted-foreground hover:bg-sidebar-accent hover:text-foreground',
                   )}
                 >
-                  <item.icon className="h-5 w-5 flex-shrink-0" />
+                  <item.icon className="h-5 w-5 shrink-0" />
                   <span className={cn('truncate whitespace-nowrap', !isExpanded && 'lg:hidden')}>
                     {item.name}
                   </span>
@@ -172,39 +171,36 @@ export const Layout = ({ children }: LayoutProps) => {
             })}
           </nav>
 
-          {/* Logout */}
-          <div className="border-t p-2">
+          <div className="border-t border-sidebar-border p-2">
             <button
               type="button"
               onClick={handleLogout}
               title={!isExpanded ? 'Sair' : undefined}
               className={cn(
-                'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
+                'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground',
                 !isExpanded && 'lg:justify-center lg:px-2',
               )}
             >
-              <LogOut className="h-5 w-5 flex-shrink-0" />
+              <LogOut className="h-5 w-5 shrink-0" />
               <span className={cn('whitespace-nowrap', !isExpanded && 'lg:hidden')}>Sair</span>
             </button>
           </div>
         </div>
       </aside>
 
-      {/* ── Main content area ─────────────────────────────── */}
       <main
         className={cn(
-          'min-h-screen transition-all duration-300 ease-out',
+          'min-h-screen transition-[margin] duration-200 ease-out',
           isExpanded ? 'lg:ml-64' : 'lg:ml-16',
         )}
       >
-        {/* Topbar: toggle + breadcrumb */}
-        <header className="sticky top-0 z-30 hidden h-14 items-center gap-3 shadow-sm bg-background/95 backdrop-blur-sm px-4 lg:flex">
+        <header className="sticky top-0 z-30 hidden h-14 items-center gap-3 border-b bg-card px-4 lg:flex">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsExpanded(!isExpanded)}
             aria-label={isExpanded ? 'Recolher menu' : 'Expandir menu'}
-            className="h-8 w-8 flex-shrink-0"
+            className="h-8 w-8 shrink-0"
           >
             <PanelLeft className="h-4 w-4" />
           </Button>
@@ -212,7 +208,7 @@ export const Layout = ({ children }: LayoutProps) => {
           {breadcrumbs.length > 0 && (
             <Breadcrumb>
               <BreadcrumbList>
-                {breadcrumbs.map((crumb, i) => (
+                {breadcrumbs.map((crumb) => (
                   <React.Fragment key={crumb.href}>
                     <BreadcrumbItem>
                       {crumb.isLast ? (
@@ -231,7 +227,7 @@ export const Layout = ({ children }: LayoutProps) => {
           )}
         </header>
 
-        <div className="p-4 lg:p-6 xl:p-8">{children}</div>
+        <div className="mx-auto w-full max-w-6xl p-4 lg:p-6 xl:p-8">{children}</div>
       </main>
     </div>
   )

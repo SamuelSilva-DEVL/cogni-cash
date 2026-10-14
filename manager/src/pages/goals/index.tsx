@@ -1,7 +1,9 @@
 import React, { useState } from "react"
 import Link from "next/link"
 import { Layout } from "@/src/components/Layout"
+import { PageHeader } from "@/src/components/PageHeader"
 import { Button } from "@/src/components/ui/button"
+import { Badge } from "@/src/components/ui/badge"
 import { Card, CardContent } from "@/src/components/ui/card"
 import { Progress } from "@/src/components/ui/progress"
 import { Skeleton } from "@/src/components/ui/skeleton"
@@ -58,42 +60,37 @@ export default function GoalsPage() {
   return (
     <Layout>
       <div className="space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
-              Minhas Metas
-            </h1>
-            <p className="text-slate-700">
-              Defina objetivos e acompanhe cada passo com calma.
-            </p>
-          </div>
-          <Button onClick={() => setIsFormOpen(true)} variant="soft" className="gap-2 shrink-0">
+        <PageHeader
+          title="Minhas metas"
+          description="Defina objetivos e acompanhe cada passo com calma."
+        >
+          <Button onClick={() => setIsFormOpen(true)} className="gap-2">
             <Plus className="h-4 w-4" />
             Nova meta
           </Button>
-        </div>
+        </PageHeader>
 
         <div className="grid gap-4 md:grid-cols-3">
           <Card>
-            <CardContent className="p-6 text-center">
-              <p className="text-sm text-slate-700 mb-2">Total de metas</p>
-              <p className="text-4xl font-bold tabular-nums font-mono text-foreground">
+            <CardContent className="p-5">
+              <p className="text-sm text-muted-foreground">Total de metas</p>
+              <p className="mt-1 font-mono text-2xl font-semibold tabular-nums text-foreground">
                 {activeGoals.length}
               </p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-6 text-center">
-              <p className="text-sm text-slate-700 mb-2">Em progresso</p>
-              <p className="text-4xl font-bold tabular-nums font-mono text-blue-600">
+            <CardContent className="p-5">
+              <p className="text-sm text-muted-foreground">Em progresso</p>
+              <p className="mt-1 font-mono text-2xl font-semibold tabular-nums text-blue-700">
                 {inProgressGoals.length}
               </p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-6 text-center">
-              <p className="text-sm text-slate-700 mb-2">Concluídas</p>
-              <p className="text-4xl font-bold tabular-nums font-mono text-emerald-600">
+            <CardContent className="p-5">
+              <p className="text-sm text-muted-foreground">Concluídas</p>
+              <p className="mt-1 font-mono text-2xl font-semibold tabular-nums text-brand">
                 {completedGoals.length}
               </p>
             </CardContent>
@@ -114,9 +111,8 @@ export default function GoalsPage() {
               <Card
                 key={goal.id}
                 className={cn(
-                  "border transition-shadow hover:shadow-md",
-                  isAtRisk && "border-amber-200 bg-amber-50/30",
-                  isCompleted && "border-emerald-200 bg-emerald-50/30",
+                  isAtRisk && "border-amber-300 bg-amber-50",
+                  isCompleted && "border-brand/30 bg-brand-soft/60",
                 )}
               >
                 <CardContent className="p-6">
@@ -127,10 +123,10 @@ export default function GoalsPage() {
                           {goal.icon}
                         </span>
                         <div className="min-w-0">
-                          <h3 className="font-bold text-xl mb-1 truncate hover:text-emerald-700 transition-colors">
+                          <h3 className="mb-1 truncate text-lg font-semibold transition-colors hover:text-brand">
                             {goal.name}
                           </h3>
-                          <p className="text-sm text-slate-700 tabular-nums font-mono">
+                          <p className="font-mono text-sm tabular-nums text-muted-foreground">
                             {formatCurrency(goal.currentValue)} de{" "}
                             {formatCurrency(goal.totalValue)}
                           </p>
@@ -139,7 +135,7 @@ export default function GoalsPage() {
                     </Link>
 
                     <Button
-                      variant="soft"
+                      variant="outline"
                       size="sm"
                       onClick={() => handleEdit(goal)}
                       className="shrink-0"
@@ -154,7 +150,7 @@ export default function GoalsPage() {
                         <span className="text-3xl font-bold tabular-nums font-mono">
                           {progress}%
                         </span>
-                        <span className="text-sm text-slate-700 flex items-center gap-1">
+                        <span className="flex items-center gap-1 text-sm text-muted-foreground">
                           <Clock className="h-4 w-4" aria-hidden="true" />
                           {daysRemaining > 0
                             ? `${daysRemaining} dias restantes`
@@ -166,18 +162,18 @@ export default function GoalsPage() {
 
                     <div className="flex flex-wrap items-center gap-3 pt-2">
                       {isCompleted && (
-                        <div className="flex items-center gap-2 text-sm text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
-                          <TrendingUp className="h-4 w-4" aria-hidden="true" />
-                          <span className="font-medium">Meta alcançada</span>
-                        </div>
+                        <Badge tone="brand">
+                          <TrendingUp className="h-3.5 w-3.5" aria-hidden="true" />
+                          Meta alcançada
+                        </Badge>
                       )}
                       {isAtRisk && !isCompleted && (
-                        <div className="flex items-center gap-2 text-sm text-amber-800 bg-amber-100 px-3 py-1 rounded-full">
-                          <AlertCircle className="h-4 w-4" aria-hidden="true" />
-                          <span className="font-medium">Vale um olhar</span>
-                        </div>
+                        <Badge tone="warning">
+                          <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                          Vale um olhar
+                        </Badge>
                       )}
-                      <p className="text-xs text-slate-600 tabular-nums font-mono">
+                      <p className="font-mono text-xs tabular-nums text-muted-foreground">
                         Faltam {formatCurrency(goal.totalValue - goal.currentValue)}{" "}
                         para concluir
                       </p>
@@ -197,11 +193,11 @@ export default function GoalsPage() {
                 <h3 className="text-xl font-semibold mb-2">
                   Nenhuma meta ainda
                 </h3>
-                <p className="text-slate-700 mb-6 max-w-sm mx-auto">
+                <p className="mx-auto mb-6 max-w-sm text-muted-foreground">
                   Que tal começar com um objetivo simples? Cada meta é um passo
                   na direção certa.
                 </p>
-                <Button onClick={() => setIsFormOpen(true)} variant="soft" className="gap-2">
+                <Button onClick={() => setIsFormOpen(true)} className="gap-2">
                   <Plus className="h-4 w-4" />
                   Criar primeira meta
                 </Button>
