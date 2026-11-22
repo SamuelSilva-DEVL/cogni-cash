@@ -27,7 +27,9 @@ const createTransactionBodySchema = z.object({
   description: z.string().min(1, "Descrição é obrigatória"),
   amount: z.number().positive("Valor deve ser positivo"),
   date: z.string().datetime("Data deve estar no formato ISO 8601"),
-  type: z.enum(["INCOME", "EXPENSE"]).catch("EXPENSE"),
+  type: z.enum(["INCOME", "EXPENSE"]),
+  expenseKind: z.enum(["FIXED", "VARIABLE"]).optional(),
+  recurrence: z.enum(["ONCE", "MONTHLY"]).optional(),
   categoryName: z.string().optional(),
   source: z.string().optional(),
 })
@@ -57,6 +59,7 @@ export class CreateTransactionController {
         amount: 5000,
         date: "2026-03-29T10:00:00Z",
         type: "INCOME",
+        recurrence: "MONTHLY",
         categoryName: "Salário",
         source: "Trabalho",
       },
@@ -69,7 +72,8 @@ export class CreateTransactionController {
     @Body(bodyValidationPipe) body: CreateTransactionBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
-    const { description, amount, date, type, categoryName, source } = body
+    const { description, amount, date, type, expenseKind, recurrence, categoryName, source } =
+      body
     const context = await this.accountContext.resolve(user)
 
     let categoryId: string | null = null
@@ -100,6 +104,8 @@ export class CreateTransactionController {
         amount,
         date: new Date(date),
         type,
+        expenseKind: type === "EXPENSE" ? (expenseKind ?? "VARIABLE") : null,
+        recurrence: type === "INCOME" ? (recurrence ?? "ONCE") : null,
         source: source || null,
         accountId: context.accountId,
         categoryId,
@@ -116,6 +122,8 @@ export class CreateTransactionController {
       amount: transaction.amount.toString(),
       date: transaction.date.toISOString(),
       type: transaction.type,
+      expenseKind: transaction.expenseKind,
+      recurrence: transaction.recurrence,
       categoryName: transaction.category?.name || null,
       source: transaction.source,
       createdAt: transaction.createdAt.toISOString(),

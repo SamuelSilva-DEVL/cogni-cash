@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react"
 import { ColumnDef, ColumnFiltersState, SortingState } from "@tanstack/react-table"
+import { PageHeader } from "@/src/components/PageHeader"
 import { Button } from "@/src/components/ui/button"
 import { DataTable } from "@/src/components/ui/data-table"
 import { ReceiptFormDialog } from "@/src/components/registrations/ReceiptFormDialog"
@@ -41,7 +42,7 @@ const columns: ColumnDef<Receipt>[] = [
     filterFn: "inNumberRange",
     enableSorting: true,
     cell: ({ getValue }) => (
-      <span className="font-mono tabular-nums text-emerald-700 font-semibold">
+      <span className="font-mono font-semibold tabular-nums text-brand">
         {formatCurrency(getValue<number>())}
       </span>
     ),
@@ -82,20 +83,15 @@ export default function ReceiptsPage() {
   return (
     <>
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-1 text-balance">Receitas</h1>
-            <p className="text-muted-foreground">Registre entradas para manter o quadro completo.</p>
-          </div>
-          <Button
-            variant="soft"
-            className="shrink-0 sm:mt-1"
-            onClick={() => setIsDialogOpen(true)}
-          >
+        <PageHeader
+          title="Receitas"
+          description="Registre entradas para manter o quadro completo."
+        >
+          <Button className="gap-2" onClick={() => setIsDialogOpen(true)}>
             <Plus className="h-4 w-4" />
             Nova receita
           </Button>
-        </div>
+        </PageHeader>
 
         <TransactionFilters
           variant="receipt"
@@ -111,6 +107,7 @@ export default function ReceiptsPage() {
           sorting={sorting}
           onSortingChange={setSorting}
           isLoading={isLoading}
+          emptyLabel="Nenhuma receita com esses filtros."
         />
       </div>
 

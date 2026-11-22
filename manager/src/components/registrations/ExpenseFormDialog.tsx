@@ -10,6 +10,7 @@ import {
 } from "@/src/components/ui/dialog"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
+import { FieldSelect } from "@/src/components/ui/field-select"
 import { Label } from "@/src/components/ui/label"
 import { useCreateExpense } from "@/src/hooks/use-transactions"
 import { CATEGORY_LABELS } from "@/src/lib/mockData"
@@ -104,13 +105,12 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
 
             <div className="space-y-1.5">
               <Label htmlFor="exp-category">Categoria</Label>
-              <select
+              <FieldSelect
                 id="exp-category"
                 value={formData.category}
                 onChange={(e) =>
                   setFormData({ ...formData, category: e.target.value as Expense["category"] })
                 }
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 required
               >
                 {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
@@ -118,7 +118,7 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
                     {label}
                   </option>
                 ))}
-              </select>
+              </FieldSelect>
             </div>
 
             <div className="space-y-1.5">
@@ -132,7 +132,7 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
                       value={t}
                       checked={formData.type === t}
                       onChange={() => setFormData({ ...formData, type: t })}
-                      className="h-4 w-4"
+                      className="h-4 w-4 accent-brand"
                     />
                     <span className="text-sm">{t === "fixo" ? "Fixa" : "Variável"}</span>
                   </label>

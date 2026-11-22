@@ -128,6 +128,16 @@ enum transactionType {
   INCOME
 }
 
+enum expenseKind {
+  FIXED
+  VARIABLE
+}
+
+enum incomeRecurrence {
+  ONCE
+  MONTHLY
+}
+
 model Transaction {
   id          String   @id @default(uuid())
   description String
@@ -136,8 +146,10 @@ model Transaction {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  type   transactionType
-  source String?
+  type        transactionType
+  expenseKind expenseKind?      @map("expense_kind")
+  recurrence  incomeRecurrence?
+  source      String?
 
   accountId String  @map("account_id")
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)

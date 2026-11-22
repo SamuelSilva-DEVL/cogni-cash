@@ -22,7 +22,11 @@ import { ListBudgetsController } from "./controllers/budgets/list-budgets.contro
 import { CreateBudgetController } from "./controllers/budgets/create-budget.controller"
 import { UpdateBudgetController } from "./controllers/budgets/update-budget.controller"
 import { DeleteBudgetController } from "./controllers/budgets/delete-budget.controller"
+import { AskAnalystController } from "./controllers/analyst/ask-analyst.controller"
+import { FetchAnalystSnapshotController } from "./controllers/analyst/fetch-analyst-snapshot.controller"
 import { AccountContextService } from "./services/account-context.service"
+import { AnalystLlmClient } from "./services/analyst/analyst-llm.client"
+import { AnalystService } from "./services/analyst/analyst.service"
 import { BudgetQueryService } from "./services/budget-query.service"
 import { RolesGuard } from "./auth/roles.guard"
 
@@ -52,7 +56,16 @@ import { RolesGuard } from "./auth/roles.guard"
     ListMembersController,
     UpdateMemberController,
     RemoveMemberController,
+    FetchAnalystSnapshotController,
+    AskAnalystController,
   ],
-  providers: [PrismaService, AccountContextService, BudgetQueryService, RolesGuard],
+  providers: [
+    PrismaService,
+    AccountContextService,
+    BudgetQueryService,
+    RolesGuard,
+    AnalystLlmClient,
+    AnalystService,
+  ],
 })
 export class AppModule {}

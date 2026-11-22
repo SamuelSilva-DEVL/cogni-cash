@@ -4,7 +4,8 @@ import { useRouter } from "next/router"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
-import { Wallet, Mail, Lock, Eye, EyeOff } from "lucide-react"
+import { AuthShell } from "@/src/components/AuthShell"
+import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react"
 import z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -53,109 +54,79 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center mb-4"
-          >
-            <div className="h-14 w-14 rounded-lg bg-emerald-600 flex items-center justify-center">
-              <Wallet className="h-7 w-7 text-white" />
-            </div>
+    <AuthShell
+      title="Bem-vindo de volta"
+      description="Entre com suas credenciais para continuar."
+      footer={
+        <>
+          Não tem uma conta?{" "}
+          <Link href="/register" className="font-semibold text-brand hover:underline">
+            Cadastre-se gratuitamente
           </Link>
-          <h1 className="text-3xl font-bold text-emerald-700 mb-2">Cogni Cash</h1>
-          <p className="text-slate-700 text-sm">
-            Gerencie suas finanças com inteligência
-          </p>
-        </div>
-
-        <div className="bg-white rounded-lg border border-slate-200 p-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">
-              Bem-vindo de volta
-            </h2>
-            <p className="text-slate-700 text-sm">
-              Entre com suas credenciais para continuar
-            </p>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit(doLogin)} className="space-y-5">
+        <div className="space-y-2">
+          <Label htmlFor="email">E-mail</Label>
+          <div className="relative">
+            <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="email"
+              type="email"
+              placeholder="seu@email.com"
+              className="h-11 pl-10"
+              autoComplete="email"
+              {...register("email")}
+            />
           </div>
-
-          <form onSubmit={handleSubmit(doLogin)} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-slate-700">
-                E-mail
-              </Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  className="pl-10 h-11"
-                  {...register("email")}
-                />
-              </div>
-              {errors.email && (
-                <p className="text-sm text-red-600">{errors.email.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-slate-700">
-                Senha
-              </Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  className="pl-10 pr-10 h-11"
-                  {...register("password")}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-sm text-red-600">{errors.password.message}</p>
-              )}
-            </div>
-
-            <Button type="submit" variant="soft" disabled={isLoading} className="w-full h-11">
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Entrando...
-                </span>
-              ) : (
-                "Entrar"
-              )}
-            </Button>
-          </form>
+          {errors.email && (
+            <p className="text-sm text-destructive">{errors.email.message}</p>
+          )}
         </div>
 
-        <div className="text-center mt-6">
-          <p className="text-sm text-slate-700">
-            Não tem uma conta?{" "}
-            <Link
-              href="/register"
-              className="text-emerald-700 hover:text-emerald-800 font-semibold"
-            >
-              Cadastre-se gratuitamente
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <Label htmlFor="password">Senha</Label>
+            <Link href="/forgot-password" className="text-xs font-medium text-brand hover:underline">
+              Esqueceu a senha?
             </Link>
-          </p>
+          </div>
+          <div className="relative">
+            <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Sua senha"
+              className="h-11 pl-10 pr-10"
+              autoComplete="current-password"
+              {...register("password")}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+              aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+          {errors.password && (
+            <p className="text-sm text-destructive">{errors.password.message}</p>
+          )}
         </div>
-      </div>
-    </div>
+
+        <Button type="submit" disabled={isLoading} className="h-11 w-full">
+          {isLoading ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Entrando...
+            </span>
+          ) : (
+            "Entrar"
+          )}
+        </Button>
+      </form>
+    </AuthShell>
   )
 }

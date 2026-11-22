@@ -32,3 +32,19 @@ export const transactionType = {
 } as const
 
 export type transactionType = (typeof transactionType)[keyof typeof transactionType]
+
+
+export const expenseKind = {
+  FIXED: 'FIXED',
+  VARIABLE: 'VARIABLE'
+} as const
+
+export type expenseKind = (typeof expenseKind)[keyof typeof expenseKind]
+
+
+export const incomeRecurrence = {
+  ONCE: 'ONCE',
+  MONTHLY: 'MONTHLY'
+} as const
+
+export type incomeRecurrence = (typeof incomeRecurrence)[keyof typeof incomeRecurrence]

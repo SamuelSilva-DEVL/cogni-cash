@@ -169,10 +169,10 @@ export const GoalFormDialog = ({
                       type="button"
                       onClick={() => handleCategoryChange(cat.value)}
                       className={cn(
-                        "flex flex-1 min-w-[80px] flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-xs font-medium transition-all",
+                        "flex min-w-[80px] flex-1 flex-col items-center gap-1.5 rounded-lg border px-3 py-3 text-xs font-medium transition-colors",
                         isSelected
-                          ? "border-emerald-500 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-500"
-                          : "border-border bg-background text-muted-foreground hover:border-emerald-300 hover:bg-emerald-50/50",
+                          ? "border-brand bg-brand-soft text-brand"
+                          : "border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground",
                       )}
                     >
                       <span className="text-xl leading-none" aria-hidden="true">

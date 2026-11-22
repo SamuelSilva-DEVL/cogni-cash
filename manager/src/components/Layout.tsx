@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import {
   Home,
+  MessageSquareText,
   Target,
   TrendingUp,
   TrendingDown,
@@ -45,6 +46,7 @@ const SIDEBAR_KEY = 'COGNI_CASH_SIDEBAR_EXPANDED'
 
 const ROUTE_LABELS: Record<string, string> = {
   dashboard: 'Dashboard',
+  analyst: 'Analista',
   goals: 'Metas',
   registrations: 'Registros',
   expenses: 'Despesas',
@@ -55,7 +57,10 @@ const ROUTE_LABELS: Record<string, string> = {
 const NAV_SECTIONS = [
   {
     label: 'Principal',
-    items: [{ name: 'Dashboard', href: '/dashboard', icon: Home }],
+    items: [
+      { name: 'Dashboard', href: '/dashboard', icon: Home },
+      { name: 'Analista', href: '/analyst', icon: MessageSquareText },
+    ],
   },
   {
     label: 'Finanças',

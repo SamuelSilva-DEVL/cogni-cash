@@ -51,8 +51,8 @@ export default function GoalDetailPage() {
 
   if (!goal) {
     return (
-      <div className="text-center py-12 space-y-4">
-        <p className="text-slate-700">Meta não encontrada.</p>
+      <div className="space-y-4 py-12 text-center">
+        <p className="text-muted-foreground">Meta não encontrada.</p>
         <Link href="/goals">
           <Button variant="outline">Voltar para metas</Button>
         </Link>
@@ -77,22 +77,22 @@ export default function GoalDetailPage() {
   return (
     <div className="space-y-8">
         <div>
-          <Link href="/goals">
-            <Button variant="ghost" className="mb-4 -ml-2">
+          <Button asChild variant="ghost" className="mb-4 gap-2 px-0 hover:bg-transparent">
+            <Link href="/goals">
               <ArrowLeft className="h-4 w-4" />
               Voltar
-            </Button>
-          </Link>
+            </Link>
+          </Button>
 
           <div className="flex items-center gap-6">
             <span className="text-6xl shrink-0" aria-hidden="true">
               {goal.icon}
             </span>
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2 text-balance">
+              <h1 className="mb-2 text-[1.875rem] font-bold leading-[1.2] text-foreground">
                 {goal.name}
               </h1>
-              <p className="text-slate-700">
+              <p className="text-sm text-muted-foreground">
                 Acompanhe o progresso desta meta no seu ritmo.
               </p>
             </div>
@@ -104,19 +104,19 @@ export default function GoalDetailPage() {
             className={cn(
               "p-4 rounded-lg border flex items-center gap-3",
               isCompleted
-                ? "bg-emerald-50 border-emerald-200"
-                : "bg-amber-50 border-amber-200",
+                ? "border-brand/30 bg-brand-soft"
+                : "border-amber-300 bg-amber-50",
             )}
             role="status"
           >
             {isCompleted ? (
               <>
-                <TrendingUp className="h-5 w-5 text-emerald-600 shrink-0" />
+                <TrendingUp className="h-5 w-5 shrink-0 text-brand" />
                 <div>
-                  <p className="font-semibold text-emerald-900">
+                  <p className="font-semibold text-foreground">
                     Meta alcançada
                   </p>
-                  <p className="text-sm text-emerald-800">
+                  <p className="text-sm text-muted-foreground">
                     Você chegou ao objetivo — parabéns pelo compromisso.
                   </p>
                 </div>
@@ -141,10 +141,10 @@ export default function GoalDetailPage() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-2">
-                <Target className="h-5 w-5 text-slate-600" aria-hidden="true" />
-                <p className="text-sm text-slate-700">Valor total</p>
+                <Target className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                <p className="text-sm text-muted-foreground">Valor total</p>
               </div>
-              <p className="text-3xl font-bold tabular-nums font-mono">
+              <p className="font-mono text-2xl font-semibold tabular-nums">
                 {formatCurrency(goal.totalValue)}
               </p>
             </CardContent>
@@ -153,10 +153,10 @@ export default function GoalDetailPage() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-2">
-                <TrendingUp className="h-5 w-5 text-emerald-600" aria-hidden="true" />
-                <p className="text-sm text-slate-700">Valor atual</p>
+                <TrendingUp className="h-4 w-4 text-brand" aria-hidden="true" />
+                <p className="text-sm text-muted-foreground">Valor atual</p>
               </div>
-              <p className="text-3xl font-bold tabular-nums font-mono text-emerald-700">
+              <p className="font-mono text-2xl font-semibold tabular-nums text-brand">
                 {formatCurrency(goal.currentValue)}
               </p>
             </CardContent>
@@ -165,10 +165,10 @@ export default function GoalDetailPage() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-2">
-                <Clock className="h-5 w-5 text-blue-600" aria-hidden="true" />
-                <p className="text-sm text-slate-700">Dias restantes</p>
+                <Clock className="h-4 w-4 text-blue-700" aria-hidden="true" />
+                <p className="text-sm text-muted-foreground">Dias restantes</p>
               </div>
-              <p className="text-3xl font-bold tabular-nums font-mono text-blue-600">
+              <p className="font-mono text-2xl font-semibold tabular-nums text-blue-700">
                 {daysRemaining > 0 ? daysRemaining : 0}
               </p>
             </CardContent>
@@ -182,11 +182,11 @@ export default function GoalDetailPage() {
           <CardContent className="space-y-6">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-5xl font-bold tabular-nums font-mono">
+                <span className="font-mono text-4xl font-semibold tabular-nums">
                   {progress}%
                 </span>
                 <div className="text-right">
-                  <p className="text-sm text-slate-700">Faltam</p>
+                  <p className="text-sm text-muted-foreground">Faltam</p>
                   <p className="text-xl font-semibold tabular-nums font-mono text-foreground">
                     {formatCurrency(remaining)}
                   </p>
@@ -197,14 +197,14 @@ export default function GoalDetailPage() {
 
             <div className="grid grid-cols-2 gap-4 pt-4 border-t">
               <div>
-                <p className="text-sm text-slate-700 mb-1 flex items-center gap-2">
+                <p className="mb-1 flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" aria-hidden="true" />
                   Data de início
                 </p>
                 <p className="font-semibold">{formatDate(goal.createdAt)}</p>
               </div>
               <div>
-                <p className="text-sm text-slate-700 mb-1 flex items-center gap-2">
+                <p className="mb-1 flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" aria-hidden="true" />
                   Data limite
                 </p>

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react"
 import { ColumnDef, ColumnFiltersState, SortingState } from "@tanstack/react-table"
+import { PageHeader } from "@/src/components/PageHeader"
 import { Button } from "@/src/components/ui/button"
 import { DataTable } from "@/src/components/ui/data-table"
 import { ExpenseFormDialog } from "@/src/components/registrations/ExpenseFormDialog"
@@ -48,7 +49,7 @@ const columns: ColumnDef<Expense>[] = [
     filterFn: "inNumberRange",
     enableSorting: true,
     cell: ({ getValue }) => (
-      <span className="font-mono tabular-nums text-red-600 font-semibold">
+      <span className="font-mono font-semibold tabular-nums text-destructive">
         {formatCurrency(getValue<number>())}
       </span>
     ),
@@ -90,20 +91,15 @@ export default function ExpensesPage() {
   return (
     <>
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-1 text-balance">Despesas</h1>
-            <p className="text-muted-foreground">Anote o gasto agora — seu futuro eu agradece.</p>
-          </div>
-          <Button
-            variant="soft"
-            className="shrink-0 sm:mt-1"
-            onClick={() => setIsDialogOpen(true)}
-          >
+        <PageHeader
+          title="Despesas"
+          description="Anote o gasto agora — seu futuro eu agradece."
+        >
+          <Button className="gap-2" onClick={() => setIsDialogOpen(true)}>
             <Plus className="h-4 w-4" />
             Nova despesa
           </Button>
-        </div>
+        </PageHeader>
 
         <TransactionFilters
           variant="expense"
@@ -119,6 +115,7 @@ export default function ExpensesPage() {
           sorting={sorting}
           onSortingChange={setSorting}
           isLoading={isLoading}
+          emptyLabel="Nenhuma despesa com esses filtros."
         />
       </div>
 
