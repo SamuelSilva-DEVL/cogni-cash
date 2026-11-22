@@ -60,12 +60,15 @@ export function useCreateExpense() {
         amount: expense.value,
         date: toIsoDateTime(expense.date),
         type: "EXPENSE",
+        expenseKind: expense.type === "fixo" ? "FIXED" : "VARIABLE",
         categoryName: CATEGORY_LABELS[expense.category] ?? expense.category,
       }
       return createTransaction(input)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.transactions.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.budgets.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all })
     },
   })
 }
@@ -80,6 +83,7 @@ export function useCreateReceipt() {
         amount: receipt.value,
         date: toIsoDateTime(receipt.date),
         type: "INCOME",
+        recurrence: receipt.recurrence === "mensal" ? "MONTHLY" : "ONCE",
         source: receipt.origin,
       }
       return createTransaction(input)

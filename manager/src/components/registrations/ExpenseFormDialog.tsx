@@ -13,6 +13,7 @@ import {
 } from "@/src/components/ui/dialog"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
+import { FieldSelect } from "@/src/components/ui/field-select"
 import { Label } from "@/src/components/ui/label"
 import { useCreateExpense } from "@/src/hooks/use-transactions"
 import { CATEGORY_LABELS } from "@/src/lib/mockData"
@@ -98,7 +99,7 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="px-6 py-5 space-y-4">
+          <div className="space-y-4 px-6 py-5">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="exp-value">Valor (R$)</Label>
@@ -112,19 +113,15 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
                   {...register("value")}
                 />
                 {errors.value && (
-                  <p className="text-sm text-red-600">{errors.value.message}</p>
+                  <p className="text-sm text-destructive">{errors.value.message}</p>
                 )}
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="exp-date">Data</Label>
-                <Input
-                  id="exp-date"
-                  type="date"
-                  {...register("date")}
-                />
+                <Input id="exp-date" type="date" {...register("date")} />
                 {errors.date && (
-                  <p className="text-sm text-red-600">{errors.date.message}</p>
+                  <p className="text-sm text-destructive">{errors.date.message}</p>
                 )}
               </div>
             </div>
@@ -137,25 +134,21 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
                 {...register("description")}
               />
               {errors.description && (
-                <p className="text-sm text-red-600">{errors.description.message}</p>
+                <p className="text-sm text-destructive">{errors.description.message}</p>
               )}
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="exp-category">Categoria</Label>
-              <select
-                id="exp-category"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                {...register("category")}
-              >
+              <FieldSelect id="exp-category" {...register("category")}>
                 {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>
                     {label}
                   </option>
                 ))}
-              </select>
+              </FieldSelect>
               {errors.category && (
-                <p className="text-sm text-red-600">{errors.category.message}</p>
+                <p className="text-sm text-destructive">{errors.category.message}</p>
               )}
             </div>
 
@@ -163,11 +156,11 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
               <Label>Tipo</Label>
               <div className="flex gap-4 pt-0.5">
                 {(["fixo", "variavel"] as Expense["type"][]).map((t) => (
-                  <label key={t} className="flex items-center gap-2 cursor-pointer">
+                  <label key={t} className="flex cursor-pointer items-center gap-2">
                     <input
                       type="radio"
                       value={t}
-                      className="h-4 w-4"
+                      className="h-4 w-4 accent-brand"
                       {...register("type")}
                     />
                     <span className="text-sm">{t === "fixo" ? "Fixa" : "Variável"}</span>
@@ -175,7 +168,7 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
                 ))}
               </div>
               {errors.type && (
-                <p className="text-sm text-red-600">{errors.type.message}</p>
+                <p className="text-sm text-destructive">{errors.type.message}</p>
               )}
             </div>
           </div>

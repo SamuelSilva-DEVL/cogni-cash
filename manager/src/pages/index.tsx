@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { Wallet } from 'lucide-react'
+import { Loader2, Wallet } from 'lucide-react'
 
 export default function Home() {
   const router = useRouter()
@@ -10,13 +10,16 @@ export default function Home() {
   }, [router])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="text-center">
-        <div className="h-14 w-14 rounded-lg bg-emerald-600 flex items-center justify-center mx-auto mb-4">
-          <Wallet className="h-7 w-7 text-white" />
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-brand text-brand-foreground">
+          <Wallet className="h-6 w-6" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Cogni Cash</h1>
-        <p className="text-slate-700">Carregando...</p>
+        <h1 className="mb-2 text-xl font-bold text-foreground">Cogni Cash</h1>
+        <p className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Carregando
+        </p>
       </div>
     </div>
   )

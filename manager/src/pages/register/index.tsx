@@ -5,14 +5,9 @@ import { isAxiosError } from "axios"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
-import {
-  Wallet,
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  User,
-} from "lucide-react"
+import { AuthShell } from "@/src/components/AuthShell"
+import { Mail, Lock, Eye, EyeOff, User, Loader2 } from "lucide-react"
+import { cn } from "@/src/lib/utils"
 import z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -109,186 +104,168 @@ export default function RegisterPage() {
 
   const strength = passwordStrength(password)
 
+  const strengthTone =
+    strength.strength <= 2
+      ? "bg-destructive"
+      : strength.strength === 3
+        ? "bg-warning"
+        : "bg-brand"
+
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center justify-center mb-4">
-            <div className="h-14 w-14 rounded-lg bg-emerald-600 flex items-center justify-center">
-              <Wallet className="h-7 w-7 text-white" />
-            </div>
+    <AuthShell
+      title="Criar conta"
+      description="Preencha os dados para começar gratuitamente."
+      footer={
+        <>
+          Já tem uma conta?{" "}
+          <Link href="/login" className="font-semibold text-brand hover:underline">
+            Faça login
           </Link>
-          <h1 className="text-3xl font-bold text-emerald-700 mb-2">Cogni Cash</h1>
-          <p className="text-slate-700 text-sm">
-            Comece sua jornada financeira hoje
-          </p>
-        </div>
-
-        <div className="bg-white rounded-lg border border-slate-200 p-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Criar conta</h2>
-            <p className="text-slate-700 text-sm">
-              Preencha os dados para começar gratuitamente
-            </p>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit(doRegister)} className="space-y-5">
+        <div className="space-y-2">
+          <Label htmlFor="name">Nome completo</Label>
+          <div className="relative">
+            <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="name"
+              type="text"
+              placeholder="João Silva"
+              className="h-11 pl-10"
+              {...register("name")}
+            />
           </div>
-
-          <form onSubmit={handleSubmit(doRegister)} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="name">Nome completo</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="João Silva"
-                  className="pl-10 h-11"
-                  {...register("name")}
-                />
-              </div>
-              {errors.name && (
-                <p className="text-sm text-red-600">{errors.name.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  className="pl-10 h-11"
-                  {...register("email")}
-                />
-              </div>
-              {errors.email && (
-                <p className="text-sm text-red-600">{errors.email.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  className="pl-10 pr-10 h-11"
-                  {...register("password")}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-sm text-red-600">{errors.password.message}</p>
-              )}
-
-              {password && (
-                <div className="space-y-2">
-                  <div className="flex gap-1" aria-hidden="true">
-                    {[1, 2, 3, 4, 5].map((level) => (
-                      <div
-                        key={level}
-                        className={`h-1 flex-1 rounded-full ${
-                          level <= strength.strength
-                            ? "bg-emerald-500"
-                            : "bg-slate-200"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <p className="text-xs text-slate-700">
-                    Força da senha:{" "}
-                    <span className="font-medium">{strength.label}</span>
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmar senha</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <Input
-                  id="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  className="pl-10 pr-10 h-11"
-                  {...register("confirmPassword")}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  aria-label={
-                    showConfirmPassword ? "Ocultar confirmação" : "Mostrar confirmação"
-                  }
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-              {errors.confirmPassword && (
-                <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-1">
-              <label className="flex items-start space-x-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 mt-1 rounded border-slate-300"
-                  {...register("acceptTerms")}
-                />
-                <span className="text-sm text-slate-700 leading-relaxed">
-                  Aceito os termos de uso e política de privacidade
-                </span>
-              </label>
-              {errors.acceptTerms && (
-                <p className="text-sm text-red-600">{errors.acceptTerms.message}</p>
-              )}
-            </div>
-
-            <Button type="submit" variant="soft" disabled={isLoading} className="w-full h-11">
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Criando conta...
-                </span>
-              ) : (
-                "Criar conta gratuita"
-              )}
-            </Button>
-          </form>
+          {errors.name && (
+            <p className="text-sm text-destructive">{errors.name.message}</p>
+          )}
         </div>
 
-        <div className="text-center mt-6">
-          <p className="text-sm text-slate-700">
-            Já tem uma conta?{" "}
-            <Link
-              href="/login"
-              className="text-emerald-700 hover:text-emerald-800 font-semibold"
+        <div className="space-y-2">
+          <Label htmlFor="email">E-mail</Label>
+          <div className="relative">
+            <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="email"
+              type="email"
+              placeholder="seu@email.com"
+              className="h-11 pl-10"
+              {...register("email")}
+            />
+          </div>
+          {errors.email && (
+            <p className="text-sm text-destructive">{errors.email.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="password">Senha</Label>
+          <div className="relative">
+            <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              className="h-11 pl-10 pr-10"
+              {...register("password")}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
             >
-              Faça login
-            </Link>
-          </p>
+              {showPassword ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+            </button>
+          </div>
+          {errors.password && (
+            <p className="text-sm text-destructive">{errors.password.message}</p>
+          )}
+
+          {password && (
+            <div className="space-y-2">
+              <div className="flex gap-1" aria-hidden="true">
+                {[1, 2, 3, 4, 5].map((level) => (
+                  <div
+                    key={level}
+                    className={cn(
+                      "h-1 flex-1 rounded-full",
+                      level <= strength.strength ? strengthTone : "bg-muted",
+                    )}
+                  />
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Força da senha:{" "}
+                <span className="font-medium">{strength.label}</span>
+              </p>
+            </div>
+          )}
         </div>
-      </div>
-    </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword">Confirmar senha</Label>
+          <div className="relative">
+            <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="••••••••"
+              className="h-11 pl-10 pr-10"
+              {...register("confirmPassword")}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              aria-label={
+                showConfirmPassword ? "Ocultar confirmação" : "Mostrar confirmação"
+              }
+            >
+              {showConfirmPassword ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+            </button>
+          </div>
+          {errors.confirmPassword && (
+            <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-1">
+          <label className="flex cursor-pointer items-start space-x-3">
+            <input
+              type="checkbox"
+              className="mt-1 h-4 w-4 rounded border-input"
+              {...register("acceptTerms")}
+            />
+            <span className="text-sm leading-relaxed text-muted-foreground">
+              Aceito os termos de uso e política de privacidade
+            </span>
+          </label>
+          {errors.acceptTerms && (
+            <p className="text-sm text-destructive">{errors.acceptTerms.message}</p>
+          )}
+        </div>
+
+        <Button type="submit" disabled={isLoading} className="h-11 w-full">
+          {isLoading ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Criando conta...
+            </span>
+          ) : (
+            "Criar conta gratuita"
+          )}
+        </Button>
+      </form>
+    </AuthShell>
   )
 }

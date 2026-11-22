@@ -13,6 +13,7 @@ import {
 } from "@/src/components/ui/dialog"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
+import { FieldSelect } from "@/src/components/ui/field-select"
 import { Label } from "@/src/components/ui/label"
 import { useCreateReceipt } from "@/src/hooks/use-transactions"
 import { Receipt } from "@/src/types"
@@ -94,7 +95,7 @@ export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="px-6 py-5 space-y-4">
+          <div className="space-y-4 px-6 py-5">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="rec-value">Valor (R$)</Label>
@@ -108,19 +109,15 @@ export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps
                   {...register("value")}
                 />
                 {errors.value && (
-                  <p className="text-sm text-red-600">{errors.value.message}</p>
+                  <p className="text-sm text-destructive">{errors.value.message}</p>
                 )}
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="rec-date">Data</Label>
-                <Input
-                  id="rec-date"
-                  type="date"
-                  {...register("date")}
-                />
+                <Input id="rec-date" type="date" {...register("date")} />
                 {errors.date && (
-                  <p className="text-sm text-red-600">{errors.date.message}</p>
+                  <p className="text-sm text-destructive">{errors.date.message}</p>
                 )}
               </div>
             </div>
@@ -133,22 +130,18 @@ export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps
                 {...register("origin")}
               />
               {errors.origin && (
-                <p className="text-sm text-red-600">{errors.origin.message}</p>
+                <p className="text-sm text-destructive">{errors.origin.message}</p>
               )}
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="rec-recurrence">Recorrência</Label>
-              <select
-                id="rec-recurrence"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                {...register("recurrence")}
-              >
+              <FieldSelect id="rec-recurrence" {...register("recurrence")}>
                 <option value="unico">Única</option>
                 <option value="mensal">Mensal</option>
-              </select>
+              </FieldSelect>
               {errors.recurrence && (
-                <p className="text-sm text-red-600">{errors.recurrence.message}</p>
+                <p className="text-sm text-destructive">{errors.recurrence.message}</p>
               )}
             </div>
           </div>

@@ -162,6 +162,8 @@ export const TransactionScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   type: 'type',
+  expenseKind: 'expenseKind',
+  recurrence: 'recurrence',
   source: 'source',
   accountId: 'accountId',
   categoryId: 'categoryId',
