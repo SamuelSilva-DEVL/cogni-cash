@@ -1,6 +1,9 @@
-import React, { useState } from "react"
+import React, { useEffect } from "react"
 import { isAxiosError } from "axios"
 import { toast } from "sonner"
+import z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Dialog,
   DialogContent,
@@ -21,30 +24,63 @@ interface ExpenseFormDialogProps {
   onOpenChange: (open: boolean) => void
 }
 
-const INITIAL = {
+const expenseSchema = z.object({
+  value: z.string().min(1, "Campo obrigatório").refine(
+    (v) => !Number.isNaN(Number(v)) && Number(v) > 0,
+    "Informe um valor válido maior que zero",
+  ),
+  category: z.string().min(1, "Campo obrigatório"),
+  type: z.enum(["fixo", "variavel"]),
+  date: z.string().min(1, "Campo obrigatório"),
+  description: z.string().min(1, "Campo obrigatório"),
+})
+
+type ExpenseSchema = z.infer<typeof expenseSchema>
+
+const DEFAULT_VALUES: ExpenseSchema = {
   value: "",
-  category: "alimentacao" as Expense["category"],
-  type: "variavel" as Expense["type"],
+  category: "alimentacao",
+  type: "variavel",
   date: new Date().toISOString().split("T")[0],
   description: "",
 }
 
 export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps) {
   const createExpense = useCreateExpense()
-  const [formData, setFormData] = useState(INITIAL)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ExpenseSchema>({
+    resolver: zodResolver(expenseSchema),
+    defaultValues: DEFAULT_VALUES,
+  })
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        ...DEFAULT_VALUES,
+        date: new Date().toISOString().split("T")[0],
+      })
+    }
+  }, [open, reset])
+
+  const onSubmit = async (data: ExpenseSchema) => {
     try {
       await createExpense.mutateAsync({
-        value: Number(formData.value),
-        category: formData.category,
-        type: formData.type,
-        date: formData.date,
-        description: formData.description,
+        value: Number(data.value),
+        category: data.category as Expense["category"],
+        type: data.type,
+        date: data.date,
+        description: data.description,
       })
       toast.success("Despesa registrada", { description: "Já está no seu histórico." })
-      setFormData(INITIAL)
+      reset({
+        ...DEFAULT_VALUES,
+        date: new Date().toISOString().split("T")[0],
+      })
       onOpenChange(false)
     } catch (err) {
       toast.error(
@@ -62,8 +98,8 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
           <DialogTitle className="text-lg font-semibold">Nova despesa</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
-          <div className="px-6 py-5 space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="space-y-4 px-6 py-5">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="exp-value">Valor (R$)</Label>
@@ -72,23 +108,21 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
                   type="number"
                   step="0.01"
                   min="0"
-                  value={formData.value}
-                  onChange={(e) => setFormData({ ...formData, value: e.target.value })}
                   placeholder="150,00"
                   className="font-mono tabular-nums"
-                  required
+                  {...register("value")}
                 />
+                {errors.value && (
+                  <p className="text-sm text-destructive">{errors.value.message}</p>
+                )}
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="exp-date">Data</Label>
-                <Input
-                  id="exp-date"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  required
-                />
+                <Input id="exp-date" type="date" {...register("date")} />
+                {errors.date && (
+                  <p className="text-sm text-destructive">{errors.date.message}</p>
+                )}
               </div>
             </div>
 
@@ -96,48 +130,46 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
               <Label htmlFor="exp-description">Descrição</Label>
               <Input
                 id="exp-description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Ex: Supermercado do mês"
-                required
+                {...register("description")}
               />
+              {errors.description && (
+                <p className="text-sm text-destructive">{errors.description.message}</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="exp-category">Categoria</Label>
-              <FieldSelect
-                id="exp-category"
-                value={formData.category}
-                onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value as Expense["category"] })
-                }
-                required
-              >
+              <FieldSelect id="exp-category" {...register("category")}>
                 {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>
                     {label}
                   </option>
                 ))}
               </FieldSelect>
+              {errors.category && (
+                <p className="text-sm text-destructive">{errors.category.message}</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
               <Label>Tipo</Label>
               <div className="flex gap-4 pt-0.5">
                 {(["fixo", "variavel"] as Expense["type"][]).map((t) => (
-                  <label key={t} className="flex items-center gap-2 cursor-pointer">
+                  <label key={t} className="flex cursor-pointer items-center gap-2">
                     <input
                       type="radio"
-                      name="exp-type"
                       value={t}
-                      checked={formData.type === t}
-                      onChange={() => setFormData({ ...formData, type: t })}
                       className="h-4 w-4 accent-brand"
+                      {...register("type")}
                     />
                     <span className="text-sm">{t === "fixo" ? "Fixa" : "Variável"}</span>
                   </label>
                 ))}
               </div>
+              {errors.type && (
+                <p className="text-sm text-destructive">{errors.type.message}</p>
+              )}
             </div>
           </div>
 

@@ -1,8 +1,11 @@
-import React, { useState } from "react"
+import React, { useEffect } from "react"
 import { Goal } from "@/src/types"
 import { useCreateGoal } from "@/src/hooks/use-goals"
 import { isAxiosError } from "axios"
 import { toast } from "sonner"
+import z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Dialog,
   DialogContent,
@@ -32,6 +35,23 @@ const CATEGORY_OPTIONS: { value: GoalCategory; label: string; icon: string }[] =
   { value: "outros", label: "Outros", icon: "🎯" },
 ]
 
+const goalSchema = z.object({
+  name: z.string().min(1, "Campo obrigatório"),
+  totalValue: z.string().min(1, "Campo obrigatório").refine(
+    (v) => !Number.isNaN(Number(v)) && Number(v) > 0,
+    "Informe um valor válido maior que zero",
+  ),
+  currentValue: z.string().refine(
+    (v) => v === "" || (!Number.isNaN(Number(v)) && Number(v) >= 0),
+    "Informe um valor válido",
+  ),
+  deadlineDate: z.string().min(1, "Campo obrigatório"),
+  category: z.enum(["casa", "viagem", "educacao", "investimento", "outros"]),
+  icon: z.string(),
+})
+
+type GoalSchema = z.infer<typeof goalSchema>
+
 export const GoalFormDialog = ({
   open,
   onOpenChange,
@@ -39,18 +59,42 @@ export const GoalFormDialog = ({
   mode,
 }: GoalFormDialogProps) => {
   const createGoal = useCreateGoal()
-  const [formData, setFormData] = useState({
-    name: goal?.name || "",
-    totalValue: goal?.totalValue?.toString() || "",
-    currentValue: goal?.currentValue?.toString() || "",
-    deadlineDate: goal?.deadlineDate || "",
-    category: (goal?.category || "outros") as GoalCategory,
-    icon: goal?.icon || "🎯",
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<GoalSchema>({
+    resolver: zodResolver(goalSchema),
+    defaultValues: {
+      name: goal?.name || "",
+      totalValue: goal?.totalValue?.toString() || "",
+      currentValue: goal?.currentValue?.toString() || "",
+      deadlineDate: goal?.deadlineDate || "",
+      category: (goal?.category || "outros") as GoalCategory,
+      icon: goal?.icon || "🎯",
+    },
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  useEffect(() => {
+    if (open) {
+      reset({
+        name: goal?.name || "",
+        totalValue: goal?.totalValue?.toString() || "",
+        currentValue: goal?.currentValue?.toString() || "",
+        deadlineDate: goal?.deadlineDate || "",
+        category: (goal?.category || "outros") as GoalCategory,
+        icon: goal?.icon || "🎯",
+      })
+    }
+  }, [open, goal, reset])
 
+  const category = watch("category")
+
+  const onSubmit = async (data: GoalSchema) => {
     if (mode === "edit") {
       toast.error("Edição de metas ainda não está disponível na API.")
       return
@@ -58,15 +102,15 @@ export const GoalFormDialog = ({
 
     try {
       await createGoal.mutateAsync({
-        title: formData.name,
-        targetAmount: Number(formData.totalValue),
-        currentAmount: Number(formData.currentValue) || 0,
-        deadline: formData.deadlineDate || undefined,
+        title: data.name,
+        targetAmount: Number(data.totalValue),
+        currentAmount: Number(data.currentValue) || 0,
+        deadline: data.deadlineDate || undefined,
       })
 
       toast.success("Meta criada com sucesso!")
       onOpenChange(false)
-      setFormData({
+      reset({
         name: "",
         totalValue: "",
         currentValue: "",
@@ -83,9 +127,10 @@ export const GoalFormDialog = ({
     }
   }
 
-  const handleCategoryChange = (category: GoalCategory) => {
-    const selectedCategory = CATEGORY_OPTIONS.find((c) => c.value === category)
-    setFormData({ ...formData, category, icon: selectedCategory?.icon || "🎯" })
+  const handleCategoryChange = (nextCategory: GoalCategory) => {
+    const selectedCategory = CATEGORY_OPTIONS.find((c) => c.value === nextCategory)
+    setValue("category", nextCategory)
+    setValue("icon", selectedCategory?.icon || "🎯")
   }
 
   return (
@@ -97,17 +142,18 @@ export const GoalFormDialog = ({
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="px-6 py-5 space-y-5">
             <div className="space-y-1.5">
               <Label htmlFor="name">Nome da meta</Label>
               <Input
                 id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Ex: Viagem para Europa"
-                required
+                {...register("name")}
               />
+              {errors.name && (
+                <p className="text-sm text-red-600">{errors.name.message}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -118,14 +164,13 @@ export const GoalFormDialog = ({
                   type="number"
                   step="0.01"
                   min="0"
-                  value={formData.totalValue}
-                  onChange={(e) =>
-                    setFormData({ ...formData, totalValue: e.target.value })
-                  }
                   placeholder="15000.00"
                   className="font-mono tabular-nums"
-                  required
+                  {...register("totalValue")}
                 />
+                {errors.totalValue && (
+                  <p className="text-sm text-red-600">{errors.totalValue.message}</p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -135,13 +180,13 @@ export const GoalFormDialog = ({
                   type="number"
                   step="0.01"
                   min="0"
-                  value={formData.currentValue}
-                  onChange={(e) =>
-                    setFormData({ ...formData, currentValue: e.target.value })
-                  }
                   placeholder="0.00"
                   className="font-mono tabular-nums"
+                  {...register("currentValue")}
                 />
+                {errors.currentValue && (
+                  <p className="text-sm text-red-600">{errors.currentValue.message}</p>
+                )}
               </div>
             </div>
 
@@ -150,19 +195,18 @@ export const GoalFormDialog = ({
               <Input
                 id="deadlineDate"
                 type="date"
-                value={formData.deadlineDate}
-                onChange={(e) =>
-                  setFormData({ ...formData, deadlineDate: e.target.value })
-                }
-                required
+                {...register("deadlineDate")}
               />
+              {errors.deadlineDate && (
+                <p className="text-sm text-red-600">{errors.deadlineDate.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label>Categoria</Label>
               <div className="flex gap-2 flex-wrap">
                 {CATEGORY_OPTIONS.map((cat) => {
-                  const isSelected = formData.category === cat.value
+                  const isSelected = category === cat.value
                   return (
                     <button
                       key={cat.value}
