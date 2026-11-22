@@ -84,6 +84,8 @@ model AccountMember {
   accountId String  @map("account_id")
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
+  snapshot Snapshot?
+
   @@unique([userId, accountId])
   @@map("account_members")
 }
@@ -205,4 +207,23 @@ model Goal {
   updatedAt DateTime @updatedAt
 
   @@map("goals")
+}
+
+model Snapshot {
+  id String @id @default(uuid())
+
+  month Int
+  year  Int
+
+  totalVariableExpenses Decimal @db.Decimal(10, 2)
+  totalFixedExpenses Decimal @db.Decimal(10, 2)
+  totalIncomes Decimal @db.Decimal(10, 2)
+
+  accountMemberId String        @unique @map("account_member_id")
+  accountMember   AccountMember @relation(fields: [accountMemberId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("snapshots")
 }

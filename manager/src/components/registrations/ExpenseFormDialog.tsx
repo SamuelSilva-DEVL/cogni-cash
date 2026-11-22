@@ -16,6 +16,11 @@ import { Input } from "@/src/components/ui/input"
 import { FieldSelect } from "@/src/components/ui/field-select"
 import { Label } from "@/src/components/ui/label"
 import { useCreateExpense } from "@/src/hooks/use-transactions"
+import {
+  formatCurrencyInput,
+  isPositiveCurrency,
+  parseCurrencyInput,
+} from "@/src/lib/currency"
 import { CATEGORY_LABELS } from "@/src/lib/mockData"
 import { Expense } from "@/src/types"
 
@@ -25,10 +30,10 @@ interface ExpenseFormDialogProps {
 }
 
 const expenseSchema = z.object({
-  value: z.string().min(1, "Campo obrigatório").refine(
-    (v) => !Number.isNaN(Number(v)) && Number(v) > 0,
-    "Informe um valor válido maior que zero",
-  ),
+  value: z
+    .string()
+    .min(1, "Campo obrigatório")
+    .refine(isPositiveCurrency, "Informe um valor válido maior que zero"),
   category: z.string().min(1, "Campo obrigatório"),
   type: z.enum(["fixo", "variavel"]),
   date: z.string().min(1, "Campo obrigatório"),
@@ -38,7 +43,7 @@ const expenseSchema = z.object({
 type ExpenseSchema = z.infer<typeof expenseSchema>
 
 const DEFAULT_VALUES: ExpenseSchema = {
-  value: "",
+  value: "0,00",
   category: "alimentacao",
   type: "variavel",
   date: new Date().toISOString().split("T")[0],
@@ -52,11 +57,15 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<ExpenseSchema>({
     resolver: zodResolver(expenseSchema),
     defaultValues: DEFAULT_VALUES,
   })
+
+  const value = watch("value")
 
   useEffect(() => {
     if (open) {
@@ -70,7 +79,7 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
   const onSubmit = async (data: ExpenseSchema) => {
     try {
       await createExpense.mutateAsync({
-        value: Number(data.value),
+        value: parseCurrencyInput(data.value),
         category: data.category as Expense["category"],
         type: data.type,
         date: data.date,
@@ -105,12 +114,16 @@ export function ExpenseFormDialog({ open, onOpenChange }: ExpenseFormDialogProps
                 <Label htmlFor="exp-value">Valor (R$)</Label>
                 <Input
                   id="exp-value"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="150,00"
+                  inputMode="numeric"
+                  placeholder="0,00"
                   className="font-mono tabular-nums"
-                  {...register("value")}
+                  value={value}
+                  onChange={(e) =>
+                    setValue("value", formatCurrencyInput(e.target.value), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
+                  }
                 />
                 {errors.value && (
                   <p className="text-sm text-destructive">{errors.value.message}</p>

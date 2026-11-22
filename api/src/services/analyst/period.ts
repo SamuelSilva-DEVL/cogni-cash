@@ -1,3 +1,10 @@
+import {
+  calendarDateInSaoPaulo,
+  endOfDaySaoPaulo,
+  shiftMonth,
+  startOfDaySaoPaulo,
+} from "@/utils/timezone-date"
+
 const TIME_ZONE = "America/Sao_Paulo"
 
 export type AnalystPeriod = "month" | "quarter" | "year"
@@ -15,55 +22,21 @@ type CalendarDate = {
   day: number
 }
 
-export function calendarDateInSaoPaulo(date: Date): CalendarDate {
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    timeZone: TIME_ZONE,
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-  })
-  const map = Object.fromEntries(
-    formatter.formatToParts(date).map((part) => [part.type, part.value]),
-  )
-
-  return {
-    year: Number(map.year),
-    month: Number(map.month),
-    day: Number(map.day),
-  }
-}
-
-function midnightUtc(year: number, month: number, day: number) {
-  return new Date(Date.UTC(year, month - 1, day, 3, 0, 0, 0))
-}
-
-function endOfDayUtc(year: number, month: number, day: number) {
-  return new Date(midnightUtc(year, month, day + 1).getTime() - 1)
-}
-
-function shiftMonth(year: number, month: number, delta: number) {
-  const index = year * 12 + (month - 1) + delta
-  const normalized = ((index % 12) + 12) % 12
-
-  return {
-    year: Math.floor(index / 12),
-    month: normalized + 1,
-  }
-}
+export { calendarDateInSaoPaulo }
 
 function monthYearLabel(year: number, month: number) {
   return new Intl.DateTimeFormat("pt-BR", {
     month: "long",
     year: "numeric",
     timeZone: TIME_ZONE,
-  }).format(midnightUtc(year, month, 15))
+  }).format(startOfDaySaoPaulo(year, month, 15))
 }
 
 function monthName(year: number, month: number) {
   return new Intl.DateTimeFormat("pt-BR", {
     month: "long",
     timeZone: TIME_ZONE,
-  }).format(midnightUtc(year, month, 15))
+  }).format(startOfDaySaoPaulo(year, month, 15))
 }
 
 function rangeLabel(from: CalendarDate, to: CalendarDate) {
@@ -90,8 +63,8 @@ export function resolvePeriodRange(period: AnalystPeriod, now = new Date()): Per
   return {
     period,
     label: rangeLabel(start, today),
-    from: midnightUtc(start.year, start.month, start.day),
-    to: endOfDayUtc(today.year, today.month, today.day),
+    from: startOfDaySaoPaulo(start.year, start.month, start.day),
+    to: endOfDaySaoPaulo(today.year, today.month, today.day),
   }
 }
 

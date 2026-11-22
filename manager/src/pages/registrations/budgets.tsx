@@ -14,6 +14,12 @@ import {
   useDeleteBudget,
   isBudgetConflict,
 } from "@/src/hooks/use-budgets"
+import {
+  formatCurrencyFromNumber,
+  formatCurrencyInput,
+  isPositiveCurrency,
+  parseCurrencyInput,
+} from "@/src/lib/currency"
 import { formatCurrency, cn } from "@/src/lib/utils"
 import { CATEGORY_LABELS } from "@/src/lib/mockData"
 import {
@@ -42,10 +48,10 @@ const budgetCreateSchema = z
   .object({
     category: z.string().min(1, "Selecione uma categoria."),
     customCategory: z.string().optional(),
-    limit: z.string().min(1, "Informe um limite válido maior que zero.").refine(
-      (v) => !Number.isNaN(Number(v)) && Number(v) > 0,
-      "Informe um limite válido maior que zero.",
-    ),
+    limit: z
+      .string()
+      .min(1, "Informe um limite válido maior que zero.")
+      .refine(isPositiveCurrency, "Informe um limite válido maior que zero."),
   })
   .refine(
     (data) => data.category !== "__custom__" || Boolean(data.customCategory?.trim()),
@@ -110,6 +116,7 @@ export default function BudgetsPage() {
     register,
     handleSubmit,
     watch,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<BudgetCreateSchema>({
@@ -117,11 +124,12 @@ export default function BudgetsPage() {
     defaultValues: {
       category: PRESET_CATEGORIES[0],
       customCategory: "",
-      limit: "",
+      limit: "0,00",
     },
   })
 
   const selectedCategory = watch("category")
+  const limitValue = watch("limit")
   const isCustomCategory = selectedCategory === "__custom__"
   const isSaving = createBudget.isPending || updateBudget.isPending
 
@@ -138,14 +146,14 @@ export default function BudgetsPage() {
       formData.category === "__custom__"
         ? (formData.customCategory ?? "").trim()
         : formData.category
-    const limit = Number(formData.limit)
+    const limit = parseCurrencyInput(formData.limit)
 
     try {
       await createBudget.mutateAsync({ categoryName: categoryToCreate, limit })
       reset({
         category: PRESET_CATEGORIES[0],
         customCategory: "",
-        limit: "",
+        limit: "0,00",
       })
       toast.success("Limite registrado com sucesso.")
     } catch (error) {
@@ -166,7 +174,7 @@ export default function BudgetsPage() {
 
   async function handleUpdate(budgetId: string) {
     const rawValue = draftLimits[budgetId]
-    const limit = Number(rawValue)
+    const limit = rawValue ? parseCurrencyInput(rawValue) : Number.NaN
 
     if (!rawValue || Number.isNaN(limit) || limit <= 0) {
       toast.error("Informe um limite válido maior que zero.")
@@ -263,12 +271,16 @@ export default function BudgetsPage() {
                 <Label htmlFor="newLimit">Limite mensal (R$)</Label>
                 <Input
                   id="newLimit"
-                  type="number"
-                  min="0.01"
-                  step="0.01"
-                  placeholder="500,00"
+                  inputMode="numeric"
+                  placeholder="0,00"
                   className="font-mono tabular-nums"
-                  {...register("limit")}
+                  value={limitValue}
+                  onChange={(e) =>
+                    setValue("limit", formatCurrencyInput(e.target.value), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
+                  }
                 />
                 {errors.limit && (
                   <p className="text-sm text-red-600">{errors.limit.message}</p>
@@ -343,7 +355,8 @@ export default function BudgetsPage() {
                 const limit = item.limit!
                 const budgetId = item.budgetId!
                 const percentage = item.percentUsed ?? 0
-                const draftValue = draftLimits[budgetId] ?? String(limit)
+                const draftValue =
+                  draftLimits[budgetId] ?? formatCurrencyFromNumber(limit)
 
                 return (
                   <div
@@ -430,18 +443,17 @@ export default function BudgetsPage() {
                     {/* edição inline */}
                     <div className="flex flex-col sm:flex-row gap-2">
                       <Input
-                        type="number"
-                        min="0.01"
-                        step="0.01"
+                        inputMode="numeric"
                         value={draftValue}
                         onChange={(e) =>
                           setDraftLimits((prev) => ({
                             ...prev,
-                            [budgetId]: e.target.value,
+                            [budgetId]: formatCurrencyInput(e.target.value),
                           }))
                         }
                         className="font-mono tabular-nums sm:max-w-[180px]"
                         aria-label={`Novo limite para ${item.categoryName}`}
+                        placeholder="0,00"
                       />
                       <Button
                         size="sm"

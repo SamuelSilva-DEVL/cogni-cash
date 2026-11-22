@@ -82,3 +82,8 @@ export type Budget = Prisma.BudgetModel
  * 
  */
 export type Goal = Prisma.GoalModel
+/**
+ * Model Snapshot
+ * 
+ */
+export type Snapshot = Prisma.SnapshotModel

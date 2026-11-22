@@ -17,4 +17,8 @@ export const queryKeys = {
     list: (month: number, year: number) =>
       [...queryKeys.budgets.all, "list", month, year] as const,
   },
+  metrics: {
+    all: ["metrics"] as const,
+    monthlySummary: () => [...queryKeys.metrics.all, "monthly-summary"] as const,
+  },
 }

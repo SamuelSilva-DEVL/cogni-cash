@@ -8,6 +8,7 @@ import {
   BudgetsListResponse,
   CreateBudgetInput,
   UpdateBudgetInput,
+  MonthlySummary,
 } from "../types"
 
 export async function fetchGoals(page = 1) {
@@ -61,4 +62,9 @@ export async function updateBudget(id: string, input: UpdateBudgetInput) {
 
 export async function deleteBudget(id: string) {
   await api.delete(`/budgets/${id}`)
+}
+
+export async function fetchMonthlySummary() {
+  const { data } = await api.get<MonthlySummary>("/metrics/monthly-summary")
+  return data
 }

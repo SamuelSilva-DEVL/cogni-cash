@@ -93,3 +93,16 @@ export interface CreateBudgetInput {
 export interface UpdateBudgetInput {
   limit: number
 }
+
+export interface MonthlyMetric {
+  total: number
+  percentage: number
+  metrics: string
+}
+
+export interface MonthlySummary {
+  variableExpenses: MonthlyMetric
+  fixedExpenses: MonthlyMetric
+  incomes: MonthlyMetric
+  rest: MonthlyMetric
+}

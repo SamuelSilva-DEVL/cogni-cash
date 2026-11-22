@@ -29,6 +29,10 @@ import { AnalystLlmClient } from "./services/analyst/analyst-llm.client"
 import { AnalystService } from "./services/analyst/analyst.service"
 import { BudgetQueryService } from "./services/budget-query.service"
 import { RolesGuard } from "./auth/roles.guard"
+import { ScheduleModule } from "@nestjs/schedule"
+import { SnapshotService } from "./services/metrics/snapshot.service"
+import { GetCurrentMonthDataService } from "./services/metrics/get-current-month-data"
+import { MonthlySummaryController } from "./controllers/metrics/monthly-summary-controller"
 
 @Module({
   imports: [
@@ -37,6 +41,7 @@ import { RolesGuard } from "./auth/roles.guard"
       isGlobal: true,
     }),
     AuthModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [
     CreateUserController,
@@ -58,6 +63,7 @@ import { RolesGuard } from "./auth/roles.guard"
     RemoveMemberController,
     FetchAnalystSnapshotController,
     AskAnalystController,
+    MonthlySummaryController,
   ],
   providers: [
     PrismaService,
@@ -66,6 +72,8 @@ import { RolesGuard } from "./auth/roles.guard"
     RolesGuard,
     AnalystLlmClient,
     AnalystService,
+    SnapshotService,
+    GetCurrentMonthDataService,
   ],
 })
 export class AppModule {}

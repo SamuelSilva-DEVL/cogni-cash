@@ -16,6 +16,13 @@ import {
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
+import {
+  formatCurrencyFromNumber,
+  formatCurrencyInput,
+  isNonNegativeCurrency,
+  isPositiveCurrency,
+  parseCurrencyInput,
+} from "@/src/lib/currency"
 import { cn } from "@/src/lib/utils"
 
 type GoalCategory = Goal["category"]
@@ -37,14 +44,13 @@ const CATEGORY_OPTIONS: { value: GoalCategory; label: string; icon: string }[] =
 
 const goalSchema = z.object({
   name: z.string().min(1, "Campo obrigatório"),
-  totalValue: z.string().min(1, "Campo obrigatório").refine(
-    (v) => !Number.isNaN(Number(v)) && Number(v) > 0,
-    "Informe um valor válido maior que zero",
-  ),
-  currentValue: z.string().refine(
-    (v) => v === "" || (!Number.isNaN(Number(v)) && Number(v) >= 0),
-    "Informe um valor válido",
-  ),
+  totalValue: z
+    .string()
+    .min(1, "Campo obrigatório")
+    .refine(isPositiveCurrency, "Informe um valor válido maior que zero"),
+  currentValue: z
+    .string()
+    .refine(isNonNegativeCurrency, "Informe um valor válido"),
   deadlineDate: z.string().min(1, "Campo obrigatório"),
   category: z.enum(["casa", "viagem", "educacao", "investimento", "outros"]),
   icon: z.string(),
@@ -71,8 +77,8 @@ export const GoalFormDialog = ({
     resolver: zodResolver(goalSchema),
     defaultValues: {
       name: goal?.name || "",
-      totalValue: goal?.totalValue?.toString() || "",
-      currentValue: goal?.currentValue?.toString() || "",
+      totalValue: formatCurrencyFromNumber(goal?.totalValue ?? 0),
+      currentValue: formatCurrencyFromNumber(goal?.currentValue ?? 0),
       deadlineDate: goal?.deadlineDate || "",
       category: (goal?.category || "outros") as GoalCategory,
       icon: goal?.icon || "🎯",
@@ -83,8 +89,8 @@ export const GoalFormDialog = ({
     if (open) {
       reset({
         name: goal?.name || "",
-        totalValue: goal?.totalValue?.toString() || "",
-        currentValue: goal?.currentValue?.toString() || "",
+        totalValue: formatCurrencyFromNumber(goal?.totalValue ?? 0),
+        currentValue: formatCurrencyFromNumber(goal?.currentValue ?? 0),
         deadlineDate: goal?.deadlineDate || "",
         category: (goal?.category || "outros") as GoalCategory,
         icon: goal?.icon || "🎯",
@@ -93,6 +99,8 @@ export const GoalFormDialog = ({
   }, [open, goal, reset])
 
   const category = watch("category")
+  const totalValue = watch("totalValue")
+  const currentValue = watch("currentValue")
 
   const onSubmit = async (data: GoalSchema) => {
     if (mode === "edit") {
@@ -103,8 +111,10 @@ export const GoalFormDialog = ({
     try {
       await createGoal.mutateAsync({
         title: data.name,
-        targetAmount: Number(data.totalValue),
-        currentAmount: Number(data.currentValue) || 0,
+        targetAmount: parseCurrencyInput(data.totalValue),
+        currentAmount: data.currentValue
+          ? parseCurrencyInput(data.currentValue)
+          : 0,
         deadline: data.deadlineDate || undefined,
       })
 
@@ -112,8 +122,8 @@ export const GoalFormDialog = ({
       onOpenChange(false)
       reset({
         name: "",
-        totalValue: "",
-        currentValue: "",
+        totalValue: "0,00",
+        currentValue: "0,00",
         deadlineDate: "",
         category: "outros",
         icon: "🎯",
@@ -161,12 +171,16 @@ export const GoalFormDialog = ({
                 <Label htmlFor="totalValue">Valor total (R$)</Label>
                 <Input
                   id="totalValue"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="15000.00"
+                  inputMode="numeric"
+                  placeholder="0,00"
                   className="font-mono tabular-nums"
-                  {...register("totalValue")}
+                  value={totalValue}
+                  onChange={(e) =>
+                    setValue("totalValue", formatCurrencyInput(e.target.value), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
+                  }
                 />
                 {errors.totalValue && (
                   <p className="text-sm text-red-600">{errors.totalValue.message}</p>
@@ -177,12 +191,16 @@ export const GoalFormDialog = ({
                 <Label htmlFor="currentValue">Valor atual (R$)</Label>
                 <Input
                   id="currentValue"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="0.00"
+                  inputMode="numeric"
+                  placeholder="0,00"
                   className="font-mono tabular-nums"
-                  {...register("currentValue")}
+                  value={currentValue}
+                  onChange={(e) =>
+                    setValue("currentValue", formatCurrencyInput(e.target.value), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
+                  }
                 />
                 {errors.currentValue && (
                   <p className="text-sm text-red-600">{errors.currentValue.message}</p>

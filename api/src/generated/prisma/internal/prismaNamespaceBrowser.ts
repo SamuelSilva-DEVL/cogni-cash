@@ -59,7 +59,8 @@ export const ModelName = {
   Category: 'Category',
   Transaction: 'Transaction',
   Budget: 'Budget',
-  Goal: 'Goal'
+  Goal: 'Goal',
+  Snapshot: 'Snapshot'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -200,6 +201,21 @@ export const GoalScalarFieldEnum = {
 } as const
 
 export type GoalScalarFieldEnum = (typeof GoalScalarFieldEnum)[keyof typeof GoalScalarFieldEnum]
+
+
+export const SnapshotScalarFieldEnum = {
+  id: 'id',
+  month: 'month',
+  year: 'year',
+  totalVariableExpenses: 'totalVariableExpenses',
+  totalFixedExpenses: 'totalFixedExpenses',
+  totalIncomes: 'totalIncomes',
+  accountMemberId: 'accountMemberId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SnapshotScalarFieldEnum = (typeof SnapshotScalarFieldEnum)[keyof typeof SnapshotScalarFieldEnum]
 
 
 export const SortOrder = {

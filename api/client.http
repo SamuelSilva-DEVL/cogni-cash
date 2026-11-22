@@ -91,3 +91,17 @@ Authorization: Bearer {{authToken}}
 GET {{baseUrl}}/categories
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+###
+
+# @name create_monthly_summary
+POST {{baseUrl}}/metrics/create-monthly-summary
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name get_monthly_summary
+GET {{baseUrl}}/metrics/monthly-summary
+Content-Type: application/json
+Authorization: Bearer {{authToken}}

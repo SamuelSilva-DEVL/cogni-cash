@@ -16,6 +16,11 @@ import { Input } from "@/src/components/ui/input"
 import { FieldSelect } from "@/src/components/ui/field-select"
 import { Label } from "@/src/components/ui/label"
 import { useCreateReceipt } from "@/src/hooks/use-transactions"
+import {
+  formatCurrencyInput,
+  isPositiveCurrency,
+  parseCurrencyInput,
+} from "@/src/lib/currency"
 import { Receipt } from "@/src/types"
 
 interface ReceiptFormDialogProps {
@@ -24,10 +29,10 @@ interface ReceiptFormDialogProps {
 }
 
 const receiptSchema = z.object({
-  value: z.string().min(1, "Campo obrigatório").refine(
-    (v) => !Number.isNaN(Number(v)) && Number(v) > 0,
-    "Informe um valor válido maior que zero",
-  ),
+  value: z
+    .string()
+    .min(1, "Campo obrigatório")
+    .refine(isPositiveCurrency, "Informe um valor válido maior que zero"),
   origin: z.string().min(1, "Campo obrigatório"),
   date: z.string().min(1, "Campo obrigatório"),
   recurrence: z.enum(["unico", "mensal"]),
@@ -36,7 +41,7 @@ const receiptSchema = z.object({
 type ReceiptSchema = z.infer<typeof receiptSchema>
 
 const DEFAULT_VALUES: ReceiptSchema = {
-  value: "",
+  value: "0,00",
   origin: "",
   date: new Date().toISOString().split("T")[0],
   recurrence: "unico",
@@ -49,11 +54,15 @@ export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<ReceiptSchema>({
     resolver: zodResolver(receiptSchema),
     defaultValues: DEFAULT_VALUES,
   })
+
+  const value = watch("value")
 
   useEffect(() => {
     if (open) {
@@ -67,7 +76,7 @@ export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps
   const onSubmit = async (data: ReceiptSchema) => {
     try {
       await createReceipt.mutateAsync({
-        value: Number(data.value),
+        value: parseCurrencyInput(data.value),
         origin: data.origin,
         date: data.date,
         recurrence: data.recurrence as Receipt["recurrence"],
@@ -101,12 +110,16 @@ export function ReceiptFormDialog({ open, onOpenChange }: ReceiptFormDialogProps
                 <Label htmlFor="rec-value">Valor (R$)</Label>
                 <Input
                   id="rec-value"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="5.500,00"
+                  inputMode="numeric"
+                  placeholder="0,00"
                   className="font-mono tabular-nums"
-                  {...register("value")}
+                  value={value}
+                  onChange={(e) =>
+                    setValue("value", formatCurrencyInput(e.target.value), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
+                  }
                 />
                 {errors.value && (
                   <p className="text-sm text-destructive">{errors.value.message}</p>

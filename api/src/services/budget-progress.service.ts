@@ -41,9 +41,8 @@ export function computeBudgetProgress(
   }
 }
 
-export function getMonthDateRange(month: number, year: number) {
-  const periodStart = new Date(year, month - 1, 1)
-  const periodEnd = new Date(year, month, 0, 23, 59, 59, 999)
-
-  return { periodStart, periodEnd }
-}
+export {
+  getMonthDateRange,
+  getCurrentMonthDateRange,
+  getPreviousMonthDateRange,
+} from "@/utils/timezone-date"

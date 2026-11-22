@@ -10,6 +10,7 @@ import {
   TransactionFilterValues,
 } from "@/src/components/registrations/TransactionFilters"
 import { useExpenses } from "@/src/hooks/use-transactions"
+import { parseCurrencyInput } from "@/src/lib/currency"
 import { formatCurrency, formatDate } from "@/src/lib/utils"
 import { CATEGORY_LABELS } from "@/src/lib/mockData"
 import { Expense } from "@/src/types"
@@ -68,8 +69,8 @@ function toColumnFilters(filters: TransactionFilterValues): ColumnFiltersState {
     next.push({
       id: "value",
       value: [
-        filters.valueMin ? Number(filters.valueMin) : undefined,
-        filters.valueMax ? Number(filters.valueMax) : undefined,
+        filters.valueMin ? parseCurrencyInput(filters.valueMin) : undefined,
+        filters.valueMax ? parseCurrencyInput(filters.valueMax) : undefined,
       ],
     })
   }

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { ListFilter, Search, X } from "lucide-react"
+import { formatCurrencyInput } from "@/src/lib/currency"
 import { cn } from "@/src/lib/utils"
 import { Badge } from "@/src/components/ui/badge"
 import { Button } from "@/src/components/ui/button"
@@ -243,12 +244,12 @@ export function TransactionFilters({
                 <Label htmlFor="filter-value-min">Valor mín.</Label>
                 <Input
                   id="filter-value-min"
-                  type="number"
-                  min="0"
-                  step="0.01"
+                  inputMode="numeric"
                   placeholder="0,00"
                   value={draft.valueMin}
-                  onChange={(e) => patchDraft({ valueMin: e.target.value })}
+                  onChange={(e) =>
+                    patchDraft({ valueMin: formatCurrencyInput(e.target.value) })
+                  }
                   className="font-mono tabular-nums"
                 />
               </div>
@@ -256,12 +257,12 @@ export function TransactionFilters({
                 <Label htmlFor="filter-value-max">Valor máx.</Label>
                 <Input
                   id="filter-value-max"
-                  type="number"
-                  min="0"
-                  step="0.01"
+                  inputMode="numeric"
                   placeholder="0,00"
                   value={draft.valueMax}
-                  onChange={(e) => patchDraft({ valueMax: e.target.value })}
+                  onChange={(e) =>
+                    patchDraft({ valueMax: formatCurrencyInput(e.target.value) })
+                  }
                   className="font-mono tabular-nums"
                 />
               </div>

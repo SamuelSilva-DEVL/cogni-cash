@@ -392,7 +392,8 @@ export const ModelName = {
   Category: 'Category',
   Transaction: 'Transaction',
   Budget: 'Budget',
-  Goal: 'Goal'
+  Goal: 'Goal',
+  Snapshot: 'Snapshot'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "whitelabel" | "user" | "account" | "accountMember" | "memberInvite" | "category" | "transaction" | "budget" | "goal"
+    modelProps: "whitelabel" | "user" | "account" | "accountMember" | "memberInvite" | "category" | "transaction" | "budget" | "goal" | "snapshot"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1078,6 +1079,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Snapshot: {
+      payload: Prisma.$SnapshotPayload<ExtArgs>
+      fields: Prisma.SnapshotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SnapshotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SnapshotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SnapshotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SnapshotPayload>
+        }
+        findFirst: {
+          args: Prisma.SnapshotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SnapshotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SnapshotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SnapshotPayload>
+        }
+        findMany: {
+          args: Prisma.SnapshotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SnapshotPayload>[]
+        }
+        create: {
+          args: Prisma.SnapshotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SnapshotPayload>
+        }
+        createMany: {
+          args: Prisma.SnapshotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SnapshotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SnapshotPayload>[]
+        }
+        delete: {
+          args: Prisma.SnapshotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SnapshotPayload>
+        }
+        update: {
+          args: Prisma.SnapshotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SnapshotPayload>
+        }
+        deleteMany: {
+          args: Prisma.SnapshotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SnapshotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SnapshotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SnapshotPayload>[]
+        }
+        upsert: {
+          args: Prisma.SnapshotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SnapshotPayload>
+        }
+        aggregate: {
+          args: Prisma.SnapshotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSnapshot>
+        }
+        groupBy: {
+          args: Prisma.SnapshotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SnapshotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SnapshotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SnapshotCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1239,6 +1314,21 @@ export const GoalScalarFieldEnum = {
 } as const
 
 export type GoalScalarFieldEnum = (typeof GoalScalarFieldEnum)[keyof typeof GoalScalarFieldEnum]
+
+
+export const SnapshotScalarFieldEnum = {
+  id: 'id',
+  month: 'month',
+  year: 'year',
+  totalVariableExpenses: 'totalVariableExpenses',
+  totalFixedExpenses: 'totalFixedExpenses',
+  totalIncomes: 'totalIncomes',
+  accountMemberId: 'accountMemberId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SnapshotScalarFieldEnum = (typeof SnapshotScalarFieldEnum)[keyof typeof SnapshotScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1514,6 +1604,7 @@ export type GlobalOmitConfig = {
   transaction?: Prisma.TransactionOmit
   budget?: Prisma.BudgetOmit
   goal?: Prisma.GoalOmit
+  snapshot?: Prisma.SnapshotOmit
 }
 
 /* Types for Logging */

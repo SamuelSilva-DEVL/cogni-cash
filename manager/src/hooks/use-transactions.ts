@@ -69,6 +69,7 @@ export function useCreateExpense() {
       queryClient.invalidateQueries({ queryKey: queryKeys.transactions.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.budgets.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.metrics.all })
     },
   })
 }
@@ -90,6 +91,7 @@ export function useCreateReceipt() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.transactions.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.metrics.all })
     },
   })
 }

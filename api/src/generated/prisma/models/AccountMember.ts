@@ -192,6 +192,7 @@ export type AccountMemberWhereInput = {
   accountId?: Prisma.StringFilter<"AccountMember"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   account?: Prisma.XOR<Prisma.AccountScalarRelationFilter, Prisma.AccountWhereInput>
+  snapshot?: Prisma.XOR<Prisma.SnapshotNullableScalarRelationFilter, Prisma.SnapshotWhereInput> | null
 }
 
 export type AccountMemberOrderByWithRelationInput = {
@@ -203,6 +204,7 @@ export type AccountMemberOrderByWithRelationInput = {
   accountId?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   account?: Prisma.AccountOrderByWithRelationInput
+  snapshot?: Prisma.SnapshotOrderByWithRelationInput
 }
 
 export type AccountMemberWhereUniqueInput = Prisma.AtLeast<{
@@ -218,6 +220,7 @@ export type AccountMemberWhereUniqueInput = Prisma.AtLeast<{
   accountId?: Prisma.StringFilter<"AccountMember"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   account?: Prisma.XOR<Prisma.AccountScalarRelationFilter, Prisma.AccountWhereInput>
+  snapshot?: Prisma.XOR<Prisma.SnapshotNullableScalarRelationFilter, Prisma.SnapshotWhereInput> | null
 }, "id" | "userId_accountId">
 
 export type AccountMemberOrderByWithAggregationInput = {
@@ -251,6 +254,7 @@ export type AccountMemberCreateInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   account: Prisma.AccountCreateNestedOneWithoutMembersInput
+  snapshot?: Prisma.SnapshotCreateNestedOneWithoutAccountMemberInput
 }
 
 export type AccountMemberUncheckedCreateInput = {
@@ -260,6 +264,7 @@ export type AccountMemberUncheckedCreateInput = {
   updatedAt?: Date | string
   userId: string
   accountId: string
+  snapshot?: Prisma.SnapshotUncheckedCreateNestedOneWithoutAccountMemberInput
 }
 
 export type AccountMemberUpdateInput = {
@@ -269,6 +274,7 @@ export type AccountMemberUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   account?: Prisma.AccountUpdateOneRequiredWithoutMembersNestedInput
+  snapshot?: Prisma.SnapshotUpdateOneWithoutAccountMemberNestedInput
 }
 
 export type AccountMemberUncheckedUpdateInput = {
@@ -278,6 +284,7 @@ export type AccountMemberUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  snapshot?: Prisma.SnapshotUncheckedUpdateOneWithoutAccountMemberNestedInput
 }
 
 export type AccountMemberCreateManyInput = {
@@ -345,6 +352,11 @@ export type AccountMemberMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
+}
+
+export type AccountMemberScalarRelationFilter = {
+  is?: Prisma.AccountMemberWhereInput
+  isNot?: Prisma.AccountMemberWhereInput
 }
 
 export type AccountMemberCreateNestedManyWithoutUserInput = {
@@ -435,12 +447,27 @@ export type EnumAccountMemberRoleFieldUpdateOperationsInput = {
   set?: $Enums.AccountMemberRole
 }
 
+export type AccountMemberCreateNestedOneWithoutSnapshotInput = {
+  create?: Prisma.XOR<Prisma.AccountMemberCreateWithoutSnapshotInput, Prisma.AccountMemberUncheckedCreateWithoutSnapshotInput>
+  connectOrCreate?: Prisma.AccountMemberCreateOrConnectWithoutSnapshotInput
+  connect?: Prisma.AccountMemberWhereUniqueInput
+}
+
+export type AccountMemberUpdateOneRequiredWithoutSnapshotNestedInput = {
+  create?: Prisma.XOR<Prisma.AccountMemberCreateWithoutSnapshotInput, Prisma.AccountMemberUncheckedCreateWithoutSnapshotInput>
+  connectOrCreate?: Prisma.AccountMemberCreateOrConnectWithoutSnapshotInput
+  upsert?: Prisma.AccountMemberUpsertWithoutSnapshotInput
+  connect?: Prisma.AccountMemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AccountMemberUpdateToOneWithWhereWithoutSnapshotInput, Prisma.AccountMemberUpdateWithoutSnapshotInput>, Prisma.AccountMemberUncheckedUpdateWithoutSnapshotInput>
+}
+
 export type AccountMemberCreateWithoutUserInput = {
   id?: string
   role?: $Enums.AccountMemberRole
   createdAt?: Date | string
   updatedAt?: Date | string
   account: Prisma.AccountCreateNestedOneWithoutMembersInput
+  snapshot?: Prisma.SnapshotCreateNestedOneWithoutAccountMemberInput
 }
 
 export type AccountMemberUncheckedCreateWithoutUserInput = {
@@ -449,6 +476,7 @@ export type AccountMemberUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accountId: string
+  snapshot?: Prisma.SnapshotUncheckedCreateNestedOneWithoutAccountMemberInput
 }
 
 export type AccountMemberCreateOrConnectWithoutUserInput = {
@@ -495,6 +523,7 @@ export type AccountMemberCreateWithoutAccountInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
+  snapshot?: Prisma.SnapshotCreateNestedOneWithoutAccountMemberInput
 }
 
 export type AccountMemberUncheckedCreateWithoutAccountInput = {
@@ -503,6 +532,7 @@ export type AccountMemberUncheckedCreateWithoutAccountInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
+  snapshot?: Prisma.SnapshotUncheckedCreateNestedOneWithoutAccountMemberInput
 }
 
 export type AccountMemberCreateOrConnectWithoutAccountInput = {
@@ -531,6 +561,58 @@ export type AccountMemberUpdateManyWithWhereWithoutAccountInput = {
   data: Prisma.XOR<Prisma.AccountMemberUpdateManyMutationInput, Prisma.AccountMemberUncheckedUpdateManyWithoutAccountInput>
 }
 
+export type AccountMemberCreateWithoutSnapshotInput = {
+  id?: string
+  role?: $Enums.AccountMemberRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutMembershipsInput
+  account: Prisma.AccountCreateNestedOneWithoutMembersInput
+}
+
+export type AccountMemberUncheckedCreateWithoutSnapshotInput = {
+  id?: string
+  role?: $Enums.AccountMemberRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+  accountId: string
+}
+
+export type AccountMemberCreateOrConnectWithoutSnapshotInput = {
+  where: Prisma.AccountMemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.AccountMemberCreateWithoutSnapshotInput, Prisma.AccountMemberUncheckedCreateWithoutSnapshotInput>
+}
+
+export type AccountMemberUpsertWithoutSnapshotInput = {
+  update: Prisma.XOR<Prisma.AccountMemberUpdateWithoutSnapshotInput, Prisma.AccountMemberUncheckedUpdateWithoutSnapshotInput>
+  create: Prisma.XOR<Prisma.AccountMemberCreateWithoutSnapshotInput, Prisma.AccountMemberUncheckedCreateWithoutSnapshotInput>
+  where?: Prisma.AccountMemberWhereInput
+}
+
+export type AccountMemberUpdateToOneWithWhereWithoutSnapshotInput = {
+  where?: Prisma.AccountMemberWhereInput
+  data: Prisma.XOR<Prisma.AccountMemberUpdateWithoutSnapshotInput, Prisma.AccountMemberUncheckedUpdateWithoutSnapshotInput>
+}
+
+export type AccountMemberUpdateWithoutSnapshotInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
+  account?: Prisma.AccountUpdateOneRequiredWithoutMembersNestedInput
+}
+
+export type AccountMemberUncheckedUpdateWithoutSnapshotInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAccountMemberRoleFieldUpdateOperationsInput | $Enums.AccountMemberRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
 export type AccountMemberCreateManyUserInput = {
   id?: string
   role?: $Enums.AccountMemberRole
@@ -545,6 +627,7 @@ export type AccountMemberUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   account?: Prisma.AccountUpdateOneRequiredWithoutMembersNestedInput
+  snapshot?: Prisma.SnapshotUpdateOneWithoutAccountMemberNestedInput
 }
 
 export type AccountMemberUncheckedUpdateWithoutUserInput = {
@@ -553,6 +636,7 @@ export type AccountMemberUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  snapshot?: Prisma.SnapshotUncheckedUpdateOneWithoutAccountMemberNestedInput
 }
 
 export type AccountMemberUncheckedUpdateManyWithoutUserInput = {
@@ -577,6 +661,7 @@ export type AccountMemberUpdateWithoutAccountInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
+  snapshot?: Prisma.SnapshotUpdateOneWithoutAccountMemberNestedInput
 }
 
 export type AccountMemberUncheckedUpdateWithoutAccountInput = {
@@ -585,6 +670,7 @@ export type AccountMemberUncheckedUpdateWithoutAccountInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  snapshot?: Prisma.SnapshotUncheckedUpdateOneWithoutAccountMemberNestedInput
 }
 
 export type AccountMemberUncheckedUpdateManyWithoutAccountInput = {
@@ -606,6 +692,7 @@ export type AccountMemberSelect<ExtArgs extends runtime.Types.Extensions.Interna
   accountId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
+  snapshot?: boolean | Prisma.AccountMember$snapshotArgs<ExtArgs>
 }, ExtArgs["result"]["accountMember"]>
 
 export type AccountMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -643,6 +730,7 @@ export type AccountMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalA
 export type AccountMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
+  snapshot?: boolean | Prisma.AccountMember$snapshotArgs<ExtArgs>
 }
 export type AccountMemberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -658,6 +746,7 @@ export type $AccountMemberPayload<ExtArgs extends runtime.Types.Extensions.Inter
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     account: Prisma.$AccountPayload<ExtArgs>
+    snapshot: Prisma.$SnapshotPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1062,6 +1151,7 @@ export interface Prisma__AccountMemberClient<T, Null = never, ExtArgs extends ru
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   account<T extends Prisma.AccountDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AccountDefaultArgs<ExtArgs>>): Prisma.Prisma__AccountClient<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  snapshot<T extends Prisma.AccountMember$snapshotArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AccountMember$snapshotArgs<ExtArgs>>): Prisma.Prisma__SnapshotClient<runtime.Types.Result.GetResult<Prisma.$SnapshotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1490,6 +1580,25 @@ export type AccountMemberDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many AccountMembers to delete.
    */
   limit?: number
+}
+
+/**
+ * AccountMember.snapshot
+ */
+export type AccountMember$snapshotArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Snapshot
+   */
+  select?: Prisma.SnapshotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Snapshot
+   */
+  omit?: Prisma.SnapshotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SnapshotInclude<ExtArgs> | null
+  where?: Prisma.SnapshotWhereInput
 }
 
 /**
