@@ -1,7 +1,6 @@
 import React from "react"
 import { useRouter } from "next/router"
 import Link from "next/link"
-import { Layout } from "@/src/components/Layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Progress } from "@/src/components/ui/progress"
 import { Button } from "@/src/components/ui/button"
@@ -43,25 +42,21 @@ export default function GoalDetailPage() {
 
   if (isLoading) {
     return (
-      <Layout>
-        <div className="space-y-8">
-          <Skeleton className="h-10 w-32" />
-          <Skeleton className="h-48 w-full" />
-        </div>
-      </Layout>
+      <div className="space-y-8">
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-48 w-full" />
+      </div>
     )
   }
 
   if (!goal) {
     return (
-      <Layout>
-        <div className="text-center py-12 space-y-4">
-          <p className="text-muted-foreground">Meta não encontrada.</p>
-          <Link href="/goals">
-            <Button variant="outline">Voltar para metas</Button>
-          </Link>
-        </div>
-      </Layout>
+      <div className="space-y-4 py-12 text-center">
+        <p className="text-muted-foreground">Meta não encontrada.</p>
+        <Link href="/goals">
+          <Button variant="outline">Voltar para metas</Button>
+        </Link>
+      </div>
     )
   }
 
@@ -80,8 +75,7 @@ export default function GoalDetailPage() {
   ]
 
   return (
-    <Layout>
-      <div className="space-y-8">
+    <div className="space-y-8">
         <div>
           <Button asChild variant="ghost" className="mb-4 gap-2 px-0 hover:bg-transparent">
             <Link href="/goals">
@@ -271,7 +265,6 @@ export default function GoalDetailPage() {
             </table>
           </CardContent>
         </Card>
-      </div>
-    </Layout>
+    </div>
   )
 }

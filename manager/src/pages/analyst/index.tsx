@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import axios from "axios"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Layout } from "@/src/components/Layout"
 import { PageHeader } from "@/src/components/PageHeader"
 import { Button } from "@/src/components/ui/button"
 import { Skeleton } from "@/src/components/ui/skeleton"
@@ -219,7 +218,6 @@ export default function AnalystPage() {
   }
 
   return (
-    <Layout>
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
         <PageHeader
           title="Analista financeiro"
@@ -432,6 +430,5 @@ export default function AnalystPage() {
           </div>
         </form>
       </div>
-    </Layout>
   )
 }

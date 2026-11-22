@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { Layout } from "@/src/components/Layout"
 import { PageHeader } from "@/src/components/PageHeader"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Button } from "@/src/components/ui/button"
@@ -182,7 +181,7 @@ export default function BudgetsPage() {
   )
 
   return (
-    <Layout>
+    <>
       <div className="space-y-8">
         <PageHeader
           title="Limites por categoria"
@@ -466,6 +465,6 @@ export default function BudgetsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Layout>
+    </>
   )
 }

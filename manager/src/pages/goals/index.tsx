@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import Link from "next/link"
-import { Layout } from "@/src/components/Layout"
 import { PageHeader } from "@/src/components/PageHeader"
 import { Button } from "@/src/components/ui/button"
 import { Badge } from "@/src/components/ui/badge"
@@ -43,7 +42,6 @@ export default function GoalsPage() {
 
   if (isLoading) {
     return (
-      <Layout>
         <div className="space-y-8">
           <Skeleton className="h-10 w-64" />
           <div className="grid gap-4 md:grid-cols-3">
@@ -53,12 +51,11 @@ export default function GoalsPage() {
           </div>
           <Skeleton className="h-48 w-full" />
         </div>
-      </Layout>
     )
   }
 
   return (
-    <Layout>
+    <>
       <div className="space-y-8">
         <PageHeader
           title="Minhas metas"
@@ -213,6 +210,6 @@ export default function GoalsPage() {
         goal={editingGoal}
         mode={editingGoal ? "edit" : "create"}
       />
-    </Layout>
+    </>
   )
 }
