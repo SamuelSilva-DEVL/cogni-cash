@@ -11,6 +11,7 @@ const CATEGORY_SLUG_MAP: Record<string, Expense["category"]> = {
   educacao: "educacao",
   educação: "educacao",
   lazer: "lazer",
+  assinatura: "assinatura",
   outros: "outros",
 }
 

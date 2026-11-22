@@ -15,6 +15,7 @@ export const ExpenseCategoriesTable = () => {
     saude: "bg-red-500",
     educacao: "bg-indigo-500",
     lazer: "bg-pink-500",
+    assinatura: "bg-violet-500",
     outros: "bg-slate-500",
   }
 

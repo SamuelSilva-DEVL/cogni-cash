@@ -13,7 +13,7 @@ export interface Goal {
 export interface Expense {
   id: string
   value: number
-  category: 'alimentacao' | 'transporte' | 'moradia' | 'saude' | 'educacao' | 'lazer' | 'outros'
+  category: 'alimentacao' | 'transporte' | 'moradia' | 'saude' | 'educacao' | 'lazer' | 'assinatura' | 'outros'
   type: 'fixo' | 'variavel'
   date: string
   description: string

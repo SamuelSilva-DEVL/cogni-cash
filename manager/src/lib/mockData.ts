@@ -156,6 +156,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   saude: 'Saúde',
   educacao: 'Educação',
   lazer: 'Lazer',
+  assinatura: 'Assinatura',
   outros: 'Outros',
 }
 
