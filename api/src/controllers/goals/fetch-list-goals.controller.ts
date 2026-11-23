@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  NotFoundException,
+  Param,
   Query,
   UseGuards,
 } from "@nestjs/common"
@@ -15,6 +17,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
+  ApiParam,
   ApiQuery,
 } from "@nestjs/swagger"
 import z from "zod"
@@ -71,6 +74,33 @@ export class FetchListGoalsController {
 
     return {
       goals,
+    }
+  }
+
+
+  @Get("/goal/:id")
+  @ApiOperation({ summary: "Buscar meta financeira por ID" })
+  @ApiParam({
+    name: "id",
+    description: "ID da meta financeira",
+    type: String,
+  })
+  @ApiResponse({ status: 200, description: "Meta financeira encontrada com sucesso" })
+  @ApiResponse({ status: 401, description: "Não autenticado" })
+  @ApiResponse({ status: 404, description: "Meta financeira não encontrada" })
+  async findById(@Param("id") id: string, @CurrentUser() user: UserPayload) {
+    const context = await this.accountContext.resolve(user)
+    
+    const goal = await this.prisma.goal.findUnique({
+      where: { id, accountId: context.accountId },
+    })
+
+    if (!goal) {
+      throw new NotFoundException("Meta financeira não encontrada")
+    }
+    
+    return {
+      goal,
     }
   }
 }

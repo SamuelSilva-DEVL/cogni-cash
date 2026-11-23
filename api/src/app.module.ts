@@ -7,6 +7,7 @@ import { AuthModule } from "./auth/auth.module"
 import { AuthenticateController } from "./controllers/auth/authenticate.controller"
 import { CreateGoalController } from "./controllers/goals/create-goal.controller"
 import { FetchListGoalsController } from "./controllers/goals/fetch-list-goals.controller"
+import { ManageGoalByIdController } from "./controllers/goals/manage-goal-by-id.controller"
 import { CreateTransactionController } from "./controllers/transaction/create-transaction.controller"
 import { FetchTransactionsByTypeController } from "./controllers/transaction/fetch-transactions-by-type.controller"
 import { CreateCategoryController } from "./controllers/categories/create-category.controller"
@@ -48,6 +49,7 @@ import { MonthlySummaryController } from "./controllers/metrics/monthly-summary-
     AuthenticateController,
     CreateGoalController,
     FetchListGoalsController,
+    ManageGoalByIdController,
     CreateTransactionController,
     FetchTransactionsByTypeController,
     CreateCategoryController,

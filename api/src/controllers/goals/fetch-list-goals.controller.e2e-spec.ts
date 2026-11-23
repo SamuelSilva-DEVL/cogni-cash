@@ -85,6 +85,63 @@ describe("Fetch List Goals (e2e)", () => {
     expect(response.body.goals).toHaveLength(2)
   })
 
+  test("[GET] /goals/goal/:id", async () => {
+    const setup = await createTitularWithWhitelabel(prisma, {
+      email: "goal-by-id@example.com",
+    })
+
+    const otherSetup = await createTitularWithWhitelabel(prisma, {
+      email: "goal-by-id-other@example.com",
+    })
+
+    const accessToken = signAccessToken(jwt, setup)
+
+    const goal = await prisma.goal.create({
+      data: {
+        title: "Viagem",
+        targetAmount: 1500,
+        currentAmount: 200,
+        deadline: new Date("2026-12-31T23:59:59Z"),
+        accountId: setup.account.id,
+        slug: "viagem",
+      },
+    })
+
+    const otherGoal = await prisma.goal.create({
+      data: {
+        title: "Outra conta",
+        targetAmount: 800,
+        currentAmount: 0,
+        accountId: otherSetup.account.id,
+        slug: "outra-conta",
+      },
+    })
+
+    const response = await request(app.getHttpServer())
+      .get(`/goals/goal/${goal.id}`)
+      .set("Authorization", `Bearer ${accessToken}`)
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body.goal).toEqual(
+      expect.objectContaining({
+        id: goal.id,
+        title: "Viagem",
+      }),
+    )
+
+    const otherAccountResponse = await request(app.getHttpServer())
+      .get(`/goals/goal/${otherGoal.id}`)
+      .set("Authorization", `Bearer ${accessToken}`)
+
+    expect(otherAccountResponse.statusCode).toBe(404)
+
+    const missingResponse = await request(app.getHttpServer())
+      .get("/goals/goal/00000000-0000-0000-0000-000000000000")
+      .set("Authorization", `Bearer ${accessToken}`)
+
+    expect(missingResponse.statusCode).toBe(404)
+  })
+
   afterAll(async () => {
     await app.close()
   })
