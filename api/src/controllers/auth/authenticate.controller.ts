@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Headers,
   HttpCode,
@@ -44,8 +45,9 @@ export class AuthenticateController {
   @ApiOperation({ summary: "Autenticar usuário e obter token JWT" })
   @ApiHeader({
     name: WHITELABEL_ID_HEADER,
-    description: "ID da central whitelabel do usuário",
-    required: true,
+    description:
+      "Opcional. Quando enviado, autentica o e-mail só nessa central. Sem o header, a central é resolvida pelo e-mail.",
+    required: false,
   })
   @ApiBody({
     description: "Credenciais do usuário",
@@ -66,42 +68,26 @@ export class AuthenticateController {
     },
   })
   @ApiResponse({ status: 401, description: "Email ou senha inválidos" })
+  @ApiResponse({
+    status: 409,
+    description:
+      "O e-mail e a senha conferem em mais de uma central ativa",
+  })
   @UsePipes(new ZodValidationPipe(authenticateBodySchema))
   async handle(
     @Body() body: AuthenticateBodySchema,
     @Headers(WHITELABEL_ID_HEADER) whitelabelIdHeader: string | undefined,
   ) {
     const { email, password } = body
-
-    const whitelabel = await resolveWhitelabelById(
-      this.prisma,
-      whitelabelIdHeader,
-    )
-
-    const user = await this.prisma.user.findUnique({
-      where: {
-        whitelabelId_email: {
-          whitelabelId: whitelabel.id,
-          email,
-        },
-      },
-    })
-
-    if (!user) {
-      throw new UnauthorizedException("Email ou senha inválidos")
-    }
-
-    const isPasswordValid = await compare(password, user.password)
-
-    if (!isPasswordValid) {
-      throw new UnauthorizedException("Email ou senha inválidos")
-    }
+    const user = whitelabelIdHeader?.trim()
+      ? await this.findUserInWhitelabel(email, password, whitelabelIdHeader)
+      : await this.findUserByEmail(email, password)
 
     const membership = await this.prisma.accountMember.findFirst({
       where: {
         userId: user.id,
         account: {
-          whitelabelId: whitelabel.id,
+          whitelabelId: user.whitelabelId,
         },
       },
       orderBy: {
@@ -118,12 +104,69 @@ export class AuthenticateController {
 
     const accessToken = this.jwt.sign({
       userId: user.id,
-      whitelabelId: whitelabel.id,
+      whitelabelId: user.whitelabelId,
       accountId: membership.accountId,
     })
 
     return {
       access_token: accessToken,
     }
+  }
+
+  private async findUserInWhitelabel(
+    email: string,
+    password: string,
+    whitelabelIdHeader: string,
+  ) {
+    const whitelabel = await resolveWhitelabelById(
+      this.prisma,
+      whitelabelIdHeader,
+    )
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        whitelabelId_email: {
+          whitelabelId: whitelabel.id,
+          email,
+        },
+      },
+    })
+
+    if (!user || !(await compare(password, user.password))) {
+      throw new UnauthorizedException("Email ou senha inválidos")
+    }
+
+    return user
+  }
+
+  private async findUserByEmail(email: string, password: string) {
+    const candidates = await this.prisma.user.findMany({
+      where: {
+        email,
+        whitelabel: { status: "active" },
+      },
+    })
+
+    const matches: typeof candidates = []
+
+    for (const candidate of candidates) {
+      if (await compare(password, candidate.password)) {
+        matches.push(candidate)
+      }
+    }
+
+    if (matches.length > 1) {
+      throw new ConflictException(
+        "Este e-mail está vinculado a mais de uma central. Não foi possível identificar qual usar.",
+      )
+    }
+
+    const user = matches[0]
+
+    if (!user) {
+      throw new UnauthorizedException("Email ou senha inválidos")
+    }
+
+    return user
   }
 }

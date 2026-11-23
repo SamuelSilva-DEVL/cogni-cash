@@ -57,6 +57,15 @@ export class CreateUserController {
   async createUser(@Body() body: CreateUserSchema) {
     const { name, email, password } = body
 
+    const emailAlreadyUsed = await this.prisma.user.findFirst({
+      where: { email },
+      select: { id: true },
+    })
+
+    if (emailAlreadyUsed) {
+      throw new ConflictException("Um usuário com esse email já existe")
+    }
+
     const hashedPassword = await hash(password, 8)
 
     const result = await this.prisma.$transaction(async (tx) => {
@@ -65,19 +74,6 @@ export class CreateUserController {
           name: `Família de ${name}`,
         },
       })
-
-      const existingUser = await tx.user.findUnique({
-        where: {
-          whitelabelId_email: {
-            whitelabelId: whitelabel.id,
-            email,
-          },
-        },
-      })
-
-      if (existingUser) {
-        throw new ConflictException("Um usuário com esse email já existe")
-      }
 
       const user = await tx.user.create({
         data: {

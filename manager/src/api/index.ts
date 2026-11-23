@@ -17,8 +17,9 @@ api.interceptors.request.use(async (config) => {
       config.headers.Authorization = `Bearer ${token}`
     }
 
+    const isLogin = config.url?.endsWith("/sessions")
     const whitelabelId = localStorage.getItem(WHITELABEL_KEY)
-    if (whitelabelId) {
+    if (whitelabelId && !isLogin) {
       config.headers[WHITELABEL_HEADER] = whitelabelId
     }
   }

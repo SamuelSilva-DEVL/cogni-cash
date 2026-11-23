@@ -66,6 +66,22 @@ describe("CreateUserController (e2e)", () => {
     expect(membership?.account.whitelabelId).toBe(response.body.whitelabelId)
   })
 
+  test("[POST] /users rejects an email already used in another central", async () => {
+    const email = `duplicado-${Date.now()}@example.com`
+    const payload = {
+      name: "John Doe",
+      email,
+      password: "123456",
+    }
+
+    const first = await request(app.getHttpServer()).post("/users").send(payload)
+    expect(first.statusCode).toBe(201)
+
+    const second = await request(app.getHttpServer()).post("/users").send(payload)
+    expect(second.statusCode).toBe(409)
+    expect(second.body.message).toBe("Um usuário com esse email já existe")
+  })
+
   afterAll(async () => {
     await app.close()
   })

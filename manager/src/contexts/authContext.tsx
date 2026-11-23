@@ -1,10 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react"
-import api, {
-  TOKEN_KEY,
-  USER_EMAIL_KEY,
-  WHITELABEL_KEY,
-  WHITELABEL_HEADER,
-} from "../api"
+import api, { TOKEN_KEY, USER_EMAIL_KEY, WHITELABEL_KEY } from "../api"
 import { decodeJwtPayload } from "@/src/lib/jwt"
 
 interface IAuthContextProps {
@@ -53,19 +48,10 @@ export function AuthContextProvider({
   }
 
   const login = async (email: string, password: string) => {
-    const whitelabelId = localStorage.getItem(WHITELABEL_KEY)
-
-    if (!whitelabelId) {
-      throw new Error(
-        "Central não identificada. Cadastre-se ou acesse pelo mesmo dispositivo em que criou a conta.",
-      )
-    }
-
-    const response = await api.post<{ access_token: string }>(
-      "/sessions",
-      { email, password },
-      { headers: { [WHITELABEL_HEADER]: whitelabelId } },
-    )
+    const response = await api.post<{ access_token: string }>("/sessions", {
+      email,
+      password,
+    })
 
     const token = response.data.access_token
     const payload = decodeJwtPayload(token)
