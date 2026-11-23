@@ -1,13 +1,16 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Loader2, Wallet } from 'lucide-react'
+import { useAuth } from '@/src/contexts/authContext'
 
 export default function Home() {
   const router = useRouter()
+  const { isAuthenticated, isReady } = useAuth()
 
   useEffect(() => {
-    router.replace('/login')
-  }, [router])
+    if (!isReady) return
+    router.replace(isAuthenticated ? '/dashboard' : '/login')
+  }, [isAuthenticated, isReady, router])
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
