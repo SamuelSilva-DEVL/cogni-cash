@@ -33,6 +33,10 @@ export interface GoalsListResponse {
   goals: ApiGoal[]
 }
 
+export interface GoalResponse {
+  goal: ApiGoal
+}
+
 export interface TransactionsListResponse {
   transactions: ApiTransaction[]
   total: number
@@ -51,6 +55,8 @@ export interface CreateGoalInput {
   currentAmount?: number
   deadline?: string
 }
+
+export type UpdateGoalInput = CreateGoalInput
 
 export interface CreateTransactionInput {
   description: string

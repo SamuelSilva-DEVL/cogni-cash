@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { Goal } from "@/src/types"
-import { useCreateGoal } from "@/src/hooks/use-goals"
+import { useCreateGoal, useUpdateGoal } from "@/src/hooks/use-goals"
 import { isAxiosError } from "axios"
 import { toast } from "sonner"
 import z from "zod"
@@ -65,6 +65,8 @@ export const GoalFormDialog = ({
   mode,
 }: GoalFormDialogProps) => {
   const createGoal = useCreateGoal()
+  const updateGoal = useUpdateGoal()
+  const isSaving = createGoal.isPending || updateGoal.isPending
 
   const {
     register,
@@ -103,20 +105,29 @@ export const GoalFormDialog = ({
   const currentValue = watch("currentValue")
 
   const onSubmit = async (data: GoalSchema) => {
-    if (mode === "edit") {
-      toast.error("Edição de metas ainda não está disponível na API.")
-      return
+    const payload = {
+      title: data.name,
+      targetAmount: parseCurrencyInput(data.totalValue),
+      currentAmount: data.currentValue
+        ? parseCurrencyInput(data.currentValue)
+        : 0,
+      deadline: data.deadlineDate || undefined,
     }
 
     try {
-      await createGoal.mutateAsync({
-        title: data.name,
-        targetAmount: parseCurrencyInput(data.totalValue),
-        currentAmount: data.currentValue
-          ? parseCurrencyInput(data.currentValue)
-          : 0,
-        deadline: data.deadlineDate || undefined,
-      })
+      if (mode === "edit") {
+        if (!goal) return
+
+        await updateGoal.mutateAsync({
+          id: goal.id,
+          ...payload,
+        })
+        toast.success("Meta atualizada com sucesso!")
+        onOpenChange(false)
+        return
+      }
+
+      await createGoal.mutateAsync(payload)
 
       toast.success("Meta criada com sucesso!")
       onOpenChange(false)
@@ -129,10 +140,13 @@ export const GoalFormDialog = ({
         icon: "🎯",
       })
     } catch (err) {
+      const fallback =
+        mode === "edit"
+          ? "Não foi possível atualizar a meta."
+          : "Não foi possível criar a meta."
       const message = isAxiosError(err)
-        ? (err.response?.data?.message as string | undefined) ??
-          "Não foi possível criar a meta."
-        : "Não foi possível criar a meta."
+        ? (err.response?.data?.message as string | undefined) ?? fallback
+        : fallback
       toast.error(message)
     }
   }
@@ -256,8 +270,8 @@ export const GoalFormDialog = ({
             >
               Cancelar
             </Button>
-            <Button type="submit" variant="soft" disabled={createGoal.isPending} className="min-w-[110px]">
-              {createGoal.isPending ? "Salvando..." : mode === "create" ? "Criar meta" : "Salvar"}
+            <Button type="submit" variant="soft" disabled={isSaving} className="min-w-[110px]">
+              {isSaving ? "Salvando..." : mode === "create" ? "Criar meta" : "Salvar"}
             </Button>
           </DialogFooter>
         </form>

@@ -7,13 +7,14 @@ import { Card, CardContent } from "@/src/components/ui/card"
 import { Progress } from "@/src/components/ui/progress"
 import { Skeleton } from "@/src/components/ui/skeleton"
 import { GoalFormDialog } from "@/src/components/goals/GoalFormDialog"
+import { GoalDeleteDialog } from "@/src/components/goals/GoalDeleteDialog"
 import { useGoals } from "@/src/hooks/use-goals"
 import {
   formatCurrency,
   calculatePercentage,
   getDaysRemaining,
 } from "@/src/lib/utils"
-import { Plus, Clock, TrendingUp, AlertCircle } from "lucide-react"
+import { Plus, Clock, TrendingUp, AlertCircle, Trash2 } from "lucide-react"
 import { cn } from "@/src/lib/utils"
 import { Goal } from "@/src/types"
 
@@ -21,6 +22,7 @@ export default function GoalsPage() {
   const { data: goals = [], isLoading } = useGoals()
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingGoal, setEditingGoal] = useState<Goal | undefined>()
+  const [deletingGoal, setDeletingGoal] = useState<Goal | undefined>()
 
   const handleEdit = (goal: Goal) => {
     setEditingGoal(goal)
@@ -131,14 +133,23 @@ export default function GoalsPage() {
                       </div>
                     </Link>
 
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(goal)}
-                      className="shrink-0"
-                    >
-                      Editar
-                    </Button>
+                    <div className="flex shrink-0 gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(goal)}
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setDeletingGoal(goal)}
+                        aria-label={`Excluir meta ${goal.name}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
 
                   <div className="space-y-3">
@@ -209,6 +220,13 @@ export default function GoalsPage() {
         onOpenChange={handleCloseForm}
         goal={editingGoal}
         mode={editingGoal ? "edit" : "create"}
+      />
+      <GoalDeleteDialog
+        open={Boolean(deletingGoal)}
+        onOpenChange={(open) => {
+          if (!open) setDeletingGoal(undefined)
+        }}
+        goal={deletingGoal}
       />
     </>
   )

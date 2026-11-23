@@ -1,7 +1,9 @@
 import api from "@/src/api"
 import {
   CreateGoalInput,
+  UpdateGoalInput,
   CreateTransactionInput,
+  GoalResponse,
   GoalsListResponse,
   TransactionsListResponse,
   CategoriesListResponse,
@@ -20,6 +22,21 @@ export async function fetchGoals(page = 1) {
 
 export async function createGoal(input: CreateGoalInput) {
   const { data } = await api.post("/goals", input)
+  return data
+}
+
+export async function fetchGoalById(id: string) {
+  const { data } = await api.get<GoalResponse>(`/goals/goal/${id}`)
+  return data
+}
+
+export async function updateGoal(id: string, input: UpdateGoalInput) {
+  const { data } = await api.patch(`/goals/goal/${id}`, input)
+  return data
+}
+
+export async function deleteGoal(id: string) {
+  const { data } = await api.delete(`/goals/goal/${id}`)
   return data
 }
 

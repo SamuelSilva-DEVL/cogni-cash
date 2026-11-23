@@ -1,9 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/router"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Progress } from "@/src/components/ui/progress"
 import { Button } from "@/src/components/ui/button"
+import { GoalFormDialog } from "@/src/components/goals/GoalFormDialog"
+import { GoalDeleteDialog } from "@/src/components/goals/GoalDeleteDialog"
 import { useGoalById } from "@/src/hooks/use-goals"
 import { Skeleton } from "@/src/components/ui/skeleton"
 import {
@@ -19,6 +21,8 @@ import {
   TrendingUp,
   AlertCircle,
   Target,
+  Pencil,
+  Trash2,
 } from "lucide-react"
 import {
   LineChart,
@@ -38,9 +42,12 @@ const CHART_EMERALD = "oklch(0.596 0.145 163)"
 export default function GoalDetailPage() {
   const router = useRouter()
   const { id } = router.query
-  const { goal, isLoading } = useGoalById(typeof id === "string" ? id : undefined)
+  const goalId = typeof id === "string" ? id : undefined
+  const { data: goal, isPending, isError } = useGoalById(goalId)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
-  if (isLoading) {
+  if (!router.isReady || !goalId || isPending) {
     return (
       <div className="space-y-8">
         <Skeleton className="h-10 w-32" />
@@ -49,7 +56,7 @@ export default function GoalDetailPage() {
     )
   }
 
-  if (!goal) {
+  if (isError || !goal) {
     return (
       <div className="space-y-4 py-12 text-center">
         <p className="text-muted-foreground">Meta não encontrada.</p>
@@ -84,17 +91,38 @@ export default function GoalDetailPage() {
             </Link>
           </Button>
 
-          <div className="flex items-center gap-6">
-            <span className="text-6xl shrink-0" aria-hidden="true">
-              {goal.icon}
-            </span>
-            <div>
-              <h1 className="mb-2 text-[1.875rem] font-bold leading-[1.2] text-foreground">
-                {goal.name}
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Acompanhe o progresso desta meta no seu ritmo.
-              </p>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="flex items-center gap-6">
+              <span className="text-6xl shrink-0" aria-hidden="true">
+                {goal.icon}
+              </span>
+              <div>
+                <h1 className="mb-2 text-[1.875rem] font-bold leading-[1.2] text-foreground">
+                  {goal.name}
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Acompanhe o progresso desta meta no seu ritmo.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={() => setIsFormOpen(true)}
+              >
+                <Pencil className="h-4 w-4" />
+                Editar
+              </Button>
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={() => setIsDeleteOpen(true)}
+              >
+                <Trash2 className="h-4 w-4" />
+                Excluir
+              </Button>
             </div>
           </div>
         </div>
@@ -265,6 +293,19 @@ export default function GoalDetailPage() {
             </table>
           </CardContent>
         </Card>
+
+        <GoalFormDialog
+          open={isFormOpen}
+          onOpenChange={setIsFormOpen}
+          goal={goal}
+          mode="edit"
+        />
+        <GoalDeleteDialog
+          open={isDeleteOpen}
+          onOpenChange={setIsDeleteOpen}
+          goal={goal}
+          onDeleted={() => router.push("/goals")}
+        />
     </div>
   )
 }

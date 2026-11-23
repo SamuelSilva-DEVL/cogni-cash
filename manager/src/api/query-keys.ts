@@ -2,6 +2,7 @@ export const queryKeys = {
   goals: {
     all: ["goals"] as const,
     list: (page = 1) => [...queryKeys.goals.all, "list", page] as const,
+    detail: (id: string) => [...queryKeys.goals.all, "detail", id] as const,
   },
   transactions: {
     all: ["transactions"] as const,

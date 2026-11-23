@@ -1,8 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { queryKeys } from "@/src/api/query-keys"
-import { fetchGoals, createGoal } from "@/src/api/services/finance"
+import {
+  fetchGoals,
+  fetchGoalById,
+  createGoal,
+  updateGoal,
+  deleteGoal,
+} from "@/src/api/services/finance"
 import { mapApiGoalToGoal } from "@/src/api/mappers"
-import { CreateGoalInput } from "@/src/api/types"
+import { CreateGoalInput, UpdateGoalInput } from "@/src/api/types"
 import { useAuth } from "@/src/contexts/authContext"
 
 export function useGoals(page = 1) {
@@ -18,6 +24,19 @@ export function useGoals(page = 1) {
   })
 }
 
+export function useGoalById(id: string | undefined) {
+  const { access_token } = useAuth()
+
+  return useQuery({
+    queryKey: queryKeys.goals.detail(id ?? ""),
+    queryFn: async () => {
+      const data = await fetchGoalById(id as string)
+      return mapApiGoalToGoal(data.goal)
+    },
+    enabled: !!access_token && !!id,
+  })
+}
+
 export function useCreateGoal() {
   const queryClient = useQueryClient()
 
@@ -29,9 +48,25 @@ export function useCreateGoal() {
   })
 }
 
-export function useGoalById(id: string | undefined) {
-  const { data: goals, ...rest } = useGoals()
-  const goal = goals?.find((g) => g.id === id)
+export function useUpdateGoal() {
+  const queryClient = useQueryClient()
 
-  return { goal, goals, ...rest }
+  return useMutation({
+    mutationFn: ({ id, ...input }: UpdateGoalInput & { id: string }) =>
+      updateGoal(id, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.goals.all })
+    },
+  })
+}
+
+export function useDeleteGoal() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => deleteGoal(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.goals.all })
+    },
+  })
 }
